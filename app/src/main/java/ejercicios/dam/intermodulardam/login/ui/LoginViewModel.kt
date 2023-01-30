@@ -44,7 +44,7 @@ class LoginViewModel @Inject constructor(private val loginUseCase: LoginUseCase)
             _isLoading.value = true
             val result = loginUseCase(email.value!!, password.value!!)
             if(result) {
-                /*TODO*/
+                val validuser = loginUseCase(UserModel(email.value!!, password.value!!))
             }
             _isLoading.value = false
         }

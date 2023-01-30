@@ -10,4 +10,7 @@ class LoginRepository @Inject
         return api.doLogin(email, password)
     }
 
+    suspend fun getUserLogin(email:String, password:String) : Boolean {
+        return api.getLoginUser(email, password)
+    }
 }

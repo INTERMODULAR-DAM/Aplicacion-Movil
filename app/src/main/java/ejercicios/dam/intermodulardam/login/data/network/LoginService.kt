@@ -11,8 +11,14 @@ class LoginService @Inject constructor(private val loginClient: LoginClient) {
         return withContext(Dispatchers.IO) {
             val user:UserDTO = UserDTO(email, password)
             val response = loginClient.doLogin(user)
-            Log.i("RESPUESTA", "response: ${response.body()}")
+            Log.i("RESPUESTA", "token: ${response.body()?.data!!}")
             response.body()?.data!!.isNotEmpty()
         }
+    }
+
+    suspend fun getLoginUser(email:String, password:String) : Boolean {
+        val response = loginClient.getLoginUser(email)
+        Log.i("RESPUESTA", "usuario: ${response.body()} ")
+        return false
     }
 }
