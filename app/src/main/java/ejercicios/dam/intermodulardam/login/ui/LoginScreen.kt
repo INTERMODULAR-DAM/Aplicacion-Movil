@@ -202,6 +202,7 @@ fun BotonLogin(navController: NavHostController, loginViewModel: LoginViewModel,
                 .height(60.dp),
             onClick = {
                 loginViewModel.onButtonLoginPress()
+                navController.navigate(Routes.Main.route)
             },
             enabled = loginEnabled,
             colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.MainGreen, disabledBackgroundColor = MaterialTheme.colors.DisabledMainGreen)
