@@ -1,0 +1,3 @@
+package ejercicios.dam.intermodulardam.comentarios.data.network
+
+interface ComentariosClient

@@ -1,0 +1,3 @@
+package ejercicios.dam.intermodulardam.comentarios.domain.entity
+
+class ComentariosModelFactory
