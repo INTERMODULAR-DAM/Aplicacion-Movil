@@ -6,10 +6,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import ejercicios.dam.intermodulardam.login.domain.usecase.LoginUseCase
 import ejercicios.dam.intermodulardam.login.ui.Login
 import ejercicios.dam.intermodulardam.login.ui.LoginViewModel
-import ejercicios.dam.intermodulardam.login.ui.Registro.Registro
+import ejercicios.dam.intermodulardam.login.ui.Registro.RegisterScreen
 import ejercicios.dam.intermodulardam.login.ui.Registro.RegistroViewModel
 import ejercicios.dam.intermodulardam.main.Main
 import ejercicios.dam.intermodulardam.main.ui.Favoritas.Favoritas
@@ -18,7 +17,6 @@ import ejercicios.dam.intermodulardam.mapa.ui.MapaViewModel
 import ejercicios.dam.intermodulardam.models.Routes
 import ejercicios.dam.intermodulardam.perfil.Perfil
 import ejercicios.dam.intermodulardam.publicacion.Publicacion
-import ejercicios.dam.intermodulardam.publicacion.publicaciones.Publicaciones
 import ejercicios.dam.intermodulardam.siguiendo.Siguiendo
 import ejercicios.dam.intermodulardam.splashscreen.SplashScreen
 
@@ -37,7 +35,7 @@ fun CustomNavigator(loginViewModel: LoginViewModel, mapaViewModel: MapaViewModel
             Mapa(navController = navController, mapaViewModel = mapaViewModel)
         }
         composable(route=Routes.Registro.route) {
-            Registro(navController = navController, registroViewModel)
+            RegisterScreen(navController = navController, registroViewModel)
         }
         composable(route=Routes.Main.route) {
             Main(navController = navController)
@@ -52,17 +50,6 @@ fun CustomNavigator(loginViewModel: LoginViewModel, mapaViewModel: MapaViewModel
             })
         ) { navBackStackEntry ->
             Publicacion(
-                navController = navController,
-                id = navBackStackEntry.arguments?.getInt("id")?:0
-            )
-        }
-        composable(
-            route = Routes.Publicaciones.route,
-            arguments = listOf(navArgument("id") {
-                type = NavType.IntType
-            })
-        ) { navBackStackEntry ->
-            Publicaciones(
                 navController = navController,
                 id = navBackStackEntry.arguments?.getInt("id")?:0
             )

@@ -17,11 +17,6 @@ sealed class Routes(val route:String) {
         fun createRoute(id:Int) = "perfil/$id"
     }
 
-    //Pasar el ID de usuario para mostrar todas sus publicaciones
-    object Publicaciones:Routes("publicaciones/{id}") {
-        fun createRoute(id:Int) = "publicaciones/$id"
-    }
-
     //Pasar ID del usuario para mostrar a quien sigue
     object Siguiendo:Routes("siguiendo/{id}") {
         fun createRoute(id:Int) = "siguiendo/$id"

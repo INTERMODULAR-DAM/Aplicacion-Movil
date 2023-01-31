@@ -1,6 +1,7 @@
 package ejercicios.dam.intermodulardam.login.data.network
 
 import android.util.Log
+import androidx.datastore.dataStore
 import ejercicios.dam.intermodulardam.login.data.dto.UserDTO
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -12,13 +13,13 @@ class LoginService @Inject constructor(private val loginClient: LoginClient) {
             val user:UserDTO = UserDTO(email, password)
             val response = loginClient.doLogin(user)
             Log.i("RESPUESTA", "token: ${response.body()?.data!!}")
-            response.body()?.data!!.isNotEmpty()
+            response.body()?.data!!.isNotEmpty() && response.message().isEmpty()
         }
     }
 
     suspend fun getLoginUser(email:String, password:String) : Boolean {
         val response = loginClient.getLoginUser(email)
-        Log.i("RESPUESTA", "usuario: ${response.body()} ")
+        Log.i("RESPUESTA", "usuario: ${response.body()}")
         return false
     }
 }

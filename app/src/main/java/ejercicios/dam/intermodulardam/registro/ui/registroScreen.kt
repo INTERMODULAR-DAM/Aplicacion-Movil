@@ -1,11 +1,9 @@
 package ejercicios.dam.intermodulardam.login.ui.Registro
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
@@ -18,10 +16,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -32,27 +29,23 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import ejercicios.dam.intermodulardam.models.Routes
+import ejercicios.dam.intermodulardam.ui.theme.backgroundGreen
+import ejercicios.dam.intermodulardam.ui.theme.calibri
+import ejercicios.dam.intermodulardam.ui.theme.textStyleLogin
 import ejercicios.dam.intermodulardam.utils.*
 
 @Composable
-fun Registro(navController: NavHostController, registroViewModel: RegistroViewModel) {
-    Column(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        val scaffoldState = rememberScaffoldState()
-        Scaffold(
-            modifier = Modifier
-                .padding(0.dp)
-                .fillMaxSize(),
-            scaffoldState = scaffoldState,
-            topBar = { LoginTopBar() },
-            content = {ScreenContent(navController, registroViewModel)}
-        )
+fun RegisterScreen(navController: NavHostController, registroViewModel: RegistroViewModel) {
+    val isLoading: Boolean by registroViewModel.isLoading.observeAsState(initial = false)
+    if(isLoading) {
+        WaitingScreen()
+    } else {
+        RegisterContent(navController, registroViewModel)
     }
 }
 
 @Composable
-fun ScreenContent(navController: NavHostController, registroViewModel: RegistroViewModel) {
+fun RegisterContent(navController: NavHostController, registroViewModel: RegistroViewModel) {
     val name: String by registroViewModel.nombre.observeAsState(initial = "")
     val surname: String by registroViewModel.apellidos.observeAsState(initial = "")
     val nick:String by registroViewModel.nick.observeAsState(initial = "")
@@ -63,8 +56,10 @@ fun ScreenContent(navController: NavHostController, registroViewModel: RegistroV
 
     Column(modifier = Modifier
         .fillMaxSize()
-        .background(Color.LightGray)
-        .verticalScroll(rememberScrollState()))
+        .background(backgroundGreen)
+        .padding(horizontal = 30.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center)
     {
         Column(modifier = Modifier.padding(10.dp), horizontalAlignment = Alignment.CenterHorizontally) {
             RegistroTitulo()
@@ -75,31 +70,31 @@ fun ScreenContent(navController: NavHostController, registroViewModel: RegistroV
                 registroViewModel.onRegistroChanged(name = it, ape = surname, nick = nick, email = email, phone = phone, password = password)
             }
             Spacer(modifier = Modifier
-                .height(3.dp)
+                .height(5.dp)
                 .fillMaxWidth())
             Apellidos(surname) {
                 registroViewModel.onRegistroChanged(name = name, ape = it, nick = nick, email = email, phone = phone, password = password)
             }
             Spacer(modifier = Modifier
-                .height(3.dp)
+                .height(5.dp)
                 .fillMaxWidth())
             Nick(nick) {
                 registroViewModel.onRegistroChanged(name = name, ape = surname, nick = it, email = email, phone = phone, password = password)
             }
             Spacer(modifier = Modifier
-                .height(3.dp)
+                .height(5.dp)
                 .fillMaxWidth())
             Email(email) {
                 registroViewModel.onRegistroChanged(name = name, ape = surname, nick = nick, email = it, phone = phone, password = password)
             }
             Spacer(modifier = Modifier
-                .height(3.dp)
+                .height(5.dp)
                 .fillMaxWidth())
             Phone(phone) {
                 registroViewModel.onRegistroChanged(name = name, ape = surname, nick = nick, email = email, phone = it, password = password)
             }
             Spacer(modifier = Modifier
-                .height(3.dp)
+                .height(5.dp)
                 .fillMaxWidth())
             Password(password) {
                 registroViewModel.onRegistroChanged(name = name, ape = surname, nick = nick, email = email, phone = phone, password = it)
@@ -121,38 +116,48 @@ fun RegistroTitulo() {
     Row(modifier = Modifier
         .fillMaxWidth()
         .padding(0.dp), horizontalArrangement = Arrangement.Center) {
-        Text(text="Regístrate", fontSize = 40.sp, color = Color.Black)
+        Text(text="Register", fontSize = 28.sp, color = Color.White, fontWeight = FontWeight.ExtraLight)
     }
 }
 
 @Composable
-fun Nombre(nombre:String, onTextChanged: (String) -> Unit) {
+fun Nombre(name:String, onTextChanged: (String) -> Unit) {
     Row(modifier = Modifier.padding(0.dp), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
-        OutlinedTextField(
-            modifier = Modifier.padding(40.dp, 0.dp),
-            value = nombre,
-            onValueChange = { onTextChanged(it) },
-            label = { Text("Nombre", color = MaterialTheme.colors.MainGreen) },
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = MaterialTheme.colors.MainGreen,
-                unfocusedBorderColor = MaterialTheme.colors.DisabledMainGreen
+        TextField(
+            modifier = Modifier.border(
+                width = 1.dp,
+                brush = Brush.horizontalGradient(listOf(Color.White,Color.White)),
+                shape = RoundedCornerShape(12.dp)
             ),
+            value = name,
+            onValueChange = { onTextChanged(it) },
+            label = { PlaceholderForField("Name") },
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = Color.Transparent,
+                unfocusedBorderColor = Color.Transparent
+            ),
+            textStyle = textStyleLogin
         )
     }
 }
 
 @Composable
-fun Apellidos(surname:String, onTextChanged: (String) -> Unit) {
+fun Apellidos(lastname:String, onTextChanged: (String) -> Unit) {
     Row(modifier = Modifier.padding(0.dp), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
-        OutlinedTextField(
-            modifier = Modifier.padding(40.dp, 0.dp),
-            value = surname,
-            onValueChange = { onTextChanged(it) },
-            label = { Text("Apellidos", color = MaterialTheme.colors.MainGreen) },
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = MaterialTheme.colors.MainGreen,
-                unfocusedBorderColor = MaterialTheme.colors.DisabledMainGreen
+        TextField(
+            modifier = Modifier.border(
+                width = 1.dp,
+                brush = Brush.horizontalGradient(listOf(Color.White,Color.White)),
+                shape = RoundedCornerShape(12.dp)
             ),
+            value = lastname,
+            onValueChange = { onTextChanged(it) },
+            label = { PlaceholderForField("Lastname") },
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = Color.Transparent,
+                unfocusedBorderColor = Color.Transparent
+            ),
+            textStyle = textStyleLogin
         )
     }
 }
@@ -160,15 +165,20 @@ fun Apellidos(surname:String, onTextChanged: (String) -> Unit) {
 @Composable
 fun Nick(nick:String, onTextChanged: (String) -> Unit) {
     Row(modifier = Modifier.padding(0.dp), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
-        OutlinedTextField(
-            modifier = Modifier.padding(40.dp, 0.dp),
+        TextField(
+            modifier = Modifier.border(
+                width = 1.dp,
+                brush = Brush.horizontalGradient(listOf(Color.White,Color.White)),
+                shape = RoundedCornerShape(12.dp)
+            ),
             value = nick,
             onValueChange = { onTextChanged(it) },
-            label = { Text("Nickname", color = MaterialTheme.colors.MainGreen) },
+            label = { PlaceholderForField("Nick") },
             colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = MaterialTheme.colors.MainGreen,
-                unfocusedBorderColor = MaterialTheme.colors.DisabledMainGreen
+                focusedBorderColor = Color.Transparent,
+                unfocusedBorderColor = Color.Transparent
             ),
+            textStyle = textStyleLogin
         )
     }
 }
@@ -176,15 +186,20 @@ fun Nick(nick:String, onTextChanged: (String) -> Unit) {
 @Composable
 fun Email(email:String, onTextChanged: (String) -> Unit) {
     Row(modifier = Modifier.padding(0.dp), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
-        OutlinedTextField(
-            modifier = Modifier.padding(40.dp, 0.dp),
+        TextField(
+            modifier = Modifier.border(
+                width = 1.dp,
+                brush = Brush.horizontalGradient(listOf(Color.White,Color.White)),
+                shape = RoundedCornerShape(12.dp)
+            ),
             value = email,
             onValueChange = { onTextChanged(it) },
-            label = { Text("Email", color = MaterialTheme.colors.MainGreen) },
+            label = { PlaceholderForField("Email") },
             colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = MaterialTheme.colors.MainGreen,
-                unfocusedBorderColor = MaterialTheme.colors.DisabledMainGreen
+                focusedBorderColor = Color.Transparent,
+                unfocusedBorderColor = Color.Transparent
             ),
+            textStyle = textStyleLogin
         )
     }
 }
@@ -192,15 +207,20 @@ fun Email(email:String, onTextChanged: (String) -> Unit) {
 @Composable
 fun Phone(phone:String, onTextChanged: (String) -> Unit) {
     Row(modifier = Modifier.padding(0.dp), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
-        OutlinedTextField(
-            modifier = Modifier.padding(40.dp, 0.dp),
+        TextField(
+            modifier = Modifier.border(
+                width = 1.dp,
+                brush = Brush.horizontalGradient(listOf(Color.White,Color.White)),
+                shape = RoundedCornerShape(12.dp)
+            ),
             value = phone,
             onValueChange = { onTextChanged(it) },
-            label = { Text("Teléfono", color = MaterialTheme.colors.MainGreen) },
+            label = { PlaceholderForField("Phone") },
             colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = MaterialTheme.colors.MainGreen,
-                unfocusedBorderColor = MaterialTheme.colors.DisabledMainGreen
+                focusedBorderColor = Color.Transparent,
+                unfocusedBorderColor = Color.Transparent
             ),
+            textStyle = textStyleLogin
         )
     }
 }
@@ -209,14 +229,18 @@ fun Phone(phone:String, onTextChanged: (String) -> Unit) {
 fun Password(password:String, onTextChanged: (String) -> Unit) {
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
     Row(modifier = Modifier.padding(0.dp), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
-        OutlinedTextField(
-            modifier = Modifier.padding(40.dp, 0.dp),
+        TextField(
+            modifier = Modifier.border(
+                width = 1.dp,
+                brush = Brush.horizontalGradient(listOf(Color.White, Color.White)),
+                shape = RoundedCornerShape(12.dp)
+            ),
             value = password,
             onValueChange = { onTextChanged(it) },
-            label = { Text("Contraseña", color = MaterialTheme.colors.MainGreen) },
+            label = { PlaceholderForField("Password") },
             colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = MaterialTheme.colors.MainGreen,
-                unfocusedBorderColor = MaterialTheme.colors.DisabledMainGreen
+                focusedBorderColor = Color.Transparent,
+                unfocusedBorderColor = Color.Transparent
             ),
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
@@ -226,10 +250,11 @@ fun Password(password:String, onTextChanged: (String) -> Unit) {
                 else Icons.Filled.VisibilityOff
                 val description = if (passwordVisible) "Hide password" else "Show password"
 
-                IconButton(onClick = {passwordVisible = !passwordVisible}){
-                    Icon(imageVector  = image, description, tint = MaterialTheme.colors.MainGreen)
+                IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                    Icon(imageVector = image, description, tint = Color.White)
                 }
             },
+            textStyle = textStyleLogin
         )
     }
 }
@@ -247,14 +272,22 @@ fun BotonRegistro(registerViewModel: RegistroViewModel, navController: NavHostCo
                 registerViewModel.onButtonRegisterPress()
                 navController.navigate(Routes.Main.route)
             },
+            shape = RoundedCornerShape(40.dp),
+            border= BorderStroke(1.dp, Color.Black),
             enabled = registerEnabled,
-            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.MainGreen, disabledBackgroundColor = MaterialTheme.colors.DisabledMainGreen)
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = MaterialTheme.colors.DisabledBrown,
+                disabledBackgroundColor = Color(0xFF6a6a6a),
+
+                )
         ) {
             Text(
                 modifier = Modifier.align(Alignment.CenterVertically),
-                text = "Regístrate",
+                text = "Register",
                 textAlign = TextAlign.Center,
-                color = Color.White
+                color = Color.White,
+                fontSize = 20.sp,
+                fontFamily = calibri
             )
         }
     }
@@ -262,8 +295,38 @@ fun BotonRegistro(registerViewModel: RegistroViewModel, navController: NavHostCo
 
 @Composable
 fun LinkLogin(navController: NavHostController) {
-    Row(modifier = Modifier
-        .fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-        ClickableText(text = AnnotatedString("¿Ya tienes una cuenta?"), onClick = {navController.navigate("login")}, style = TextStyle(textDecoration = TextDecoration.Underline,fontSize = 16.sp, fontFamily = FontFamily.SansSerif, fontWeight = FontWeight.Bold))
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(), horizontalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = "Already have an account? ",
+            fontSize = 18.sp,
+            fontFamily = calibri,
+            color = Color.White
+        )
+        Text(
+            text = "Sign in",
+            style = TextStyle(
+                textDecoration = TextDecoration.Underline,
+                fontSize = 18.sp,
+                fontFamily = calibri,
+                fontWeight = FontWeight.Bold,
+                color = Color.White
+            ),
+            modifier = Modifier.clickable {
+                navController.navigate("login")
+            }
+        )
     }
+}
+
+@Composable
+fun PlaceholderForField(text : String){
+    Text(text = text, color = Color.White, fontFamily = calibri)
+}
+
+@Composable
+fun WaitingScreen() {
+/*TODO*/
 }
