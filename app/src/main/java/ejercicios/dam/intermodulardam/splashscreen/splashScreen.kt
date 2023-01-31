@@ -4,6 +4,7 @@ import android.view.animation.OvershootInterpolator
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -20,6 +21,7 @@ import androidx.navigation.NavHostController
 import ejercicios.dam.intermodulardam.BuildConfig
 import ejercicios.dam.intermodulardam.models.Routes
 import ejercicios.dam.intermodulardam.R
+import ejercicios.dam.intermodulardam.ui.theme.backgroundGreen
 import kotlinx.coroutines.delay
 
 @Composable
@@ -31,6 +33,7 @@ fun SplashScreen(navController: NavHostController) {
         Modifier
             .fillMaxWidth()
             .fillMaxHeight()
+            .background(backgroundGreen)
     ) {
         LaunchedEffect(key1 = true) {
             scale.animateTo(
@@ -48,7 +51,7 @@ fun SplashScreen(navController: NavHostController) {
         }
 
         Image(
-            painter = painterResource(id = R.drawable.logoextended),
+            painter = painterResource(id = R.drawable.white_logoextended),
             contentDescription = "",
             alignment = Alignment.Center, modifier = Modifier
                 .fillMaxSize().padding(40.dp).scale(scale.value)
@@ -58,7 +61,7 @@ fun SplashScreen(navController: NavHostController) {
             text = "Version - ${BuildConfig.VERSION_NAME}",
             textAlign = TextAlign.Center,
             fontSize = 24.sp,
-            modifier = Modifier.align(Alignment.BottomCenter).padding(16.dp)
+            modifier = Modifier.align(Alignment.BottomCenter).padding(32.dp)
         )
     }
 }

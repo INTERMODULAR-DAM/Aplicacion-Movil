@@ -1,13 +1,9 @@
 package ejercicios.dam.intermodulardam.login.ui
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
@@ -21,9 +17,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -39,9 +35,10 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavHostController
 import ejercicios.dam.intermodulardam.R
 import ejercicios.dam.intermodulardam.models.Routes
-import ejercicios.dam.intermodulardam.utils.DisabledMainGreen
-import ejercicios.dam.intermodulardam.utils.LoginTopBar
-import ejercicios.dam.intermodulardam.utils.MainGreen
+import ejercicios.dam.intermodulardam.ui.theme.backgroundGreen
+import ejercicios.dam.intermodulardam.ui.theme.calibri
+import ejercicios.dam.intermodulardam.ui.theme.textStyleLogin
+import ejercicios.dam.intermodulardam.utils.*
 
 @Composable
 fun Login(navController:NavHostController, loginViewModel:LoginViewModel) {
@@ -59,159 +56,136 @@ fun LoginScreen(navController: NavHostController, loginViewModel: LoginViewModel
     val password: String by loginViewModel.password.observeAsState(initial = "")
     val isLoginEnabled: Boolean by loginViewModel.isButtonLoginEnabled.observeAsState(initial = false)
     var showDialog by rememberSaveable { mutableStateOf(false) }
-
     Column(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        val scaffoldState = rememberScaffoldState()
-        Scaffold(
-            modifier = Modifier
-                .padding(0.dp)
-                .fillMaxSize(),
-            scaffoldState = scaffoldState,
-            topBar = { LoginTopBar() },
-            content ={
-                Column(modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.LightGray)
-                    .verticalScroll(rememberScrollState()),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Column(modifier = Modifier
-                        .padding(30.dp)
-                        .absoluteOffset(0.dp, -(40).dp)) {
-                        Logo()
-                        Spacer(modifier = Modifier
-                            .height(10.dp)
-                            .fillMaxWidth())
-                        Titulo()
-                        Spacer(modifier = Modifier
-                            .height(5.dp)
-                            .fillMaxWidth())
-                        Email(email) {
-                            loginViewModel.onLoginChanged(email = it, password = password)
-                        }
-                        Spacer(modifier = Modifier
-                            .height(5.dp)
-                            .fillMaxWidth())
-                        Password(password) {
-                            loginViewModel.onLoginChanged(email = email, password = it)
-                        }
-                        Spacer(modifier = Modifier
-                            .height(20.dp)
-                            .fillMaxWidth())
-                        BotonLogin(navController,loginViewModel, isLoginEnabled)
-                        Spacer(modifier = Modifier
-                            .height(30.dp)
-                            .fillMaxWidth())
-                        LinkRegistro(navController)
-                        Spacer(modifier = Modifier
-                            .height(5.dp)
-                            .fillMaxWidth())
-                        Row(modifier = Modifier
-                            .fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                            ClickableText(text = AnnotatedString("He olvidado mi contraseña"), onClick = {showDialog = true}, style = TextStyle(textDecoration = TextDecoration.Underline, fontSize = 16.sp, fontFamily = FontFamily.SansSerif, fontWeight = FontWeight.Bold))
-                        }
-                    }
-                }
-                if (showDialog) {
-                    RecoveryDialog(true, loginViewModel, onDismiss = { showDialog = false })
-                }
-            }
-        )
+        modifier = Modifier
+            .fillMaxSize()
+            .background(backgroundGreen)
+            .padding(horizontal = 30.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center) {
+        Logo()
+        Title()
+        Spacer(modifier = Modifier
+            .height(15.dp)
+            .fillMaxWidth())
+        EmailField(email) {
+            loginViewModel.onLoginChanged(email = it, password = password)
+        }
+        Spacer(modifier = Modifier
+            .height(15.dp)
+            .fillMaxWidth())
+        PasswordField(password) {
+            loginViewModel.onLoginChanged(email = email, password = it)
+        }
+        ForgotPassword(
+            Modifier
+                .clickable { showDialog = true }
+                .align(Alignment.End)
+                .padding(20.dp))
+        LoginButton(navController,loginViewModel, isLoginEnabled)
+        Spacer(modifier = Modifier
+            .height(30.dp)
+            .fillMaxWidth())
+        Register(navController)
+
+    }
+    if (showDialog) {
+        RecoveryDialog(true, loginViewModel, onDismiss = { showDialog = false })
     }
 }
+
 
 @Composable
 fun Logo() {
-    Row(modifier = Modifier
-        .fillMaxWidth()
-        .padding(0.dp)
-        .absoluteOffset(0.dp, -(30).dp), horizontalArrangement = Arrangement.Center) {
-        Image(painter = painterResource(id = R.drawable.logoextended) , contentDescription = "")
-    }
+        Image(painter = painterResource(id = R.drawable.white_logo) , contentDescription = "Logo WikiTrail")
 }
 
 @Composable
-fun Titulo() {
-    Row(modifier = Modifier
-        .fillMaxWidth()
-        .padding(0.dp),
-        horizontalArrangement = Arrangement.Center) {
-        Text(text = "Inicia Sesión", fontSize = 30.sp, fontWeight = FontWeight.Bold)
-    }
+fun Title() {
+    Text(text = "Welcome to WikiTrail!", fontSize = 30.sp, fontWeight = FontWeight.ExtraBold, color = Color.White)
+    Text(text = "Sign in to continue!", fontSize = 18.sp, color = Color.White, fontWeight = FontWeight.ExtraLight)
 }
 
 @Composable
-fun Email(email: String, onTextChanged: (String) -> Unit) {
-    Row(modifier = Modifier.padding(20.dp, 0.dp), horizontalArrangement = Arrangement.Center) {
-        OutlinedTextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = email,
-            onValueChange = { onTextChanged(it) },
-            label = { Text("Email", color = MaterialTheme.colors.MainGreen) },
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = MaterialTheme.colors.MainGreen,
-                unfocusedBorderColor = MaterialTheme.colors.DisabledMainGreen
-            ),
-            textStyle = TextStyle(fontFamily = FontFamily.Default)
-        )
-    }
+fun EmailField(email: String, onTextChanged: (String) -> Unit) {
+    TextField(
+        modifier = Modifier.border(
+            width = 1.dp,
+            brush = Brush.horizontalGradient(listOf(Color.White,Color.White)),
+            shape = RoundedCornerShape(12.dp)
+        ),
+        value = email,
+        onValueChange = { onTextChanged(it) },
+        label = { PlaceholderForField("User") },
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            focusedBorderColor = Color.Transparent,
+            unfocusedBorderColor = Color.Transparent
+        ),
+        textStyle = textStyleLogin
+    )
 }
 
 @Composable
-fun Password(password:String, onTextChanged: (String) -> Unit) {
+fun PasswordField(password:String, onTextChanged: (String) -> Unit) {
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
-    Row(modifier = Modifier.padding(20.dp, 0.dp), horizontalArrangement = Arrangement.Center) {
-        OutlinedTextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = password,
-            onValueChange = {onTextChanged(it)},
-            label = { Text(text = "Password", color = MaterialTheme.colors.MainGreen) },
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = MaterialTheme.colors.MainGreen,
-                unfocusedBorderColor = MaterialTheme.colors.DisabledMainGreen
-            ),
-            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            trailingIcon = {
-                val image = if (passwordVisible)
-                    Icons.Filled.Visibility
-                else Icons.Filled.VisibilityOff
-                val description = if (passwordVisible) "Hide password" else "Show password"
+    TextField(
+        modifier = Modifier.border(
+            width = 1.dp,
+            brush = Brush.horizontalGradient(listOf(Color.White, Color.White)),
+            shape = RoundedCornerShape(12.dp)
+        ),
+        value = password,
+        onValueChange = { onTextChanged(it) },
+        label = { PlaceholderForField("Password") },
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            focusedBorderColor = Color.Transparent,
+            unfocusedBorderColor = Color.Transparent
+        ),
+        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+        trailingIcon = {
+            val image = if (passwordVisible) {
+                Icons.Filled.Visibility
+            } else Icons.Filled.VisibilityOff
+            val description = if (passwordVisible) "Hide password" else "Show password"
 
-                IconButton(onClick = {passwordVisible = !passwordVisible}){
-                    Icon(imageVector  = image, description, tint = MaterialTheme.colors.MainGreen)
-                }
-            },
-            textStyle = TextStyle(fontFamily = FontFamily.Default)
-        )
-    }
+            IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                Icon(imageVector = image, description, tint = Color.White)
+            }
+        },
+        textStyle = textStyleLogin
+    )
 }
 
 @Composable
-fun BotonLogin(navController: NavHostController, loginViewModel: LoginViewModel, loginEnabled:Boolean) {
+fun LoginButton(navController: NavHostController, loginViewModel: LoginViewModel, loginEnabled:Boolean) {
     Row(modifier = Modifier
-        .padding(0.dp)
         .fillMaxWidth()
         .height(60.dp), horizontalArrangement = Arrangement.Center) {
         Button(
             modifier = Modifier
-                .width(220.dp)
+                .width(240.dp)
                 .height(60.dp),
             onClick = {
                 loginViewModel.onButtonLoginPress()
                 navController.navigate(Routes.Main.route)
             },
+            shape = RoundedCornerShape(40.dp),
+            border= BorderStroke(1.dp, Color.Black),
             enabled = loginEnabled,
-            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.MainGreen, disabledBackgroundColor = MaterialTheme.colors.DisabledMainGreen)
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = MaterialTheme.colors.DisabledBrown,
+                disabledBackgroundColor = Color(0xFF6a6a6a),
+
+            )
         ) {
             Text(
                 modifier = Modifier.align(Alignment.CenterVertically),
                 text = "Login",
                 textAlign = TextAlign.Center,
-                color = Color.White
+                color = Color.White,
+                fontSize = 20.sp,
+                fontFamily = calibri
             )
         }
     }
@@ -223,7 +197,9 @@ fun RecoveryDialog(show:Boolean, loginViewModel: LoginViewModel, onDismiss:() ->
     val isButtonEnabled:Boolean by loginViewModel.recoveryButton.observeAsState(initial = false)
     if(show) {
         Dialog(onDismissRequest = { onDismiss() }, properties = DialogProperties(dismissOnClickOutside = true, dismissOnBackPress = true)) {
-            Column(modifier = Modifier.clip(shape = RoundedCornerShape(5.dp)).background(Color.White)) {
+            Column(modifier = Modifier
+                .clip(shape = RoundedCornerShape(5.dp))
+                .background(Color.White)) {
                 Row {
                     Text("Introduzca su email y recibirá un correo con la nueva contraseña", textAlign = TextAlign.Center, fontFamily = FontFamily.Default)
                 }
@@ -263,12 +239,53 @@ fun RecoveryDialog(show:Boolean, loginViewModel: LoginViewModel, onDismiss:() ->
 }
 
 @Composable
-fun LinkRegistro(navController: NavHostController) {
-    Row(modifier = Modifier
-        .fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-        ClickableText(text = AnnotatedString("¿Aún no te has registrado?"), onClick = {navController.navigate("registro")}, style = TextStyle(textDecoration = TextDecoration.Underline,fontSize = 16.sp, fontFamily = FontFamily.SansSerif, fontWeight = FontWeight.Bold))
+fun Register(navController: NavHostController) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(), horizontalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = "Don't have an account? ",
+            fontSize = 18.sp,
+            fontFamily = calibri,
+            color = Color.White
+        )
+        Text(
+            text = "Sign up",
+            style = TextStyle(
+                textDecoration = TextDecoration.Underline,
+                fontSize = 18.sp,
+                fontFamily = calibri,
+                fontWeight = FontWeight.Bold,
+                color = Color.White
+            ),
+            modifier = Modifier.clickable {
+                navController.navigate("registro")
+            }
+        )
     }
 }
+
+@Composable
+fun PlaceholderForField(text : String){
+    Text(text = text, color = Color.White, fontFamily = calibri)
+}
+
+@Composable
+fun ForgotPassword(modifier: Modifier) {
+    Text(
+        "Forgot your password?",
+        style = TextStyle(
+            textDecoration = TextDecoration.Underline,
+            fontSize = 16.sp,
+            fontFamily = calibri,
+            fontWeight = FontWeight.Bold,
+            color = Color.White
+        ),
+        modifier = modifier
+    )
+}
+
 
 @Composable
 fun WaitingScreen() {

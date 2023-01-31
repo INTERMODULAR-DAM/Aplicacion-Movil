@@ -12,6 +12,10 @@ val coiny = FontFamily(
     Font(R.font.coiny_regular)
 )
 
+val calibri = FontFamily(
+    Font(R.font.calibri)
+)
+
 // Set of Material typography styles to start with
 val Typography = Typography(
     body1 = TextStyle(
