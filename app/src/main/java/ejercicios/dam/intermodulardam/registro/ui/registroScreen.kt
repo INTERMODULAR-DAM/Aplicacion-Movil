@@ -1,4 +1,4 @@
-package ejercicios.dam.intermodulardam.login.ui.Registro
+package ejercicios.dam.intermodulardam.registro.ui
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*

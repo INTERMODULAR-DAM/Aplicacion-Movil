@@ -1,4 +1,4 @@
-package ejercicios.dam.intermodulardam.login.ui.Registro
+package ejercicios.dam.intermodulardam.registro.ui
 
 import android.util.Patterns
 import androidx.lifecycle.LiveData
@@ -6,7 +6,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import ejercicios.dam.intermodulardam.login.domain.entity.UserModel
 import ejercicios.dam.intermodulardam.registro.domain.entity.UserRegistroModel
 import ejercicios.dam.intermodulardam.registro.domain.usecase.RegistroUseCase
 import kotlinx.coroutines.launch
@@ -60,7 +59,7 @@ class RegistroViewModel @Inject constructor(private val registroUseCase: Registr
     fun onButtonRegisterPress() {
         viewModelScope.launch {
             _isLoading.value = true
-            val user:UserRegistroModel = UserRegistroModel(
+            val user = UserRegistroModel(
                 email.value!!,
                 nombre.value!!,
                 apellidos.value!!,
@@ -69,6 +68,9 @@ class RegistroViewModel @Inject constructor(private val registroUseCase: Registr
                 phone.value!!
             )
             val result = registroUseCase(user)
+            if(result) {
+                /*TODO*/
+            }
             _isLoading.value = false
         }
     }

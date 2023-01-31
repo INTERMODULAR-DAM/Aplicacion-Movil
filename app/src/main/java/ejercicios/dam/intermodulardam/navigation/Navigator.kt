@@ -8,8 +8,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import ejercicios.dam.intermodulardam.login.ui.Login
 import ejercicios.dam.intermodulardam.login.ui.LoginViewModel
-import ejercicios.dam.intermodulardam.login.ui.Registro.RegisterScreen
-import ejercicios.dam.intermodulardam.login.ui.Registro.RegistroViewModel
+import ejercicios.dam.intermodulardam.registro.ui.RegistroViewModel
+import ejercicios.dam.intermodulardam.registro.ui.RegisterScreen
 import ejercicios.dam.intermodulardam.main.Main
 import ejercicios.dam.intermodulardam.main.ui.Favoritas.Favoritas
 import ejercicios.dam.intermodulardam.mapa.ui.Mapa
