@@ -8,18 +8,19 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class LoginService @Inject constructor(private val loginClient: LoginClient) {
-    suspend fun doLogin(email:String, password:String) : Boolean {
+    suspend fun doLogin(email:String, password:String) : String {
         return withContext(Dispatchers.IO) {
             val user:UserDTO = UserDTO(email, password)
             val response = loginClient.doLogin(user)
-            Log.i("RESPUESTA", "token: ${response.body()?.data!!}")
-            response.body()?.data!!.isNotEmpty() && response.message().isEmpty()
+            Log.i("TOKEN", "token: ${response.body()?.data!!}")
+            if(response.body()?.data!!.isNotEmpty()) response.body()?.data!!
+            ""
         }
     }
 
     suspend fun getLoginUser(email:String, password:String) : Boolean {
         val response = loginClient.getLoginUser(email)
-        Log.i("RESPUESTA", "usuario: ${response.body()}")
-        return false
+        Log.i("USUARIO", "usuario: ${response.body()?.data!!}")
+        return response.body()?.data!!.isNotEmpty()
     }
 }

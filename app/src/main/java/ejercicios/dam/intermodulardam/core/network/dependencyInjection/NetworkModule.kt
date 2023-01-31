@@ -1,6 +1,10 @@
 package ejercicios.dam.intermodulardam.core.network.dependencyInjection
 
 
+import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -11,15 +15,16 @@ import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Inject
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class NetworkModule {
+class NetworkModule @Inject constructor() {
 
     @Provides
     @Singleton
-    fun getInterceptor():Interceptor {
+    fun getInterceptor(context:Context):Interceptor {
         return Interceptor {
             val request = it.request().newBuilder()
             request.addHeader("Accept", "application/json")

@@ -10,6 +10,6 @@ interface LoginClient {
     @POST("/api/v1/users/signIn")
     suspend fun doLogin(@Body user:UserDTO):Response<DefaultResponse>
 
-    @GET("/api/v1/users/")
-    suspend fun getLoginUser(@Path("email") email:String):Response<LoginResponse>
+    @GET("/api/v1/users/getEmail/{email}")
+    suspend fun getLoginUser(@Path("email") email:String):Response<DefaultResponse>
 }
