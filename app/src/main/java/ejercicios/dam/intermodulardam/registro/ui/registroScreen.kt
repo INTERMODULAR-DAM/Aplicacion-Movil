@@ -29,7 +29,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import ejercicios.dam.intermodulardam.models.Routes
-import ejercicios.dam.intermodulardam.ui.theme.backgroundGreen
 import ejercicios.dam.intermodulardam.ui.theme.calibri
 import ejercicios.dam.intermodulardam.ui.theme.textStyleLogin
 import ejercicios.dam.intermodulardam.utils.*
@@ -56,7 +55,7 @@ fun RegisterContent(navController: NavHostController, registroViewModel: Registr
 
     Column(modifier = Modifier
         .fillMaxSize()
-        .background(backgroundGreen)
+        .background(MaterialTheme.colors.backgroundGreen)
         .padding(horizontal = 30.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center)
@@ -134,7 +133,8 @@ fun Nombre(name:String, onTextChanged: (String) -> Unit) {
             label = { PlaceholderForField("Name") },
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 focusedBorderColor = Color.Transparent,
-                unfocusedBorderColor = Color.Transparent
+                unfocusedBorderColor = Color.Transparent,
+                textColor = Color.White
             ),
             textStyle = textStyleLogin
         )
@@ -155,7 +155,8 @@ fun Apellidos(lastname:String, onTextChanged: (String) -> Unit) {
             label = { PlaceholderForField("Lastname") },
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 focusedBorderColor = Color.Transparent,
-                unfocusedBorderColor = Color.Transparent
+                unfocusedBorderColor = Color.Transparent,
+                textColor = Color.White
             ),
             textStyle = textStyleLogin
         )
@@ -176,7 +177,8 @@ fun Nick(nick:String, onTextChanged: (String) -> Unit) {
             label = { PlaceholderForField("Nick") },
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 focusedBorderColor = Color.Transparent,
-                unfocusedBorderColor = Color.Transparent
+                unfocusedBorderColor = Color.Transparent,
+                textColor = Color.White
             ),
             textStyle = textStyleLogin
         )
@@ -197,7 +199,8 @@ fun Email(email:String, onTextChanged: (String) -> Unit) {
             label = { PlaceholderForField("Email") },
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 focusedBorderColor = Color.Transparent,
-                unfocusedBorderColor = Color.Transparent
+                unfocusedBorderColor = Color.Transparent,
+                textColor = Color.White
             ),
             textStyle = textStyleLogin
         )
@@ -218,7 +221,8 @@ fun Phone(phone:String, onTextChanged: (String) -> Unit) {
             label = { PlaceholderForField("Phone") },
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 focusedBorderColor = Color.Transparent,
-                unfocusedBorderColor = Color.Transparent
+                unfocusedBorderColor = Color.Transparent,
+                textColor = Color.White
             ),
             textStyle = textStyleLogin
         )
@@ -240,7 +244,8 @@ fun Password(password:String, onTextChanged: (String) -> Unit) {
             label = { PlaceholderForField("Password") },
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 focusedBorderColor = Color.Transparent,
-                unfocusedBorderColor = Color.Transparent
+                unfocusedBorderColor = Color.Transparent,
+                textColor = Color.White
             ),
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),

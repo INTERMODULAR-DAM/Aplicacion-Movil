@@ -35,7 +35,6 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavHostController
 import ejercicios.dam.intermodulardam.R
 import ejercicios.dam.intermodulardam.models.Routes
-import ejercicios.dam.intermodulardam.ui.theme.backgroundGreen
 import ejercicios.dam.intermodulardam.ui.theme.calibri
 import ejercicios.dam.intermodulardam.ui.theme.textStyleLogin
 import ejercicios.dam.intermodulardam.utils.*
@@ -59,7 +58,7 @@ fun LoginScreen(navController: NavHostController, loginViewModel: LoginViewModel
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(backgroundGreen)
+            .background(MaterialTheme.colors.backgroundGreen)
             .padding(horizontal = 30.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center) {
@@ -119,7 +118,8 @@ fun EmailField(email: String, onTextChanged: (String) -> Unit) {
         label = { PlaceholderForField("User") },
         colors = TextFieldDefaults.outlinedTextFieldColors(
             focusedBorderColor = Color.Transparent,
-            unfocusedBorderColor = Color.Transparent
+            unfocusedBorderColor = Color.Transparent,
+            textColor = Color.White
         ),
         textStyle = textStyleLogin
     )
@@ -139,7 +139,8 @@ fun PasswordField(password:String, onTextChanged: (String) -> Unit) {
         label = { PlaceholderForField("Password") },
         colors = TextFieldDefaults.outlinedTextFieldColors(
             focusedBorderColor = Color.Transparent,
-            unfocusedBorderColor = Color.Transparent
+            unfocusedBorderColor = Color.Transparent,
+            textColor = Color.White
         ),
         visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
