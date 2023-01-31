@@ -7,24 +7,19 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import dagger.hilt.android.AndroidEntryPoint
 import ejercicios.dam.intermodulardam.login.ui.LoginViewModel
-import ejercicios.dam.intermodulardam.login.ui.Registro.RegistroViewModel
 import ejercicios.dam.intermodulardam.mapa.ui.MapaViewModel
 import ejercicios.dam.intermodulardam.navigation.CustomNavigator
+import ejercicios.dam.intermodulardam.registro.ui.RegistroViewModel
 import ejercicios.dam.intermodulardam.ui.theme.IntermodularDAMTheme
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val loginViewModel: LoginViewModel by viewModels()
     private val mapViewModel: MapaViewModel by viewModels()
-    private val registroViewModel:RegistroViewModel by viewModels()
+    private val registroViewModel: RegistroViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

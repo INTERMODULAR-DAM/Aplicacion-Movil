@@ -40,7 +40,7 @@ class LoginViewModel @Inject constructor(private val loginUseCase: LoginUseCase)
     }
 
     fun onButtonLoginPress(): Boolean{
-        var success = false
+        var success = true
         viewModelScope.launch {
             _isLoading.value = true
             val result = loginUseCase(email.value!!, password.value!!)

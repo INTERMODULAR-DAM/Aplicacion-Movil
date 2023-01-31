@@ -10,7 +10,7 @@ import ejercicios.dam.intermodulardam.login.ui.Login
 import ejercicios.dam.intermodulardam.login.ui.LoginViewModel
 import ejercicios.dam.intermodulardam.registro.ui.RegistroViewModel
 import ejercicios.dam.intermodulardam.registro.ui.RegisterScreen
-import ejercicios.dam.intermodulardam.main.Main
+import ejercicios.dam.intermodulardam.main.ui.Main
 import ejercicios.dam.intermodulardam.main.ui.Favoritas.Favoritas
 import ejercicios.dam.intermodulardam.mapa.ui.Mapa
 import ejercicios.dam.intermodulardam.mapa.ui.MapaViewModel

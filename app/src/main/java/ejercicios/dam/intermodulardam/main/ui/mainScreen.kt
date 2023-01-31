@@ -1,4 +1,4 @@
-package ejercicios.dam.intermodulardam.main
+package ejercicios.dam.intermodulardam.main.ui
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,12 +13,12 @@ import ejercicios.dam.intermodulardam.main.domain.Publication
 import ejercicios.dam.intermodulardam.main.domain.User
 import ejercicios.dam.intermodulardam.utils.BottomNavigationBar
 import ejercicios.dam.intermodulardam.utils.MainTopBar
+import java.util.*
 
 @Composable
 fun Main(navController:NavHostController) {
-    /* VARIABLES */
-    //val currentUser = (usuario logeado)
-    //val routes = (variable para recoger los json de las publicaciones)
+    val currentUser: User = User("","","","", Date(),"", "", false, "", "", "", listOf())
+    val routes: List<Publication> = listOf()
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -30,21 +30,15 @@ fun Main(navController:NavHostController) {
                 .fillMaxSize(),
             scaffoldState = scaffoldState,
             topBar = { MainTopBar() },
-            //content = { MainScreen(navController, currentUser, routes)},
-            content = { MainScreen(navController)},
+            content = { MainScreen(navController, currentUser, routes) },
             bottomBar = { BottomNavigationBar(navController = navController)}
         )
     }
 }
 
+
 @Composable
-fun MainScreen(navController: NavHostController) {
-    /*TODO*/
+fun MainScreen(navController: NavHostController, user:User, routes:List<Publication>) {
+
 }
 
-/*
-@Composable
-fun MainScreen(navController: NavHostController, user:User, routes:Publication) {
-    /*TODO*/
-}
-*/
