@@ -39,15 +39,18 @@ class LoginViewModel @Inject constructor(private val loginUseCase: LoginUseCase)
                 password.length > 6
     }
 
-    fun onButtonLoginPress() {
+    fun onButtonLoginPress(): Boolean{
+        var success = false
         viewModelScope.launch {
             _isLoading.value = true
             val result = loginUseCase(email.value!!, password.value!!)
             if(result) {
-                val validuser = loginUseCase(UserModel(email.value!!, password.value!!))
+                val validUser = loginUseCase(UserModel(email.value!!, password.value!!))
+                if(validUser) success = true
             }
             _isLoading.value = false
         }
+        return success
     }
 
     /*RECOVERY PASSWORD DIALOG TODO */

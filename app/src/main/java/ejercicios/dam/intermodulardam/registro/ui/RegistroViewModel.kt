@@ -56,7 +56,8 @@ class RegistroViewModel @Inject constructor(private val registroUseCase: Registr
                     && nick.isNotBlank()
     }
 
-    fun onButtonRegisterPress() {
+    fun onButtonRegisterPress() :Boolean {
+        var success = false
         viewModelScope.launch {
             _isLoading.value = true
             val user = UserRegistroModel(
@@ -69,9 +70,11 @@ class RegistroViewModel @Inject constructor(private val registroUseCase: Registr
             )
             val result = registroUseCase(user)
             if(result) {
-                /*TODO*/
+                val validUser = false
+                if(validUser) success = true
             }
             _isLoading.value = false
         }
+        return success
     }
 }

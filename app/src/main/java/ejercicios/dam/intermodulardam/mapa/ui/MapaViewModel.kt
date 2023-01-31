@@ -5,4 +5,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class MapaViewModel @Inject constructor() : ViewModel()
+class MapaViewModel @Inject constructor() : ViewModel() {
+
+}

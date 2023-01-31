@@ -168,8 +168,9 @@ fun LoginButton(navController: NavHostController, loginViewModel: LoginViewModel
                 .width(240.dp)
                 .height(60.dp),
             onClick = {
-                loginViewModel.onButtonLoginPress()
-                navController.navigate(Routes.Main.route)
+                val goToMain = loginViewModel.onButtonLoginPress()
+                if(goToMain) {navController.navigate(Routes.Main.route)}
+                else {/*TODO mostrar advertencia de fallo en el login*/}
             },
             shape = RoundedCornerShape(40.dp),
             border= BorderStroke(1.dp, Color.Black),

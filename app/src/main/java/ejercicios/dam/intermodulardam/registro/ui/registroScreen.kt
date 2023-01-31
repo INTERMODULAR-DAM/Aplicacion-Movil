@@ -274,8 +274,9 @@ fun BotonRegistro(registerViewModel: RegistroViewModel, navController: NavHostCo
                 .width(220.dp)
                 .height(60.dp),
             onClick = {
-                registerViewModel.onButtonRegisterPress()
-                navController.navigate(Routes.Main.route)
+                val goToMain = registerViewModel.onButtonRegisterPress()
+                if (goToMain) navController.navigate(Routes.Main.route)
+                else {/*TODO mostrar advertencia de fallo de registro*/}
             },
             shape = RoundedCornerShape(40.dp),
             border= BorderStroke(1.dp, Color.Black),
