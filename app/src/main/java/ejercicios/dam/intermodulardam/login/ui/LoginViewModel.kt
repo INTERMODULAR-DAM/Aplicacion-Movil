@@ -44,8 +44,9 @@ class LoginViewModel @Inject constructor(private val loginUseCase: LoginUseCase)
         viewModelScope.launch {
             _isLoading.value = true
             val result = loginUseCase(email.value!!, password.value!!)
+            Log.i("LOGINOK", "$result")
             if(result) {
-                val validUser = loginUseCase(UserModel(email.value!!, password.value!!))
+                val validUser = loginUseCase()
                 if(validUser) success = true
             }
             _isLoading.value = false

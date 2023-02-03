@@ -12,14 +12,14 @@ class LoginService @Inject constructor(private val loginClient: LoginClient) {
         return withContext(Dispatchers.IO) {
             val user:UserDTO = UserDTO(email, password)
             val response = loginClient.doLogin(user)
-            Log.i("TOKEN", "token: ${response.body()?.data!!}")
-            if(response.body()?.data!!.isNotEmpty()) response.body()?.data!!
-            ""
+            response.body()?.data!!.ifEmpty {
+                ""
+            }
         }
     }
 
-    suspend fun getLoginUser(email:String, password:String) : Boolean {
-        val response = loginClient.getLoginUser(email)
+    suspend fun getLoginUser() : Boolean {
+        val response = loginClient.getLoginUser()
         Log.i("USUARIO", "usuario: ${response.body()?.data!!}")
         return response.body()?.data!!.isNotEmpty()
     }

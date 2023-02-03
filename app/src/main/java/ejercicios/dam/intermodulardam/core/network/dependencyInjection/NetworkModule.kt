@@ -2,13 +2,11 @@ package ejercicios.dam.intermodulardam.core.network.dependencyInjection
 
 
 import android.content.Context
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.preferencesDataStore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import ejercicios.dam.intermodulardam.login.data.db.UserPreferenceService
 import ejercicios.dam.intermodulardam.login.data.network.LoginClient
 import ejercicios.dam.intermodulardam.registro.data.network.RegistroClient
 import okhttp3.Interceptor
@@ -21,6 +19,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class NetworkModule @Inject constructor() {
+
 
     @Provides
     @Singleton
