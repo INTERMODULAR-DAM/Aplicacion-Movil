@@ -6,7 +6,7 @@ sealed class Routes(val route:String) {
     object Registro:Routes("registro")
     object Main:Routes("main")
     object Mapa:Routes("mapa")
-    object Favoritas:Routes("favoritas")
+    object CrearRuta:Routes("crearRuta")
 
     //Pasar el ID de usuario para ver el perfil
     object Perfil:Routes("perfil/{id}") {

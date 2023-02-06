@@ -6,12 +6,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import ejercicios.dam.intermodulardam.crearRutas.CrearRuta
 import ejercicios.dam.intermodulardam.login.ui.Login
 import ejercicios.dam.intermodulardam.login.ui.LoginViewModel
 import ejercicios.dam.intermodulardam.registro.ui.RegistroViewModel
 import ejercicios.dam.intermodulardam.registro.ui.RegisterScreen
 import ejercicios.dam.intermodulardam.main.ui.Main
-import ejercicios.dam.intermodulardam.main.ui.Favoritas.Favoritas
 import ejercicios.dam.intermodulardam.mapa.ui.Mapa
 import ejercicios.dam.intermodulardam.mapa.ui.MapaViewModel
 import ejercicios.dam.intermodulardam.models.Routes
@@ -40,8 +40,8 @@ fun CustomNavigator(loginViewModel: LoginViewModel, mapaViewModel: MapaViewModel
         composable(route=Routes.Main.route) {
             Main(navController = navController)
         }
-        composable(route=Routes.Favoritas.route) {
-            Favoritas(navController = navController)
+        composable(route=Routes.CrearRuta.route) {
+            CrearRuta(navController = navController)
         }
         composable(
             route = Routes.Publicacion.route,

@@ -1,4 +1,4 @@
-package ejercicios.dam.intermodulardam.mapa.ui
+package ejercicios.dam.intermodulardam.crearRutas
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -34,7 +34,7 @@ import kotlinx.coroutines.launch
 import java.util.*
 
 @Composable
-fun Mapa(navController: NavHostController, mapaViewModel: MapaViewModel) {
+fun CrearRuta(navController: NavHostController) {
     val currentUser: User = User("","","","", Date(),"", "", false, "", "", "", listOf())
     val routes: List<Publication> = listOf()
 
@@ -48,16 +48,16 @@ fun Mapa(navController: NavHostController, mapaViewModel: MapaViewModel) {
                 .padding(0.dp)
                 .fillMaxSize(),
             scaffoldState = scaffoldState,
-            topBar = { MapaTopBar(coroutineScope, scaffoldState) },
-            content = { MapaScreen(navController, currentUser, routes) },
+            topBar = { CrearRutaTopBar(coroutineScope, scaffoldState) },
+            content = { CrearRutaScreen(navController, currentUser, routes) },
             bottomBar = { BottomNavigationBar(navController = navController) },
-            drawerContent = { MapaDrawer(navController = navController, currentUser, coroutineScope, scaffoldState) }
+            drawerContent = { CrearRutaDrawer(navController = navController, currentUser, coroutineScope, scaffoldState) }
         )
     }
 }
 
 @Composable
-fun MapaTopBar(coroutineScope: CoroutineScope, scaffoldState: ScaffoldState) {
+fun CrearRutaTopBar(coroutineScope: CoroutineScope, scaffoldState: ScaffoldState) {
     TopAppBar(modifier = Modifier
         .fillMaxWidth()
         .padding(0.dp),
@@ -73,30 +73,7 @@ fun MapaTopBar(coroutineScope: CoroutineScope, scaffoldState: ScaffoldState) {
 
 
 @Composable
-fun BottomNavigationBar(navController: NavHostController) {
-    BottomAppBar(modifier = Modifier
-        .fillMaxWidth()
-        .padding(0.dp),
-        backgroundColor = MaterialTheme.colors.MainGreen)
-    {
-        Row(modifier = Modifier.fillMaxSize(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceEvenly) {
-            IconButton(onClick = { navController.navigate(Routes.Main.route) }) {
-                Icon(imageVector = Icons.Filled.Pages, contentDescription = "Página Principal", tint = Color.White)
-            }
-            IconButton(onClick = { navController.navigate(Routes.CrearRuta.route) }) {
-                Icon(imageVector = Icons.Filled.Add, contentDescription = "Crear Ruta", tint = Color.White)
-            }
-            IconButton(onClick = { navController.navigate(Routes.Mapa.route) }, enabled = false) {
-                Icon(imageVector = Icons.Filled.Map, contentDescription = "Mapa", tint = Color.White)
-            }
-        }
-    }
-}
-
-@Composable
-fun MapaDrawer(navController: NavHostController, user:User, coroutineScope: CoroutineScope, scaffoldState: ScaffoldState) {
+fun CrearRutaDrawer(navController: NavHostController, user: User, coroutineScope: CoroutineScope, scaffoldState: ScaffoldState) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -153,6 +130,29 @@ fun MapaDrawer(navController: NavHostController, user:User, coroutineScope: Coro
 }
 
 @Composable
-fun MapaScreen(navController: NavHostController, user:User, routes:List<Publication>) {
+fun BottomNavigationBar(navController: NavHostController) {
+    BottomAppBar(modifier = Modifier
+        .fillMaxWidth()
+        .padding(0.dp),
+        backgroundColor = MaterialTheme.colors.MainGreen)
+    {
+        Row(modifier = Modifier.fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceEvenly) {
+            IconButton(onClick = { navController.navigate(Routes.Main.route) }) {
+                Icon(imageVector = Icons.Filled.House, contentDescription = "Página Principal", tint = Color.White)
+            }
+            IconButton(onClick = { navController.navigate(Routes.CrearRuta.route)}, enabled = false) {
+                Icon(imageVector = Icons.Filled.Add, contentDescription = "Crear Ruta", tint = Color.White)
+            }
+            IconButton(onClick = { navController.navigate(Routes.Mapa.route) }) {
+                Icon(imageVector = Icons.Filled.Map, contentDescription = "Mapa", tint = Color.White)
+            }
+        }
+    }
+}
+
+@Composable
+fun CrearRutaScreen(navController: NavHostController, user:User, routes:List<Publication>) {
 
 }

@@ -73,7 +73,25 @@ fun MainTopBar(coroutineScope: CoroutineScope, scaffoldState: ScaffoldState) {
 
 @Composable
 fun BottomNavigationBar(navController: NavHostController) {
-
+    BottomAppBar(modifier = Modifier
+        .fillMaxWidth()
+        .padding(0.dp),
+        backgroundColor = MaterialTheme.colors.MainGreen)
+    {
+        Row(modifier = Modifier.fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceEvenly) {
+            IconButton(onClick = { navController.navigate(Routes.Main.route) }, enabled = false) {
+                Icon(imageVector = Icons.Filled.House, contentDescription = "Página Principal", tint = Color.White)
+            }
+            IconButton(onClick = { navController.navigate(Routes.CrearRuta.route) }) {
+                Icon(imageVector = Icons.Filled.Add, contentDescription = "Crear Ruta", tint = Color.White)
+            }
+            IconButton(onClick = { navController.navigate(Routes.Mapa.route) }) {
+                Icon(imageVector = Icons.Filled.Map, contentDescription = "Mapa", tint = Color.White)
+            }
+        }
+    }
 }
 
 @Composable
