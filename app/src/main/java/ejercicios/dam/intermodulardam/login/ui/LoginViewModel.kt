@@ -7,14 +7,36 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import ejercicios.dam.intermodulardam.login.data.dto.UserDTO
+import ejercicios.dam.intermodulardam.login.data.network.dto.UserDTO
 import ejercicios.dam.intermodulardam.login.domain.entity.UserModel
+import ejercicios.dam.intermodulardam.login.domain.usecase.HasTokenUseCase
+import ejercicios.dam.intermodulardam.login.domain.usecase.HasUserLoggedUseCase
 import ejercicios.dam.intermodulardam.login.domain.usecase.LoginUseCase
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(private val loginUseCase: LoginUseCase) : ViewModel() {
+class LoginViewModel @Inject
+    constructor(
+        private val loginUseCase: LoginUseCase,
+        private val hasToken:HasTokenUseCase,
+        private val hasUserLogged:HasUserLoggedUseCase) : ViewModel() {
+
+    private val _goMain = MutableLiveData<Boolean>()
+    val goMain:LiveData<Boolean> = _goMain
+    init {
+        var habemusUser:Boolean = true
+        viewModelScope.launch {
+            if(!hasToken()) {
+                habemusUser = false
+            }
+            if(!hasUserLogged()) {
+                habemusUser = false
+            }
+        }
+        _goMain.value = habemusUser
+    }
+
 
     private val _email = MutableLiveData<String>()
     val email : LiveData<String> = _email
@@ -46,8 +68,7 @@ class LoginViewModel @Inject constructor(private val loginUseCase: LoginUseCase)
             val result = loginUseCase(email.value!!, password.value!!)
             Log.i("LOGINOK", "$result")
             if(result) {
-                val validUser = loginUseCase()
-                if(validUser) success = true
+                success = true
             }
             _isLoading.value = false
         }
@@ -76,4 +97,5 @@ class LoginViewModel @Inject constructor(private val loginUseCase: LoginUseCase)
 
         }
     }
+
 }

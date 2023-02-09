@@ -1,24 +1,35 @@
 package ejercicios.dam.intermodulardam.login.data
 
-import android.util.Log
-import ejercicios.dam.intermodulardam.login.data.db.UserPreferenceService
+import ejercicios.dam.intermodulardam.login.data.database.dao.UserDAO
+import ejercicios.dam.intermodulardam.login.data.database.entity.toDataBase
+import ejercicios.dam.intermodulardam.login.data.datastore.UserPreferenceService
 import ejercicios.dam.intermodulardam.login.data.network.LoginService
+import ejercicios.dam.intermodulardam.login.data.network.dto.UserDTO
 import javax.inject.Inject
 
-
 class LoginRepository @Inject
-    constructor(private val api: LoginService, private val db: UserPreferenceService) {
+    constructor(private val api: LoginService,
+                private val userPreference: UserPreferenceService,
+                private val userDAO: UserDAO) {
+
     suspend fun doLogin(email:String, password:String) : Boolean {
         val connectionOk = api.doLogin(email, password)
-        Log.i("token", "bearer $connectionOk")
         if(connectionOk.isNotEmpty()) {
-            db.addToken("authorization", connectionOk)
-            return true
+            val user: UserDTO? = api.getLoginUser()
+            if(user != null) {
+                userPreference.addToken("authorization", "bearer $connectionOk")
+                userDAO.insertAll(
+                    listOf(user.toDataBase(userPreference.getToken("authorization")))
+                )
+                return true
+            }
+            return false
+
         }
         return false
     }
 
-    suspend fun getUserLogin() : Boolean {
-        return api.getLoginUser()
-    }
+    suspend fun getConnectionToken():Boolean = userPreference.getToken("authorization").isNotEmpty()
+    suspend fun isUserConnected(): Boolean = userDAO.getAllUsers().count() > 1
+
 }

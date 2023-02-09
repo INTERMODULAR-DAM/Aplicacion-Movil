@@ -1,4 +1,4 @@
-package ejercicios.dam.intermodulardam.login.data.db
+package ejercicios.dam.intermodulardam.login.data.datastore
 
 interface IUserPreferences {
     suspend fun addToken(key: String, value: String)

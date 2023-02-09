@@ -9,7 +9,4 @@ class LoginUseCase @Inject constructor(private val repository: LoginRepository) 
         return repository.doLogin(email, password)
     }
 
-    suspend operator fun invoke() : Boolean {
-        return repository.getUserLogin()
-    }
 }
