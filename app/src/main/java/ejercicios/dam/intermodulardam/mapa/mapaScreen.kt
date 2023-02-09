@@ -1,4 +1,4 @@
-package ejercicios.dam.intermodulardam.mapa.ui
+package ejercicios.dam.intermodulardam.mapa
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -9,12 +9,15 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
@@ -22,6 +25,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.MapProperties
+import com.google.maps.android.compose.rememberCameraPositionState
 import ejercicios.dam.intermodulardam.R
 import ejercicios.dam.intermodulardam.main.domain.Publication
 import ejercicios.dam.intermodulardam.main.domain.User
@@ -34,7 +42,7 @@ import kotlinx.coroutines.launch
 import java.util.*
 
 @Composable
-fun Mapa(navController: NavHostController, mapaViewModel: MapaViewModel) {
+fun Mapa(navController:NavHostController, mapaViewModel: MapaViewModel) {
     val currentUser: User = User("","","","", Date(),"", "", false, "", "", "", listOf())
     val routes: List<Publication> = listOf()
 
@@ -49,10 +57,29 @@ fun Mapa(navController: NavHostController, mapaViewModel: MapaViewModel) {
                 .fillMaxSize(),
             scaffoldState = scaffoldState,
             topBar = { MapaTopBar(coroutineScope, scaffoldState) },
-            content = { MapaScreen(navController, currentUser, routes) },
+            content = { MapaScreen(navController = navController, mapaViewModel = mapaViewModel) },
             bottomBar = { BottomNavigationBar(navController = navController) },
             drawerContent = { MapaDrawer(navController = navController, currentUser, coroutineScope, scaffoldState) }
         )
+    }
+}
+
+@Composable
+fun MapaScreen(navController: NavHostController, mapaViewModel: MapaViewModel) {
+    val currentLocation by mapaViewModel.currentLocation.observeAsState(initial = LatLng(38.55359897196608, -0.12057169825429333))
+
+    val cameraPosition = rememberCameraPositionState {
+        position = CameraPosition.fromLatLngZoom(currentLocation, 10F)
+    }
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        GoogleMap(
+            modifier = Modifier.fillMaxSize(),
+            cameraPositionState = cameraPosition,
+            properties = MapProperties(isMyLocationEnabled = true)
+        ) {
+
+        }
     }
 }
 
@@ -83,7 +110,7 @@ fun BottomNavigationBar(navController: NavHostController) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceEvenly) {
             IconButton(onClick = { navController.navigate(Routes.Main.route) }) {
-                Icon(imageVector = Icons.Filled.Pages, contentDescription = "Página Principal", tint = Color.White)
+                Icon(imageVector = Icons.Filled.Home, contentDescription = "Página Principal", tint = Color.White)
             }
             IconButton(onClick = { navController.navigate(Routes.CrearRuta.route) }) {
                 Icon(imageVector = Icons.Filled.Add, contentDescription = "Crear Ruta", tint = Color.White)
@@ -96,7 +123,7 @@ fun BottomNavigationBar(navController: NavHostController) {
 }
 
 @Composable
-fun MapaDrawer(navController: NavHostController, user:User, coroutineScope: CoroutineScope, scaffoldState: ScaffoldState) {
+fun MapaDrawer(navController: NavHostController, user: User, coroutineScope: CoroutineScope, scaffoldState: ScaffoldState) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -150,9 +177,4 @@ fun MapaDrawer(navController: NavHostController, user:User, coroutineScope: Coro
             }
         }
     }
-}
-
-@Composable
-fun MapaScreen(navController: NavHostController, user:User, routes:List<Publication>) {
-
 }

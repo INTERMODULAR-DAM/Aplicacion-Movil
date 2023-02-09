@@ -8,9 +8,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
+import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.AndroidEntryPoint
 import ejercicios.dam.intermodulardam.login.ui.LoginViewModel
-import ejercicios.dam.intermodulardam.mapa.ui.MapaViewModel
+import ejercicios.dam.intermodulardam.mapa.MapaViewModel
 import ejercicios.dam.intermodulardam.navigation.CustomNavigator
 import ejercicios.dam.intermodulardam.registro.ui.RegistroViewModel
 import ejercicios.dam.intermodulardam.ui.theme.IntermodularDAMTheme
@@ -23,6 +24,8 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        mapViewModel.fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        mapViewModel.getCurrentLocation(this)
         setContent {
             IntermodularDAMTheme {
                 Surface(
@@ -35,3 +38,8 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
+
+
+
+

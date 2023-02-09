@@ -12,8 +12,8 @@ import ejercicios.dam.intermodulardam.login.ui.LoginViewModel
 import ejercicios.dam.intermodulardam.registro.ui.RegistroViewModel
 import ejercicios.dam.intermodulardam.registro.ui.RegisterScreen
 import ejercicios.dam.intermodulardam.main.ui.Main
-import ejercicios.dam.intermodulardam.mapa.ui.Mapa
-import ejercicios.dam.intermodulardam.mapa.ui.MapaViewModel
+import ejercicios.dam.intermodulardam.mapa.Mapa
+import ejercicios.dam.intermodulardam.mapa.MapaViewModel
 import ejercicios.dam.intermodulardam.models.Routes
 import ejercicios.dam.intermodulardam.perfil.Perfil
 import ejercicios.dam.intermodulardam.publicacion.Publicacion

@@ -1,5 +1,6 @@
 package ejercicios.dam.intermodulardam.main.ui
 
+import android.app.Activity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -15,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
@@ -73,6 +75,7 @@ fun MainTopBar(coroutineScope: CoroutineScope, scaffoldState: ScaffoldState) {
 
 @Composable
 fun BottomNavigationBar(navController: NavHostController) {
+    val activity = LocalContext.current as Activity
     BottomAppBar(modifier = Modifier
         .fillMaxWidth()
         .padding(0.dp),
