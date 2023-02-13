@@ -1,4 +1,4 @@
-package ejercicios.dam.intermodulardam.core.network.dependencyInjection
+package ejercicios.dam.intermodulardam.dependencyInjection
 
 import android.content.Context
 import androidx.datastore.core.DataStore
@@ -9,6 +9,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import ejercicios.dam.intermodulardam.login.data.network.LoginClient
 import ejercicios.dam.intermodulardam.registro.data.network.RegistroClient
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -18,12 +20,12 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class NetworkModule @Inject constructor() {
+class NetworkModule {
 
 
     @Provides
     @Singleton
-    fun getInterceptor(context: Context):Interceptor {
+    fun getInterceptor():Interceptor {
         return Interceptor {
             val request = it.request().newBuilder()
             request.addHeader("Accept", "application/json")

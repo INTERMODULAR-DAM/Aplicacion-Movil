@@ -41,7 +41,7 @@ fun CustomNavigator(loginViewModel: LoginViewModel, mapaViewModel: MapaViewModel
             Main(navController = navController)
         }
         composable(route=Routes.CrearRuta.route) {
-            CrearRuta(navController = navController)
+            CrearRuta(navController = navController, mapaViewModel)
         }
         composable(
             route = Routes.Publicacion.route,

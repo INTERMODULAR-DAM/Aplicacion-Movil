@@ -27,9 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
-import com.google.maps.android.compose.GoogleMap
-import com.google.maps.android.compose.MapProperties
-import com.google.maps.android.compose.rememberCameraPositionState
+import com.google.maps.android.compose.*
 import ejercicios.dam.intermodulardam.R
 import ejercicios.dam.intermodulardam.main.domain.Publication
 import ejercicios.dam.intermodulardam.main.domain.User
@@ -44,7 +42,6 @@ import java.util.*
 @Composable
 fun Mapa(navController:NavHostController, mapaViewModel: MapaViewModel) {
     val currentUser: User = User("","","","", Date(),"", "", false, "", "", "", listOf())
-    val routes: List<Publication> = listOf()
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -59,7 +56,8 @@ fun Mapa(navController:NavHostController, mapaViewModel: MapaViewModel) {
             topBar = { MapaTopBar(coroutineScope, scaffoldState) },
             content = { MapaScreen(navController = navController, mapaViewModel = mapaViewModel) },
             bottomBar = { BottomNavigationBar(navController = navController) },
-            drawerContent = { MapaDrawer(navController = navController, currentUser, coroutineScope, scaffoldState) }
+            drawerContent = { MapaDrawer(navController = navController, currentUser, coroutineScope, scaffoldState) },
+            drawerGesturesEnabled = false
         )
     }
 }
@@ -69,14 +67,13 @@ fun MapaScreen(navController: NavHostController, mapaViewModel: MapaViewModel) {
     val currentLocation by mapaViewModel.currentLocation.observeAsState(initial = LatLng(38.55359897196608, -0.12057169825429333))
 
     val cameraPosition = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(currentLocation, 10F)
+        position = CameraPosition.fromLatLngZoom(currentLocation, 13F)
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier.fillMaxSize().padding(bottom = 55.dp)) {
         GoogleMap(
-            modifier = Modifier.fillMaxSize(),
             cameraPositionState = cameraPosition,
-            properties = MapProperties(isMyLocationEnabled = true)
+            properties = MapProperties(isMyLocationEnabled = true, mapType = MapType.HYBRID)
         ) {
 
         }

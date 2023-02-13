@@ -55,5 +55,76 @@ class MapaViewModel @Inject constructor() : ViewModel() {
                }
      }
 
+     private val _name = MutableLiveData<String>()
+     val name:LiveData<String> = _name
 
+     private val _category = MutableLiveData<String>()
+     val category:LiveData<String> = _category
+
+     private val _distance = MutableLiveData<String>()
+     val distance:LiveData<String> = _distance
+
+     private val _difficulty = MutableLiveData<String>()
+     val difficulty:LiveData<String> = _difficulty
+
+     private val _track = MutableLiveData<MutableList<LatLng>>()
+     val track:LiveData<MutableList<LatLng>> = _track
+
+     private val _duration = MutableLiveData<String>()
+     val duration:LiveData<String> = _duration
+
+     private val _description = MutableLiveData<String>()
+     val description:LiveData<String> = _description
+
+     private val _isPrivate = MutableLiveData<Boolean>()
+     val isPrivate:LiveData<Boolean> = _isPrivate
+
+     private val _isButtonEnabled = MutableLiveData<Boolean>()
+     val isButtonEnabled:LiveData<Boolean> = _isButtonEnabled
+
+     fun onRouteChanged(
+          name:String,
+          category:String,
+          distance:String,
+          difficulty:String,
+          track:MutableList<LatLng>,
+          duration: String,
+          description: String,
+          isPrivate:Boolean
+     ) {
+          _name.value = name
+          _category.value = category
+          _distance.value = distance
+          _difficulty.value = difficulty
+          _track.value = track
+          _duration.value = duration
+          _description.value = description
+          _isPrivate.value = isPrivate
+          _isButtonEnabled.value =
+               enableCreateButton(name, category, distance, difficulty, track, duration, description, isPrivate)
+     }
+
+     private fun enableCreateButton(
+          name:String,
+          category: String,
+          distance: String,
+          difficulty: String,
+          track: MutableList<LatLng>,
+          duration: String,
+          description: String,
+          isPrivate: Boolean
+     ):Boolean {
+          return name.isNotEmpty() &&
+                  category.isNotEmpty() &&
+                  distance.isNotEmpty() &&
+                  difficulty.isNotEmpty() &&
+                  track.isNotEmpty() &&
+                  duration.isNotEmpty() &&
+                  description.isNotEmpty() &&
+                  isPrivate || !isPrivate
+     }
+
+     fun onCreateButtonClick() {
+
+     }
 }

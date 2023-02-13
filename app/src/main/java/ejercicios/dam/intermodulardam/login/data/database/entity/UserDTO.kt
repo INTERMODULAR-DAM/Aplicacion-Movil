@@ -7,8 +7,6 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "users")
 data class UserDTO(
     @PrimaryKey()
-    @ColumnInfo(name = "id") val id: String,
-    @ColumnInfo(name = "token") val token:String,
     @ColumnInfo(name = "email") val email:String,
     @ColumnInfo(name = "name") val name:String,
     @ColumnInfo(name = "lastname") val surname:String,
@@ -22,8 +20,6 @@ data class UserDTO(
 
 fun ejercicios.dam.intermodulardam.login.data.network.dto.UserDTO.toDataBase(token:String) =
     UserDTO(
-        id = id,
-        token = token,
         email = email,
         name = name,
         surname = surname,

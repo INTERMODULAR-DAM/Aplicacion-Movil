@@ -15,9 +15,9 @@ class LoginRepository @Inject
     suspend fun doLogin(email:String, password:String) : Boolean {
         val connectionOk = api.doLogin(email, password)
         if(connectionOk.isNotEmpty()) {
+            userPreference.addToken("authorization", "bearer $connectionOk")
             val user: UserDTO? = api.getLoginUser()
             if(user != null) {
-                userPreference.addToken("authorization", "bearer $connectionOk")
                 userDAO.insertAll(
                     listOf(user.toDataBase(userPreference.getToken("authorization")))
                 )

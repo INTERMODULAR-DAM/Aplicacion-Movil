@@ -55,6 +55,8 @@ fun LoginScreen(navController: NavHostController, loginViewModel: LoginViewModel
     val password: String by loginViewModel.password.observeAsState(initial = "")
     val isLoginEnabled: Boolean by loginViewModel.isButtonLoginEnabled.observeAsState(initial = false)
     var showDialog by rememberSaveable { mutableStateOf(false) }
+    val loginOk:Boolean by loginViewModel.loginOk.observeAsState(initial = false)
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -81,7 +83,7 @@ fun LoginScreen(navController: NavHostController, loginViewModel: LoginViewModel
                 .clickable { showDialog = true }
                 .align(Alignment.End)
                 .padding(20.dp))
-        LoginButton(navController,loginViewModel, isLoginEnabled)
+        LoginButton(navController,loginViewModel, isLoginEnabled, loginOk)
         Spacer(modifier = Modifier
             .height(30.dp)
             .fillMaxWidth())
@@ -159,7 +161,7 @@ fun PasswordField(password:String, onTextChanged: (String) -> Unit) {
 }
 
 @Composable
-fun LoginButton(navController: NavHostController, loginViewModel: LoginViewModel, loginEnabled:Boolean) {
+fun LoginButton(navController: NavHostController, loginViewModel: LoginViewModel, loginEnabled:Boolean, loginOk:Boolean) {
     Row(modifier = Modifier
         .fillMaxWidth()
         .height(60.dp), horizontalArrangement = Arrangement.Center) {
@@ -168,9 +170,8 @@ fun LoginButton(navController: NavHostController, loginViewModel: LoginViewModel
                 .width(240.dp)
                 .height(60.dp),
             onClick = {
-                val goToMain = loginViewModel.onButtonLoginPress()
-                if(goToMain) {navController.navigate(Routes.Main.route)}
-                else {/*TODO mostrar advertencia de fallo en el login*/}
+                if(loginOk) {navController.navigate("main")}
+                else { /*TODO SHOW ERROR */}
             },
             shape = RoundedCornerShape(40.dp),
             border= BorderStroke(1.dp, Color.Black),

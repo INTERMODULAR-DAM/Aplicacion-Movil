@@ -24,6 +24,7 @@ class LoginViewModel @Inject
 
     private val _goMain = MutableLiveData<Boolean>()
     val goMain:LiveData<Boolean> = _goMain
+
     init {
         var habemusUser:Boolean = true
         viewModelScope.launch {
@@ -50,6 +51,9 @@ class LoginViewModel @Inject
     private val _isButtonLoginEnabled = MutableLiveData<Boolean>()
     val isButtonLoginEnabled : LiveData<Boolean> = _isButtonLoginEnabled
 
+    private val _loginOk = MutableLiveData<Boolean>()
+    val loginOk:LiveData<Boolean> = _loginOk
+
     fun onLoginChanged(email:String, password:String) {
         _email.value = email
         _password.value = password
@@ -61,18 +65,12 @@ class LoginViewModel @Inject
                 password.length > 6
     }
 
-    fun onButtonLoginPress(): Boolean{
-        var success = false
+    fun onButtonLoginPress(){
         viewModelScope.launch {
             _isLoading.value = true
-            val result = loginUseCase(email.value!!, password.value!!)
-            Log.i("LOGINOK", "$result")
-            if(result) {
-                success = true
-            }
+            _loginOk.value = loginUseCase(email.value!!, password.value!!)
             _isLoading.value = false
         }
-        return success
     }
 
     /*RECOVERY PASSWORD DIALOG TODO */

@@ -1,4 +1,4 @@
-package ejercicios.dam.intermodulardam.core.network.dependencyInjection
+package ejercicios.dam.intermodulardam.dependencyInjection
 
 import android.content.Context
 import androidx.datastore.core.DataStore

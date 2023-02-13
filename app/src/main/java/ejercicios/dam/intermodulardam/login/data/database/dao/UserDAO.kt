@@ -8,7 +8,7 @@ import ejercicios.dam.intermodulardam.login.data.database.entity.UserDTO
 
 @Dao
 interface UserDAO {
-    @Query("SELECT * FROM user_table ORDER BY name DESC")
+    @Query("SELECT * FROM users ORDER BY name DESC")
     suspend fun getAllUsers(): List<UserDTO>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

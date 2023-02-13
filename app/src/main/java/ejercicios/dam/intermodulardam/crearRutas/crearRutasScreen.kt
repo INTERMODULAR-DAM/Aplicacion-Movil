@@ -1,5 +1,6 @@
 package ejercicios.dam.intermodulardam.crearRutas
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -8,12 +9,14 @@ import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
@@ -22,9 +25,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.*
 import ejercicios.dam.intermodulardam.R
 import ejercicios.dam.intermodulardam.main.domain.Publication
 import ejercicios.dam.intermodulardam.main.domain.User
+import ejercicios.dam.intermodulardam.mapa.MapaViewModel
 import ejercicios.dam.intermodulardam.models.Routes
 import ejercicios.dam.intermodulardam.ui.theme.calibri
 import ejercicios.dam.intermodulardam.utils.MainGreen
@@ -34,9 +41,8 @@ import kotlinx.coroutines.launch
 import java.util.*
 
 @Composable
-fun CrearRuta(navController: NavHostController) {
+fun CrearRuta(navController: NavHostController, mapaViewModel: MapaViewModel) {
     val currentUser: User = User("","","","", Date(),"", "", false, "", "", "", listOf())
-    val routes: List<Publication> = listOf()
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -49,12 +55,83 @@ fun CrearRuta(navController: NavHostController) {
                 .fillMaxSize(),
             scaffoldState = scaffoldState,
             topBar = { CrearRutaTopBar(coroutineScope, scaffoldState) },
-            content = { CrearRutaScreen(navController, currentUser, routes) },
+            content = { CrearRutaScreen(navController, mapaViewModel, currentUser) },
             bottomBar = { BottomNavigationBar(navController = navController) },
-            drawerContent = { CrearRutaDrawer(navController = navController, currentUser, coroutineScope, scaffoldState) }
+            drawerContent = { CrearRutaDrawer(navController = navController, currentUser, coroutineScope, scaffoldState) },
+            drawerGesturesEnabled = false
         )
     }
 }
+
+@Composable
+fun CrearRutaScreen(navController: NavHostController, mapaViewModel: MapaViewModel, user:User) {
+    val name by mapaViewModel.name.observeAsState(initial = "")
+    val category by mapaViewModel.category.observeAsState(initial = "")
+    val distance by mapaViewModel.distance.observeAsState(initial = "")
+    val difficulty by mapaViewModel.difficulty.observeAsState(initial = "")
+    val duration by mapaViewModel.duration.observeAsState(initial = "")
+    val description by mapaViewModel.description.observeAsState(initial = "")
+    val isPrivate by mapaViewModel.isPrivate.observeAsState(initial = false)
+
+    Column(modifier = Modifier.fillMaxSize()) {
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .weight(1F)) {
+
+        }
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .weight(3F)) {
+            Mapa(mapaViewModel) {
+                mapaViewModel.onRouteChanged(
+                    name = name,
+                    category = category,
+                    distance = distance,
+                    difficulty = difficulty,
+                    track = it,
+                    duration = duration,
+                    description = description,
+                    isPrivate = isPrivate
+                )
+            }
+        }
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .weight(1F)) {
+            Button(onClick = {mapaViewModel.onCreateButtonClick()}) {
+                Text(text = "Create Route")
+            }
+        }
+    }
+}
+
+@Composable
+fun Mapa(mapaViewModel: MapaViewModel, onMapClick: (MutableList<LatLng>) -> Unit) {
+    val currentLocation by mapaViewModel.currentLocation.observeAsState(initial = LatLng(38.55359897196608, -0.12057169825429333))
+
+    val cameraPosition = rememberCameraPositionState {
+        position = CameraPosition.fromLatLngZoom(currentLocation, 13F)
+    }
+
+    var track by rememberSaveable { mutableStateOf<List<LatLng>>(value = listOf()) }
+
+
+    GoogleMap(
+        cameraPositionState = cameraPosition,
+        properties = MapProperties(isMyLocationEnabled = true, mapType = MapType.HYBRID),
+        onMapClick = { location ->
+            track = track + location
+            onMapClick(track.toMutableList())
+        }
+    ) {
+        track.forEach { point ->
+            Marker(state = MarkerState(point))
+        }
+        Polyline(points = track, color = Color.Red)
+    }
+}
+
+
 
 @Composable
 fun CrearRutaTopBar(coroutineScope: CoroutineScope, scaffoldState: ScaffoldState) {
@@ -150,9 +227,4 @@ fun BottomNavigationBar(navController: NavHostController) {
             }
         }
     }
-}
-
-@Composable
-fun CrearRutaScreen(navController: NavHostController, user:User, routes:List<Publication>) {
-
 }
