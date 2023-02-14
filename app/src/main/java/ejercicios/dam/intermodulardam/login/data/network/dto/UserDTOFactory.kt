@@ -4,8 +4,6 @@ import javax.inject.Inject
 
 class UserDTOFactory @Inject constructor() {
     operator fun invoke(
-        id: String,
-        token:String,
         email:String,
         name:String,
         surname:String,
@@ -17,8 +15,6 @@ class UserDTOFactory @Inject constructor() {
         phone:String,
     ) : UserDTO {
         return UserDTO(
-            id = id,
-            token = token,
             email = email,
             name = name,
             surname = surname,
