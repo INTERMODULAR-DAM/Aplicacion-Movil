@@ -1,5 +1,6 @@
 package ejercicios.dam.intermodulardam.login.data
 
+import android.util.Log
 import ejercicios.dam.intermodulardam.login.data.database.dao.UserDAO
 import ejercicios.dam.intermodulardam.login.data.database.entity.toDataBase
 import ejercicios.dam.intermodulardam.login.data.datastore.UserPreferenceService

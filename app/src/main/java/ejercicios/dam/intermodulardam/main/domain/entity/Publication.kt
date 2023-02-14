@@ -6,7 +6,7 @@ import java.util.Date
 import java.util.ArrayList
 
 data class Publication(
-    @SerializedName("photos") val photos:ArrayList<String>,
+    @SerializedName("photos") val photos:Int,
     @SerializedName("_id") val id:String,
     @SerializedName("date") val date:Date,
     @SerializedName("name") val name:String,

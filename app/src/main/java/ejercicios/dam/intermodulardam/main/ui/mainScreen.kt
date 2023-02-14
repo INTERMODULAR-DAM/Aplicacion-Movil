@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -168,19 +169,23 @@ fun MainCards(navController: NavHostController, mainViewModel: MainViewModel, us
         .padding(5.dp)
         .fillMaxWidth(), elevation = 5.dp) {
         Column(modifier = Modifier.fillMaxSize().padding(5.dp)) {
-            Row(modifier = Modifier.fillMaxWidth()) {
-                if(route.photos.isNotEmpty()) {
+            Row(modifier = Modifier.fillMaxWidth().height(200.dp)) {
+                if(route.photos > 0) {
                     Image(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.fillMaxSize(),
                         painter = rememberAsyncImagePainter(
-                            "http://192.168.230.74:8080/api/v1/imgs/postPhotos/"+ route.photos[0]
-                        ), contentDescription = "Foto de la ruta")
+                            "http://192.168.230.74:8080/api/v1/imgs/posts/"
+                        ), contentDescription = "Foto de la ruta",
+                        contentScale = ContentScale.Crop
+                    )
                 } else {
                     Image(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.fillMaxSize(),
                         painter = rememberAsyncImagePainter(
-                            "http://192.168.230.74:8080/api/v1/imgs/postPhotos/noPhotos.png"
-                        ), contentDescription = "Foto por defecto")
+                            "http://192.168.230.74:8080/api/v1/imgs/posts/noPhotos.png"
+                        ), contentDescription = "Foto por defecto",
+                        contentScale = ContentScale.Crop
+                    )
                 }
             }
             Spacer(modifier = Modifier.height(2.dp))
