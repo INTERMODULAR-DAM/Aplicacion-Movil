@@ -4,7 +4,9 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import dagger.Provides
 import ejercicios.dam.intermodulardam.login.data.database.entity.UserDTO
+import javax.inject.Singleton
 
 @Dao
 interface UserDAO {

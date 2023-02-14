@@ -4,26 +4,26 @@ import javax.inject.Inject
 
 class UserDTOFactory @Inject constructor() {
     operator fun invoke(
+        _id:String,
         email:String,
         name:String,
-        surname:String,
+        lastname:String,
         date: String,
         nick:String,
         admin:Boolean,
-        web:String,
         pfp_path:String,
-        phone:String,
+        phone_number:String,
     ) : UserDTO {
         return UserDTO(
+            _id = _id,
             email = email,
             name = name,
-            surname = surname,
+            lastname = lastname,
             date = date,
             nick = nick,
             admin = admin,
-            web = web,
             pfp_path = pfp_path,
-            phone = phone
+            phone_number = phone_number
         )
     }
 }

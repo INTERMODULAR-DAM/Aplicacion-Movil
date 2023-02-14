@@ -17,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
@@ -29,8 +28,8 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
 import ejercicios.dam.intermodulardam.R
-import ejercicios.dam.intermodulardam.main.domain.Publication
-import ejercicios.dam.intermodulardam.main.domain.User
+import ejercicios.dam.intermodulardam.main.domain.entity.Publication
+import ejercicios.dam.intermodulardam.main.domain.entity.User
 import ejercicios.dam.intermodulardam.models.Routes
 import ejercicios.dam.intermodulardam.ui.theme.calibri
 import ejercicios.dam.intermodulardam.utils.MainGreen
@@ -41,7 +40,7 @@ import java.util.*
 
 @Composable
 fun Mapa(navController:NavHostController, mapaViewModel: MapaViewModel) {
-    val currentUser: User = User("","","","", Date(),"", "", false, "", "", "", listOf())
+    val currentUser: User = User("","","","", "","",  false, "", "")
 
     Column(
         modifier = Modifier.fillMaxSize()

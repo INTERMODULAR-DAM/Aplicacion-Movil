@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.AndroidEntryPoint
 import ejercicios.dam.intermodulardam.login.ui.LoginViewModel
+import ejercicios.dam.intermodulardam.main.ui.MainViewModel
 import ejercicios.dam.intermodulardam.mapa.MapaViewModel
 import ejercicios.dam.intermodulardam.navigation.CustomNavigator
 import ejercicios.dam.intermodulardam.registro.ui.RegistroViewModel
@@ -21,6 +22,7 @@ class MainActivity : ComponentActivity() {
     private val loginViewModel: LoginViewModel by viewModels()
     private val mapViewModel: MapaViewModel by viewModels()
     private val registroViewModel: RegistroViewModel by viewModels()
+    private val mainViewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +34,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    CustomNavigator(loginViewModel, mapViewModel, registroViewModel)
+                    CustomNavigator(loginViewModel, mapViewModel, registroViewModel, mainViewModel)
                 }
             }
         }

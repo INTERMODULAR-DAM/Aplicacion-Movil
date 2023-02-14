@@ -1,5 +1,6 @@
 package ejercicios.dam.intermodulardam.login.ui
 
+
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -34,10 +36,12 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavHostController
 import ejercicios.dam.intermodulardam.R
-import ejercicios.dam.intermodulardam.models.Routes
 import ejercicios.dam.intermodulardam.ui.theme.calibri
 import ejercicios.dam.intermodulardam.ui.theme.textStyleLogin
-import ejercicios.dam.intermodulardam.utils.*
+import ejercicios.dam.intermodulardam.utils.DisabledBrown
+import ejercicios.dam.intermodulardam.utils.DisabledMainGreen
+import ejercicios.dam.intermodulardam.utils.MainGreen
+import ejercicios.dam.intermodulardam.utils.backgroundGreen
 
 @Composable
 fun Login(navController:NavHostController, loginViewModel:LoginViewModel) {
@@ -55,7 +59,6 @@ fun LoginScreen(navController: NavHostController, loginViewModel: LoginViewModel
     val password: String by loginViewModel.password.observeAsState(initial = "")
     val isLoginEnabled: Boolean by loginViewModel.isButtonLoginEnabled.observeAsState(initial = false)
     var showDialog by rememberSaveable { mutableStateOf(false) }
-    val loginOk:Boolean by loginViewModel.loginOk.observeAsState(initial = false)
 
     Column(
         modifier = Modifier
@@ -83,7 +86,7 @@ fun LoginScreen(navController: NavHostController, loginViewModel: LoginViewModel
                 .clickable { showDialog = true }
                 .align(Alignment.End)
                 .padding(20.dp))
-        LoginButton(navController,loginViewModel, isLoginEnabled, loginOk)
+        LoginButton(navController, loginViewModel, isLoginEnabled)
         Spacer(modifier = Modifier
             .height(30.dp)
             .fillMaxWidth())
@@ -161,7 +164,8 @@ fun PasswordField(password:String, onTextChanged: (String) -> Unit) {
 }
 
 @Composable
-fun LoginButton(navController: NavHostController, loginViewModel: LoginViewModel, loginEnabled:Boolean, loginOk:Boolean) {
+fun LoginButton(navController: NavHostController, loginViewModel: LoginViewModel, loginEnabled:Boolean) {
+    val context = LocalContext.current
     Row(modifier = Modifier
         .fillMaxWidth()
         .height(60.dp), horizontalArrangement = Arrangement.Center) {
@@ -169,10 +173,7 @@ fun LoginButton(navController: NavHostController, loginViewModel: LoginViewModel
             modifier = Modifier
                 .width(240.dp)
                 .height(60.dp),
-            onClick = {
-                if(loginOk) {navController.navigate("main")}
-                else { /*TODO SHOW ERROR */}
-            },
+            onClick = {loginViewModel.onButtonLoginPress(navController, context)},
             shape = RoundedCornerShape(40.dp),
             border= BorderStroke(1.dp, Color.Black),
             enabled = loginEnabled,
@@ -227,8 +228,8 @@ fun RecoveryDialog(show:Boolean, loginViewModel: LoginViewModel, onDismiss:() ->
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
                     Button(
                         onClick = {
-                            onDismiss()
                             loginViewModel.onRecoveryButtonPress()
+                            onDismiss()
                         },
                         colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.MainGreen, disabledBackgroundColor = MaterialTheme.colors.DisabledMainGreen),
                         enabled = isButtonEnabled
@@ -292,5 +293,9 @@ fun ForgotPassword(modifier: Modifier) {
 
 @Composable
 fun WaitingScreen() {
-    /*TODO*/
+    Column(modifier = Modifier.fillMaxSize()) {
+        Box(modifier = Modifier.fillMaxSize().align(Alignment.CenterHorizontally)) {
+            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+        }
+    }
 }

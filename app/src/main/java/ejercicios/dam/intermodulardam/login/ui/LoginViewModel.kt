@@ -1,14 +1,14 @@
 package ejercicios.dam.intermodulardam.login.ui
 
-import android.util.Log
+import android.content.Context
 import android.util.Patterns
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavHostController
 import dagger.hilt.android.lifecycle.HiltViewModel
-import ejercicios.dam.intermodulardam.login.data.network.dto.UserDTO
-import ejercicios.dam.intermodulardam.login.domain.entity.UserModel
 import ejercicios.dam.intermodulardam.login.domain.usecase.HasTokenUseCase
 import ejercicios.dam.intermodulardam.login.domain.usecase.HasUserLoggedUseCase
 import ejercicios.dam.intermodulardam.login.domain.usecase.LoginUseCase
@@ -22,20 +22,10 @@ class LoginViewModel @Inject
         private val hasToken:HasTokenUseCase,
         private val hasUserLogged:HasUserLoggedUseCase) : ViewModel() {
 
-    private val _goMain = MutableLiveData<Boolean>()
-    val goMain:LiveData<Boolean> = _goMain
-
     init {
-        var habemusUser:Boolean = true
         viewModelScope.launch {
-            if(!hasToken()) {
-                habemusUser = false
-            }
-            if(!hasUserLogged()) {
-                habemusUser = false
-            }
+
         }
-        _goMain.value = habemusUser
     }
 
 
@@ -52,7 +42,7 @@ class LoginViewModel @Inject
     val isButtonLoginEnabled : LiveData<Boolean> = _isButtonLoginEnabled
 
     private val _loginOk = MutableLiveData<Boolean>()
-    val loginOk:LiveData<Boolean> = _loginOk
+    val loginOk: LiveData<Boolean> = _loginOk
 
     fun onLoginChanged(email:String, password:String) {
         _email.value = email
@@ -65,10 +55,15 @@ class LoginViewModel @Inject
                 password.length > 6
     }
 
-    fun onButtonLoginPress(){
+    fun onButtonLoginPress(navController: NavHostController, context: Context) {
         viewModelScope.launch {
             _isLoading.value = true
             _loginOk.value = loginUseCase(email.value!!, password.value!!)
+            if(_loginOk.value == true) {
+                navController.navigate("main")
+            } else {
+                Toast.makeText(context, "Ha habido un error con el login", Toast.LENGTH_SHORT).show()
+            }
             _isLoading.value = false
         }
     }

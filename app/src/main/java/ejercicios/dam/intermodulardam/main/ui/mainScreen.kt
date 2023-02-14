@@ -1,32 +1,32 @@
 package ejercicios.dam.intermodulardam.main.ui
 
-import android.app.Activity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import ejercicios.dam.intermodulardam.R
-import ejercicios.dam.intermodulardam.main.domain.Publication
-import ejercicios.dam.intermodulardam.main.domain.User
+import coil.compose.rememberAsyncImagePainter
+import ejercicios.dam.intermodulardam.main.domain.entity.Publication
+import ejercicios.dam.intermodulardam.main.domain.entity.User
 import ejercicios.dam.intermodulardam.models.Routes
 import ejercicios.dam.intermodulardam.ui.theme.calibri
 import ejercicios.dam.intermodulardam.utils.MainGreen
@@ -36,9 +36,11 @@ import kotlinx.coroutines.launch
 import java.util.*
 
 @Composable
-fun Main(navController:NavHostController) {
-    val currentUser: User = User("","","","", Date(),"", "", false, "", "", "", listOf())
-    val routes: List<Publication> = listOf()
+fun Main(navController:NavHostController, mainViewModel: MainViewModel) {
+    val currentUser by mainViewModel.user.observeAsState(initial = User("","","","", "","",  false, "", ""))
+    val routes by mainViewModel.routes.observeAsState(initial = listOf())
+
+    mainViewModel.onButtonPress()
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -51,7 +53,7 @@ fun Main(navController:NavHostController) {
                 .fillMaxSize(),
             scaffoldState = scaffoldState,
             topBar = { MainTopBar(coroutineScope, scaffoldState) },
-            content = { MainScreen(navController, currentUser, routes) },
+            content = { MainScreen(navController, mainViewModel, currentUser, routes) },
             bottomBar = { BottomNavigationBar(navController = navController)},
             drawerContent = { MainDrawer(navController = navController, currentUser, coroutineScope, scaffoldState)}
         )
@@ -75,7 +77,6 @@ fun MainTopBar(coroutineScope: CoroutineScope, scaffoldState: ScaffoldState) {
 
 @Composable
 fun BottomNavigationBar(navController: NavHostController) {
-    val activity = LocalContext.current as Activity
     BottomAppBar(modifier = Modifier
         .fillMaxWidth()
         .padding(0.dp),
@@ -98,7 +99,7 @@ fun BottomNavigationBar(navController: NavHostController) {
 }
 
 @Composable
-fun MainDrawer(navController: NavHostController, user:User, coroutineScope: CoroutineScope, scaffoldState: ScaffoldState) {
+fun MainDrawer(navController: NavHostController, user: User, coroutineScope: CoroutineScope, scaffoldState: ScaffoldState) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -113,20 +114,15 @@ fun MainDrawer(navController: NavHostController, user:User, coroutineScope: Coro
             ) {
                 Image(
                     modifier = Modifier
-                        .scale(1f),
-                    painter = painterResource(id = R.drawable.ic_launcher_background),
-                    contentDescription = "",
-                )
-
-                Image(
-                    modifier = Modifier
-                        .scale(1f),
-                    painter = painterResource(id = R.drawable.ic_launcher_foreground),
-                    contentDescription = "",
-                )
+                        .size(63.dp)
+                        .scale(1F),
+                    painter = rememberAsyncImagePainter(
+                    "http://192.168.230.74:8080/api/v1/imgs/users/"+ user.pfp_path
+                    ),
+                    contentDescription = "Foto de Perfil")
             }
             Box(modifier = Modifier.padding(start = 8.dp)) {
-                Text(text = "user.name", color = Color.White, style = TextStyle(fontFamily = calibri, fontSize = 20.sp))
+                Text(text = user.name, color = Color.White, style = TextStyle(fontFamily = calibri, fontSize = 24.sp))
             }
 
             Box(modifier = Modifier) {
@@ -156,7 +152,41 @@ fun MainDrawer(navController: NavHostController, user:User, coroutineScope: Coro
 
 
 @Composable
-fun MainScreen(navController: NavHostController, user:User, routes:List<Publication>) {
-
+fun MainScreen(navController: NavHostController, mainViewModel: MainViewModel, user: User, routes:List<Publication>) {
+    LazyColumn(modifier = Modifier.fillMaxSize()) {
+        items(routes.size) { index ->
+            MainCards(navController = navController, mainViewModel = mainViewModel, user = user, routes[index])
+            Spacer(modifier = Modifier.height(5.dp))
+        }
+    }
+    Spacer(modifier = Modifier.height(60.dp))
 }
 
+@Composable
+fun MainCards(navController: NavHostController, mainViewModel: MainViewModel, user: User, route:Publication) {
+    Card(modifier = Modifier
+        .padding(5.dp)
+        .fillMaxWidth(), elevation = 5.dp) {
+        Column(modifier = Modifier.fillMaxSize().padding(5.dp)) {
+            Row(modifier = Modifier.fillMaxWidth()) {
+                if(route.photos.isNotEmpty()) {
+                    Image(
+                        modifier = Modifier.fillMaxWidth(),
+                        painter = rememberAsyncImagePainter(
+                            "http://192.168.230.74:8080/api/v1/imgs/postPhotos/"+ route.photos[0]
+                        ), contentDescription = "Foto de la ruta")
+                } else {
+                    Image(
+                        modifier = Modifier.fillMaxWidth(),
+                        painter = rememberAsyncImagePainter(
+                            "http://192.168.230.74:8080/api/v1/imgs/postPhotos/noPhotos.png"
+                        ), contentDescription = "Foto por defecto")
+                }
+            }
+            Spacer(modifier = Modifier.height(2.dp))
+            Row(modifier = Modifier.fillMaxWidth()) {
+                Text(text = route.name)
+            }
+        }
+    }
+}

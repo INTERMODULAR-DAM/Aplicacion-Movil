@@ -1,6 +1,5 @@
 package ejercicios.dam.intermodulardam.crearRutas
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -16,7 +15,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
@@ -29,8 +27,7 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
 import ejercicios.dam.intermodulardam.R
-import ejercicios.dam.intermodulardam.main.domain.Publication
-import ejercicios.dam.intermodulardam.main.domain.User
+import ejercicios.dam.intermodulardam.main.domain.entity.User
 import ejercicios.dam.intermodulardam.mapa.MapaViewModel
 import ejercicios.dam.intermodulardam.models.Routes
 import ejercicios.dam.intermodulardam.ui.theme.calibri
@@ -42,7 +39,7 @@ import java.util.*
 
 @Composable
 fun CrearRuta(navController: NavHostController, mapaViewModel: MapaViewModel) {
-    val currentUser: User = User("","","","", Date(),"", "", false, "", "", "", listOf())
+    val currentUser: User = User("","","","", "","",  false, "", "")
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -64,7 +61,7 @@ fun CrearRuta(navController: NavHostController, mapaViewModel: MapaViewModel) {
 }
 
 @Composable
-fun CrearRutaScreen(navController: NavHostController, mapaViewModel: MapaViewModel, user:User) {
+fun CrearRutaScreen(navController: NavHostController, mapaViewModel: MapaViewModel, user: User) {
     val name by mapaViewModel.name.observeAsState(initial = "")
     val category by mapaViewModel.category.observeAsState(initial = "")
     val distance by mapaViewModel.distance.observeAsState(initial = "")

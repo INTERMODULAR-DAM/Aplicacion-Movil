@@ -1,8 +1,7 @@
-package ejercicios.dam.intermodulardam.login.data.network.dto
+package ejercicios.dam.intermodulardam.main.domain.entity
 
-
-data class UserDTO(
-    val _id:String,
+data class User(
+    val id:String,
     val email:String,
     val name:String,
     val lastname:String,

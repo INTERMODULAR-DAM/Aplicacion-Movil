@@ -12,8 +12,6 @@ class LoginService @Inject constructor(
     private val loginClient: LoginClient,
     private val userService: UserPreferenceService
 ) {
-
-
     suspend fun doLogin(email: String, password: String): String {
         val user = UserModel(email, password)
         return withContext(Dispatchers.IO) {
@@ -25,9 +23,9 @@ class LoginService @Inject constructor(
     }
 
     suspend fun getLoginUser(): UserDTO? {
-        val user: UserDTO? = null
         return withContext(Dispatchers.IO) {
             val response = loginClient.getLoginUser(userService.getToken("authorization"))
+            Log.i("USER", "${response.body()?.data!!}")
             response.body()?.data!!
         }
     }

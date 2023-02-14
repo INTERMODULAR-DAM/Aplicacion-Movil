@@ -12,6 +12,7 @@ import ejercicios.dam.intermodulardam.login.ui.LoginViewModel
 import ejercicios.dam.intermodulardam.registro.ui.RegistroViewModel
 import ejercicios.dam.intermodulardam.registro.ui.RegisterScreen
 import ejercicios.dam.intermodulardam.main.ui.Main
+import ejercicios.dam.intermodulardam.main.ui.MainViewModel
 import ejercicios.dam.intermodulardam.mapa.Mapa
 import ejercicios.dam.intermodulardam.mapa.MapaViewModel
 import ejercicios.dam.intermodulardam.models.Routes
@@ -21,7 +22,7 @@ import ejercicios.dam.intermodulardam.siguiendo.Siguiendo
 import ejercicios.dam.intermodulardam.splashscreen.SplashScreen
 
 @Composable
-fun CustomNavigator(loginViewModel: LoginViewModel, mapaViewModel: MapaViewModel, registroViewModel: RegistroViewModel) {
+fun CustomNavigator(loginViewModel: LoginViewModel, mapaViewModel: MapaViewModel, registroViewModel: RegistroViewModel, mainViewModel: MainViewModel) {
 
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = Routes.Splash.route) {
@@ -38,7 +39,7 @@ fun CustomNavigator(loginViewModel: LoginViewModel, mapaViewModel: MapaViewModel
             RegisterScreen(navController = navController, registroViewModel)
         }
         composable(route=Routes.Main.route) {
-            Main(navController = navController)
+            Main(navController = navController, mainViewModel = mainViewModel)
         }
         composable(route=Routes.CrearRuta.route) {
             CrearRuta(navController = navController, mapaViewModel)

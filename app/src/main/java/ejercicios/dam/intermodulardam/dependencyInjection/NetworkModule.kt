@@ -9,12 +9,14 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import ejercicios.dam.intermodulardam.login.data.network.LoginClient
 import ejercicios.dam.intermodulardam.registro.data.network.RegistroClient
+import ejercicios.dam.intermodulardam.rutas.data.network.RutasClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.create
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -57,5 +59,11 @@ class NetworkModule {
     @Provides
     fun provideRegisterClient(retrofit: Retrofit) : RegistroClient {
         return retrofit.create(RegistroClient::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideRutasClient(retrofit: Retrofit):RutasClient {
+        return retrofit.create(RutasClient::class.java)
     }
 }
