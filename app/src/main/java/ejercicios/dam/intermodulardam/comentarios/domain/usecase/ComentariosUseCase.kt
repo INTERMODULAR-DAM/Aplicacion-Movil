@@ -1,3 +1,0 @@
-package ejercicios.dam.intermodulardam.comentarios.domain.usecase
-
-class ComentariosUseCase

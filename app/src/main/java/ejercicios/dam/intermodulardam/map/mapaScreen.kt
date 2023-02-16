@@ -1,8 +1,8 @@
-package ejercicios.dam.intermodulardam.main.ui
+package ejercicios.dam.intermodulardam.map
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.*
@@ -15,18 +15,19 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import coil.compose.rememberAsyncImagePainter
-import ejercicios.dam.intermodulardam.main.domain.entity.Publication
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.*
+import ejercicios.dam.intermodulardam.R
 import ejercicios.dam.intermodulardam.main.domain.entity.User
 import ejercicios.dam.intermodulardam.models.Routes
 import ejercicios.dam.intermodulardam.ui.theme.calibri
@@ -34,14 +35,10 @@ import ejercicios.dam.intermodulardam.utils.MainGreen
 import ejercicios.dam.intermodulardam.utils.backgroundGreen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import java.util.*
 
 @Composable
-fun Main(navController:NavHostController, mainViewModel: MainViewModel) {
-    val currentUser by mainViewModel.user.observeAsState(initial = User("","","","", "","",  false, "", ""))
-    val routes by mainViewModel.routes.observeAsState(initial = listOf())
-
-    mainViewModel.onInit()
+fun Mapa(navController:NavHostController, mapaViewModel: MapaViewModel) {
+    val currentUser: User = User("","","","", "","",  false, "", "")
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -53,17 +50,35 @@ fun Main(navController:NavHostController, mainViewModel: MainViewModel) {
                 .padding(0.dp)
                 .fillMaxSize(),
             scaffoldState = scaffoldState,
-            topBar = { MainTopBar(coroutineScope, scaffoldState) },
-            content = { MainScreen(navController, mainViewModel, currentUser, routes) },
-            bottomBar = { BottomNavigationBar(navController = navController)},
-            drawerContent = { MainDrawer(navController = navController, currentUser, coroutineScope, scaffoldState)},
+            topBar = { MapaTopBar(coroutineScope, scaffoldState) },
+            content = { MapaScreen(navController = navController, mapaViewModel = mapaViewModel) },
+            bottomBar = { BottomNavigationBar(navController = navController) },
+            drawerContent = { MapaDrawer(navController = navController, currentUser, coroutineScope, scaffoldState) },
             drawerGesturesEnabled = false
         )
     }
 }
 
 @Composable
-fun MainTopBar(coroutineScope: CoroutineScope, scaffoldState: ScaffoldState) {
+fun MapaScreen(navController: NavHostController, mapaViewModel: MapaViewModel) {
+    val currentLocation by mapaViewModel.currentLocation.observeAsState(initial = LatLng(38.55359897196608, -0.12057169825429333))
+
+    val cameraPosition = rememberCameraPositionState {
+        position = CameraPosition.fromLatLngZoom(currentLocation, 13F)
+    }
+
+    Column(modifier = Modifier.fillMaxSize().padding(bottom = 55.dp)) {
+        GoogleMap(
+            cameraPositionState = cameraPosition,
+            properties = MapProperties(isMyLocationEnabled = true, mapType = MapType.HYBRID)
+        ) {
+
+        }
+    }
+}
+
+@Composable
+fun MapaTopBar(coroutineScope: CoroutineScope, scaffoldState: ScaffoldState) {
     TopAppBar(modifier = Modifier
         .fillMaxWidth()
         .padding(0.dp),
@@ -77,6 +92,7 @@ fun MainTopBar(coroutineScope: CoroutineScope, scaffoldState: ScaffoldState) {
     }
 }
 
+
 @Composable
 fun BottomNavigationBar(navController: NavHostController) {
     BottomAppBar(modifier = Modifier
@@ -87,13 +103,13 @@ fun BottomNavigationBar(navController: NavHostController) {
         Row(modifier = Modifier.fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceEvenly) {
-            IconButton(onClick = { navController.navigate(Routes.Main.route) }, enabled = false) {
-                Icon(imageVector = Icons.Filled.House, contentDescription = "Página Principal", tint = Color.White)
+            IconButton(onClick = { navController.navigate(Routes.Main.route) }) {
+                Icon(imageVector = Icons.Filled.Home, contentDescription = "Página Principal", tint = Color.White)
             }
             IconButton(onClick = { navController.navigate(Routes.CrearRuta.route) }) {
                 Icon(imageVector = Icons.Filled.Add, contentDescription = "Crear Ruta", tint = Color.White)
             }
-            IconButton(onClick = { navController.navigate(Routes.Mapa.route) }) {
+            IconButton(onClick = { navController.navigate(Routes.Mapa.route) }, enabled = false) {
                 Icon(imageVector = Icons.Filled.Map, contentDescription = "Mapa", tint = Color.White)
             }
         }
@@ -101,7 +117,7 @@ fun BottomNavigationBar(navController: NavHostController) {
 }
 
 @Composable
-fun MainDrawer(navController: NavHostController, user: User, coroutineScope: CoroutineScope, scaffoldState: ScaffoldState) {
+fun MapaDrawer(navController: NavHostController, user: User, coroutineScope: CoroutineScope, scaffoldState: ScaffoldState) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -116,16 +132,20 @@ fun MainDrawer(navController: NavHostController, user: User, coroutineScope: Cor
             ) {
                 Image(
                     modifier = Modifier
-                        .size(63.dp)
-                        .scale(1F),
-                    painter = rememberAsyncImagePainter(
-                    "http://192.168.230.74:8080/api/v1/imgs/users/"+ user.pfp_path
-                    ),
-                    contentDescription = "Foto de Perfil",
-                    contentScale = ContentScale.Crop)
+                        .scale(1f),
+                    painter = painterResource(id = R.drawable.ic_launcher_background),
+                    contentDescription = "",
+                )
+
+                Image(
+                    modifier = Modifier
+                        .scale(1f),
+                    painter = painterResource(id = R.drawable.ic_launcher_foreground),
+                    contentDescription = "",
+                )
             }
             Box(modifier = Modifier.padding(start = 8.dp)) {
-                Text(text = user.name, color = Color.White, style = TextStyle(fontFamily = calibri, fontSize = 24.sp))
+                Text(text = "user.name", color = Color.White, style = TextStyle(fontFamily = calibri, fontSize = 20.sp))
             }
 
             Box(modifier = Modifier) {
@@ -148,57 +168,6 @@ fun MainDrawer(navController: NavHostController, user: User, coroutineScope: Cor
                     style = TextStyle(fontFamily = calibri, fontSize = 20.sp, color = Color.White),
                     onClick = {navController.navigate(Routes.Perfil.createRoute(user.id))}
                 )
-            }
-        }
-    }
-}
-
-
-@Composable
-fun MainScreen(navController: NavHostController, mainViewModel: MainViewModel, user: User, routes:List<Publication>) {
-    /*TODO FILTERS?
-    *  Spacer(modifier = Modifier.height(10.dp))*/
-
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
-        items(routes.size) { index ->
-            MainCards(navController = navController, mainViewModel = mainViewModel, user = user, routes[index])
-            Spacer(modifier = Modifier.height(5.dp))
-        }
-    }
-    Spacer(modifier = Modifier.height(60.dp))
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun MainCards(navController: NavHostController, mainViewModel: MainViewModel, user: User, route:Publication) {
-    Card(modifier = Modifier
-        .padding(5.dp)
-        .fillMaxWidth()
-        .combinedClickable(onDoubleClick = {navController.navigate(Routes.Publicacion.createRoute(route.id))}) {/**/},
-        elevation = 5.dp) {
-        Column(modifier = Modifier.fillMaxSize().padding(5.dp)) {
-            Row(modifier = Modifier.fillMaxWidth().height(200.dp)) {
-                if(route.photos.size > 0) {
-                    Image(
-                        modifier = Modifier.fillMaxSize(),
-                        painter = rememberAsyncImagePainter(
-                            "http://192.168.230.74:8080/api/v1/imgs/posts/${route.photos[0]}"
-                        ), contentDescription = "Foto de la ruta",
-                        contentScale = ContentScale.Crop
-                    )
-                } else {
-                    Image(
-                        modifier = Modifier.fillMaxSize(),
-                        painter = rememberAsyncImagePainter(
-                            "http://192.168.230.74:8080/api/v1/imgs/posts/noPhotos.png"
-                        ), contentDescription = "Foto por defecto",
-                        contentScale = ContentScale.Crop
-                    )
-                }
-            }
-            Spacer(modifier = Modifier.height(2.dp))
-            Row(modifier = Modifier.fillMaxWidth()) {
-                Text(text = route.name)
             }
         }
     }

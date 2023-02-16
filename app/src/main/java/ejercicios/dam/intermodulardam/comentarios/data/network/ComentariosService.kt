@@ -1,3 +1,0 @@
-package ejercicios.dam.intermodulardam.comentarios.data.network
-
-class ComentariosService

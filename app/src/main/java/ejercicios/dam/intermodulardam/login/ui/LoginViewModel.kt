@@ -12,6 +12,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import ejercicios.dam.intermodulardam.login.domain.usecase.HasTokenUseCase
 import ejercicios.dam.intermodulardam.login.domain.usecase.HasUserLoggedUseCase
 import ejercicios.dam.intermodulardam.login.domain.usecase.LoginUseCase
+import ejercicios.dam.intermodulardam.login.domain.usecase.RecoverPasswordUseCase
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,7 +21,9 @@ class LoginViewModel @Inject
     constructor(
         private val loginUseCase: LoginUseCase,
         private val hasToken:HasTokenUseCase,
-        private val hasUserLogged:HasUserLoggedUseCase) : ViewModel() {
+        private val hasUserLogged:HasUserLoggedUseCase,
+        private val recoverPasswordUseCase: RecoverPasswordUseCase
+        ) : ViewModel() {
 
     init {
         viewModelScope.launch {
@@ -68,13 +71,13 @@ class LoginViewModel @Inject
         }
     }
 
-    /*RECOVERY PASSWORD DIALOG TODO */
 
     private val _recoveryMail = MutableLiveData<String>()
     val recoveryMail: LiveData<String> = _recoveryMail
 
     private val _recoveryButton = MutableLiveData<Boolean>()
     val recoveryButton: LiveData<Boolean> = _recoveryButton
+
 
     fun onRecoveryChanged(email:String) {
         _recoveryMail.value = email
@@ -85,9 +88,14 @@ class LoginViewModel @Inject
         return Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
 
-    fun onRecoveryButtonPress() {
+    fun onRecoveryButtonPress(email:String, context: Context) {
         viewModelScope.launch {
-
+            val emailOk = recoverPasswordUseCase.invoke(email)
+            if(emailOk) {
+                Toast.makeText(context, "Tu email ha sido enviado correctamente", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(context, "Ha habido un problema, revisa tu email", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

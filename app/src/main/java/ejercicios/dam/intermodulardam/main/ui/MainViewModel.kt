@@ -26,9 +26,13 @@ class MainViewModel @Inject constructor(private val repository: MainRepository) 
         }
     }
 
-    fun onButtonPress() {
+    fun onInit() {
         viewModelScope.launch {
-            _routes.value = repository.getAllPosts()
+            if(_user.value!!.admin) {
+                _routes.value = repository.getAllPosts(_user.value!!)
+            } else {
+                _routes.value = repository.getAllPublicPosts()
+            }
         }
     }
 

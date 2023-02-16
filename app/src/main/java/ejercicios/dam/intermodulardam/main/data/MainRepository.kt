@@ -2,6 +2,7 @@ package ejercicios.dam.intermodulardam.main.data
 
 import ejercicios.dam.intermodulardam.login.data.database.dao.UserDAO
 import ejercicios.dam.intermodulardam.login.data.database.entity.UserDTO
+import ejercicios.dam.intermodulardam.main.domain.entity.CreatePublication
 import ejercicios.dam.intermodulardam.main.domain.entity.Publication
 import ejercicios.dam.intermodulardam.main.domain.entity.User
 import ejercicios.dam.intermodulardam.rutas.data.network.RutasService
@@ -26,7 +27,15 @@ class MainRepository @Inject constructor(
         )
     }
 
-    suspend fun getAllPosts():List<Publication> {
-        return api.getAllRoutes()
+    suspend fun getAllPosts(user:User):List<Publication> {
+        return api.getAllRoutes(user)
+    }
+
+    suspend fun getAllPublicPosts():List<Publication> {
+        return api.getAllPublicRoutes()
+    }
+
+    suspend fun createRoute(publication: CreatePublication):Boolean {
+        return api.createRoute(publication)
     }
 }

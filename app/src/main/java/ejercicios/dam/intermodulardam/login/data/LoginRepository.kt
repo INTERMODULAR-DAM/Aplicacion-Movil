@@ -33,4 +33,7 @@ class LoginRepository @Inject
     suspend fun getConnectionToken():Boolean = userPreference.getToken("authorization").isNotEmpty()
     suspend fun isUserConnected(): Boolean = userDAO.getAllUsers().count() > 1
 
+
+    suspend fun recoverPassword(email:String):Boolean = api.recoverPassword(email)
+
 }

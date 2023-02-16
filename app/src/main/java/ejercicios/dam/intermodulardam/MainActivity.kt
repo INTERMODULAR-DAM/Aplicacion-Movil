@@ -12,9 +12,9 @@ import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.AndroidEntryPoint
 import ejercicios.dam.intermodulardam.login.ui.LoginViewModel
 import ejercicios.dam.intermodulardam.main.ui.MainViewModel
-import ejercicios.dam.intermodulardam.mapa.MapaViewModel
+import ejercicios.dam.intermodulardam.map.MapaViewModel
 import ejercicios.dam.intermodulardam.navigation.CustomNavigator
-import ejercicios.dam.intermodulardam.registro.ui.RegistroViewModel
+import ejercicios.dam.intermodulardam.register.ui.RegistroViewModel
 import ejercicios.dam.intermodulardam.ui.theme.IntermodularDAMTheme
 
 @AndroidEntryPoint

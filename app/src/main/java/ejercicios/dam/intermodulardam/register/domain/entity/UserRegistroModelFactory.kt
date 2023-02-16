@@ -1,0 +1,3 @@
+package ejercicios.dam.intermodulardam.register.domain.entity
+
+class UserRegistroModelFactory

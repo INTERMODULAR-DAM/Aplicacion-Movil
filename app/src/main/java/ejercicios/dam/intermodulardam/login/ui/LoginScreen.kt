@@ -198,6 +198,7 @@ fun LoginButton(navController: NavHostController, loginViewModel: LoginViewModel
 @Composable
 fun RecoveryDialog(show:Boolean, loginViewModel: LoginViewModel, onDismiss:() -> Unit) {
     val email:String by loginViewModel.recoveryMail.observeAsState(initial = "")
+    val context = LocalContext.current
     val isButtonEnabled:Boolean by loginViewModel.recoveryButton.observeAsState(initial = false)
     if(show) {
         Dialog(onDismissRequest = { onDismiss() }, properties = DialogProperties(dismissOnClickOutside = true, dismissOnBackPress = true)) {
@@ -228,7 +229,7 @@ fun RecoveryDialog(show:Boolean, loginViewModel: LoginViewModel, onDismiss:() ->
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
                     Button(
                         onClick = {
-                            loginViewModel.onRecoveryButtonPress()
+                            loginViewModel.onRecoveryButtonPress(email, context)
                             onDismiss()
                         },
                         colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.MainGreen, disabledBackgroundColor = MaterialTheme.colors.DisabledMainGreen),

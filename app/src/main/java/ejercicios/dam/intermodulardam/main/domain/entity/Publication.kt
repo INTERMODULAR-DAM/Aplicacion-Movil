@@ -6,15 +6,27 @@ import java.util.Date
 import java.util.ArrayList
 
 data class Publication(
-    @SerializedName("photos") val photos:Int,
+    @SerializedName("photos") val photos:ArrayList<String>,
     @SerializedName("_id") val id:String,
     @SerializedName("date") val date:Date,
     @SerializedName("name") val name:String,
     @SerializedName("category") val category:String,
-    @SerializedName("distance") val distancia:String,
+    @SerializedName("distance") val distance:String,
     @SerializedName("difficulty") val difficulty:String,
     @SerializedName("track") val track:ArrayList<LatLng>,
-    @SerializedName("duration") val duracion:String,
+    @SerializedName("duration") val duration:String,
+    @SerializedName("description") val description:String,
+    @SerializedName("privacity") val privacity:Boolean,
+    @SerializedName("user") val user:String,
+)
+
+data class CreatePublication(
+    @SerializedName("name") val name:String,
+    @SerializedName("category") val category:String,
+    @SerializedName("distance") val distance:String,
+    @SerializedName("difficulty") val difficulty:String,
+    @SerializedName("track") val track:MutableList<LatLng>,
+    @SerializedName("duration") val duration:String,
     @SerializedName("description") val description:String,
     @SerializedName("privacity") val privacity:Boolean,
     @SerializedName("user") val user:String,

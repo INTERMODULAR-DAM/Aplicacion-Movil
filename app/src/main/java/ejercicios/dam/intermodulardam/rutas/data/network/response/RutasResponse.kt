@@ -8,3 +8,8 @@ data class RutasResponse(
     @SerializedName("status") val status:String,
     @SerializedName("data") val data:ArrayList<Publication>,
 )
+
+data class CrearRutasResponse(
+    @SerializedName("status") val status:String,
+    @SerializedName("data") val data:String,
+)

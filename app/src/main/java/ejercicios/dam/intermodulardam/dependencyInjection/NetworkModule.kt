@@ -1,23 +1,18 @@
 package ejercicios.dam.intermodulardam.dependencyInjection
 
-import android.content.Context
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import ejercicios.dam.intermodulardam.comments.data.network.ComentariosClient
 import ejercicios.dam.intermodulardam.login.data.network.LoginClient
-import ejercicios.dam.intermodulardam.registro.data.network.RegistroClient
+import ejercicios.dam.intermodulardam.register.data.network.RegistroClient
 import ejercicios.dam.intermodulardam.rutas.data.network.RutasClient
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
-import javax.inject.Inject
 import javax.inject.Singleton
 
 @Module
@@ -65,5 +60,11 @@ class NetworkModule {
     @Provides
     fun provideRutasClient(retrofit: Retrofit):RutasClient {
         return retrofit.create(RutasClient::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideComentariosClient(retrofit: Retrofit):ComentariosClient {
+        return retrofit.create(ComentariosClient::class.java)
     }
 }
