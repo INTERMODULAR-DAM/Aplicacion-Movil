@@ -9,4 +9,8 @@ class ComentariosRepository @Inject constructor(private val api: ComentariosServ
     suspend fun getComments(publication: Publication):List<Comentarios> {
         return api.getComments(publication)
     }
+
+    suspend fun createComment(comentario:Comentarios):Boolean {
+        return api.createComment(comentario)
+    }
 }
