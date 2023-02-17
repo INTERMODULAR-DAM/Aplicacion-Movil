@@ -6,6 +6,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import ejercicios.dam.intermodulardam.comments.data.network.ComentariosClient
 import ejercicios.dam.intermodulardam.login.data.network.LoginClient
+import ejercicios.dam.intermodulardam.profile.data.network.ProfileClient
 import ejercicios.dam.intermodulardam.register.data.network.RegistroClient
 import ejercicios.dam.intermodulardam.rutas.data.network.RutasClient
 import okhttp3.Interceptor
@@ -66,5 +67,11 @@ class NetworkModule {
     @Provides
     fun provideComentariosClient(retrofit: Retrofit):ComentariosClient {
         return retrofit.create(ComentariosClient::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun providePerfilClient(retrofit: Retrofit):ProfileClient {
+        return retrofit.create(ProfileClient::class.java)
     }
 }

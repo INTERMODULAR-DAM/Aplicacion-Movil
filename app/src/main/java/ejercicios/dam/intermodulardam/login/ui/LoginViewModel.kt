@@ -1,6 +1,7 @@
 package ejercicios.dam.intermodulardam.login.ui
 
 import android.content.Context
+import android.util.Log
 import android.util.Patterns
 import android.widget.Toast
 import androidx.lifecycle.LiveData
@@ -27,7 +28,9 @@ class LoginViewModel @Inject
 
     init {
         viewModelScope.launch {
-
+            if(hasToken.invoke() && hasUserLogged.invoke()) {
+                Log.i("A", "tenemos token y usuario")
+            }
         }
     }
 

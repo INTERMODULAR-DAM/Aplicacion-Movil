@@ -54,12 +54,9 @@ class MapaViewModel @Inject constructor(private val createRouteUseCase: CreateRo
                     }
                     if(location != null) {
                          _currentLocation.value = LatLng(location.latitude, location.longitude)
-                         Log.i("LOCATION", "${_currentLocation.value}")
                     }
                }
      }
-
-     /*TODO CREATE ROUTES*/
 
      private val _name = MutableLiveData<String>()
      val name:LiveData<String> = _name

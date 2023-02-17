@@ -14,6 +14,7 @@ import ejercicios.dam.intermodulardam.login.ui.LoginViewModel
 import ejercicios.dam.intermodulardam.main.ui.MainViewModel
 import ejercicios.dam.intermodulardam.map.MapaViewModel
 import ejercicios.dam.intermodulardam.navigation.CustomNavigator
+import ejercicios.dam.intermodulardam.profile.ui.PerfilViewModel
 import ejercicios.dam.intermodulardam.register.ui.RegistroViewModel
 import ejercicios.dam.intermodulardam.ui.theme.IntermodularDAMTheme
 
@@ -23,6 +24,7 @@ class MainActivity : ComponentActivity() {
     private val mapViewModel: MapaViewModel by viewModels()
     private val registroViewModel: RegistroViewModel by viewModels()
     private val mainViewModel: MainViewModel by viewModels()
+    private val perfilViewModel: PerfilViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,7 +36,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    CustomNavigator(loginViewModel, mapViewModel, registroViewModel, mainViewModel)
+                    CustomNavigator(loginViewModel, mapViewModel, registroViewModel, mainViewModel, perfilViewModel)
                 }
             }
         }

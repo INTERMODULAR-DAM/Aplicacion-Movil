@@ -27,8 +27,8 @@ class MainRepository @Inject constructor(
         )
     }
 
-    suspend fun getAllPosts(user:User):List<Publication> {
-        return api.getAllRoutes(user)
+    suspend fun getAllPosts():List<Publication> {
+        return api.getAllRoutes()
     }
 
     suspend fun getAllPublicPosts():List<Publication> {

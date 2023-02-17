@@ -1,4 +1,4 @@
-package ejercicios.dam.intermodulardam.main.ui
+package ejercicios.dam.intermodulardam.profile.ui
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -8,32 +8,25 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import ejercicios.dam.intermodulardam.main.data.MainRepository
 import ejercicios.dam.intermodulardam.main.domain.entity.Publication
 import ejercicios.dam.intermodulardam.main.domain.entity.User
+import ejercicios.dam.intermodulardam.profile.data.ProfileRepository
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(private val repository: MainRepository) : ViewModel() {
+class PerfilViewModel @Inject constructor(
+    private val repository: ProfileRepository,
+    private val mainRepository: MainRepository) : ViewModel() {
 
     private val _user = MutableLiveData<User>()
     val user:LiveData<User> = _user
 
-    private val _routes = MutableLiveData<List<Publication>>()
-    val routes:LiveData<List<Publication>> = _routes
-
-    init {
-        viewModelScope.launch {
-            _user.value = repository.getUser()
-        }
-    }
+    private val _posts = MutableLiveData<List<Publication>>()
+    val posts: LiveData<List<Publication>> = _posts
 
     fun onInit() {
         viewModelScope.launch {
-            if(_user.value!!.admin) {
-                _routes.value = repository.getAllPosts()
-            } else {
-                _routes.value = repository.getAllPublicPosts()
-            }
+            _user.value = mainRepository.getUser()
+            _posts.value = repository.getOwnPosts()
         }
     }
-
 }

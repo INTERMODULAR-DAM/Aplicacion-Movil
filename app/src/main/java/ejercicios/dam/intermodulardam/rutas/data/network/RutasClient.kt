@@ -12,7 +12,7 @@ import retrofit2.http.POST
 interface RutasClient {
 
     @GET("/api/v1/posts/all")
-    suspend fun getAllRoutes(@Header("authorization") token: String, @Body user:User):Response<RutasResponse>
+    suspend fun getAllRoutes(@Header("authorization") token: String):Response<RutasResponse>
 
     @GET("/api/v1/posts/getPublicPosts")
     suspend fun getAllPublicRoutes(@Header("authorization") token: String):Response<RutasResponse>

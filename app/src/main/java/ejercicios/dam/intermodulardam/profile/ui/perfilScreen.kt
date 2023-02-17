@@ -1,10 +1,8 @@
-package ejercicios.dam.intermodulardam.main.ui
+package ejercicios.dam.intermodulardam.profile.ui
 
-import androidx.compose.foundation.*
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.*
@@ -17,7 +15,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -36,19 +33,17 @@ import ejercicios.dam.intermodulardam.utils.MainGreen
 import ejercicios.dam.intermodulardam.utils.backgroundGreen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import okhttp3.internal.wait
-import java.util.*
 
 @Composable
-fun Main(navController:NavHostController, mainViewModel: MainViewModel) {
-    val currentUser by mainViewModel.user.observeAsState(initial = User("","","","", "","",  false, "", ""))
-    val routes by mainViewModel.routes.observeAsState(initial = listOf())
+fun Perfil(navController:NavHostController, id:String, perfilViewModel: PerfilViewModel) {
+    val currentUser by perfilViewModel.user.observeAsState(initial = User("","","","", "","",  false, "", ""))
+    val routes by perfilViewModel.posts.observeAsState(initial = listOf())
 
-    mainViewModel.onInit()
+    perfilViewModel.onInit()
 
-    Column(
-        modifier = Modifier.fillMaxSize()
-    ) {
+    if(id.isEmpty()) {
+        navController.navigate("main")
+    } else {
         val scaffoldState = rememberScaffoldState()
         val coroutineScope = rememberCoroutineScope()
         Scaffold(
@@ -56,17 +51,22 @@ fun Main(navController:NavHostController, mainViewModel: MainViewModel) {
                 .padding(0.dp)
                 .fillMaxSize(),
             scaffoldState = scaffoldState,
-            topBar = { MainTopBar(coroutineScope, scaffoldState) },
-            content = { MainScreen(navController, mainViewModel, currentUser, routes) },
-            bottomBar = { BottomNavigationBar(navController = navController)},
-            drawerContent = { MainDrawer(navController = navController, currentUser, coroutineScope, scaffoldState)},
+            topBar = { PerfilTopBar(coroutineScope, scaffoldState) },
+            content = { PerfilScreen(navController, perfilViewModel, currentUser, routes) },
+            bottomBar = { PerfilBottomBar(navController = navController) },
+            drawerContent = { PerfilDrawer(navController = navController, currentUser, coroutineScope, scaffoldState) },
             drawerGesturesEnabled = false
         )
     }
 }
 
 @Composable
-fun MainTopBar(coroutineScope: CoroutineScope, scaffoldState: ScaffoldState) {
+fun PerfilScreen(navController: NavHostController, perfilViewModel: PerfilViewModel, user: User, routes: List<Publication>) {
+
+}
+
+@Composable
+fun PerfilTopBar(coroutineScope: CoroutineScope, scaffoldState: ScaffoldState) {
     TopAppBar(modifier = Modifier
         .fillMaxWidth()
         .padding(0.dp),
@@ -80,8 +80,9 @@ fun MainTopBar(coroutineScope: CoroutineScope, scaffoldState: ScaffoldState) {
     }
 }
 
+
 @Composable
-fun BottomNavigationBar(navController: NavHostController) {
+fun PerfilBottomBar(navController: NavHostController) {
     BottomAppBar(modifier = Modifier
         .fillMaxWidth()
         .padding(0.dp),
@@ -90,7 +91,7 @@ fun BottomNavigationBar(navController: NavHostController) {
         Row(modifier = Modifier.fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceEvenly) {
-            IconButton(onClick = { navController.navigate(Routes.Main.route) }, enabled = false) {
+            IconButton(onClick = { navController.navigate(Routes.Main.route) }) {
                 Icon(imageVector = Icons.Filled.House, contentDescription = "Página Principal", tint = Color.White)
             }
             IconButton(onClick = { navController.navigate(Routes.CrearRuta.route) }) {
@@ -104,7 +105,7 @@ fun BottomNavigationBar(navController: NavHostController) {
 }
 
 @Composable
-fun MainDrawer(navController: NavHostController, user: User, coroutineScope: CoroutineScope, scaffoldState: ScaffoldState) {
+fun PerfilDrawer(navController: NavHostController, user:User, coroutineScope: CoroutineScope, scaffoldState: ScaffoldState) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -122,7 +123,7 @@ fun MainDrawer(navController: NavHostController, user: User, coroutineScope: Cor
                         .size(63.dp)
                         .scale(1F),
                     painter = rememberAsyncImagePainter(
-                    "http://192.168.230.74:8080/api/v1/imgs/users/"+ user.pfp_path
+                        "http://192.168.230.74:8080/api/v1/imgs/users/"+ user.pfp_path
                     ),
                     contentDescription = "Foto de Perfil",
                     contentScale = ContentScale.Crop)
@@ -142,81 +143,7 @@ fun MainDrawer(navController: NavHostController, user: User, coroutineScope: Cor
         }
         Spacer(modifier = Modifier.height(24.dp))
         Row(modifier = Modifier.padding(start = 8.dp, top = 32.dp), verticalAlignment = Alignment.Bottom) {
-            Box() {
-                Icon(imageVector = Icons.Filled.Person, contentDescription = "Ir a perfil", tint = Color.White)
-            }
-            Box(modifier = Modifier.padding(start = 8.dp)) {
-                ClickableText(
-                    text = AnnotatedString("Perfil"),
-                    style = TextStyle(fontFamily = calibri, fontSize = 20.sp, color = Color.White),
-                    onClick = {navController.navigate(Routes.Perfil.createRoute(user.id))}
-                )
-            }
-        }
-    }
-}
-
-
-@Composable
-fun MainScreen(navController: NavHostController, mainViewModel: MainViewModel, user: User, routes:List<Publication>) {
-    /*TODO FILTERS? quiza en el drawer debajo de perfil?
-    *  Spacer(modifier = Modifier.height(10.dp))*/
-
-    val scrollState = rememberScrollState()
-
-    LazyColumn(modifier = Modifier
-        .fillMaxSize()
-        .scrollable(scrollState,Orientation.Vertical)
-        .padding(bottom = 60.dp)) {
-        items(routes.size) { index ->
-            MainCards(navController = navController, mainViewModel = mainViewModel, user = user, routes[index])
-            Spacer(modifier = Modifier.height(5.dp))
-        }
-    }
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun MainCards(navController: NavHostController, mainViewModel: MainViewModel, user: User, route:Publication) {
-    Card(modifier = Modifier
-        .padding(5.dp)
-        .fillMaxWidth()
-        .combinedClickable(onDoubleClick = {
-            navController.navigate(
-                Routes.Publicacion.createRoute(
-                    route.id
-                )
-            )
-        }) {/**/ },
-        elevation = 5.dp) {
-        Column(modifier = Modifier
-            .fillMaxSize()
-            .padding(5.dp)) {
-            Row(modifier = Modifier
-                .fillMaxWidth()
-                .height(200.dp)) {
-                if(route.photos.size > 0) {
-                    Image(
-                        modifier = Modifier.fillMaxSize(),
-                        painter = rememberAsyncImagePainter(
-                            "http://192.168.230.74:8080/api/v1/imgs/posts/${route.photos[0]}"
-                        ), contentDescription = "Foto de la ruta",
-                        contentScale = ContentScale.Crop
-                    )
-                } else {
-                    Image(
-                        modifier = Modifier.fillMaxSize(),
-                        painter = rememberAsyncImagePainter(
-                            "http://192.168.230.74:8080/api/v1/imgs/posts/noPhotos.png"
-                        ), contentDescription = "Foto por defecto",
-                        contentScale = ContentScale.Crop
-                    )
-                }
-            }
-            Spacer(modifier = Modifier.height(2.dp))
-            Row(modifier = Modifier.fillMaxWidth()) {
-                Text(text = route.name)
-            }
+            /*TODO ADD SOMETHING?*/
         }
     }
 }

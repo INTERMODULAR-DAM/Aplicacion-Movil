@@ -16,42 +16,49 @@ import ejercicios.dam.intermodulardam.main.ui.MainViewModel
 import ejercicios.dam.intermodulardam.map.Mapa
 import ejercicios.dam.intermodulardam.map.MapaViewModel
 import ejercicios.dam.intermodulardam.models.Routes
-import ejercicios.dam.intermodulardam.profile.Perfil
+import ejercicios.dam.intermodulardam.profile.ui.Perfil
+import ejercicios.dam.intermodulardam.profile.ui.PerfilViewModel
 import ejercicios.dam.intermodulardam.publication.Publicacion
 import ejercicios.dam.intermodulardam.splashscreen.SplashScreen
 
 @Composable
-fun CustomNavigator(loginViewModel: LoginViewModel, mapaViewModel: MapaViewModel, registroViewModel: RegistroViewModel, mainViewModel: MainViewModel) {
+fun CustomNavigator(
+    loginViewModel: LoginViewModel,
+    mapaViewModel: MapaViewModel,
+    registroViewModel: RegistroViewModel,
+    mainViewModel: MainViewModel,
+    perfilViewModel: PerfilViewModel
+) {
 
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = Routes.Splash.route) {
-        composable(route= Routes.Splash.route) {
+        composable(route = Routes.Splash.route) {
             SplashScreen(navController = navController)
         }
-        composable(route=Routes.Login.route) {
+        composable(route = Routes.Login.route) {
             Login(navController = navController, loginViewModel = loginViewModel)
         }
-        composable(route=Routes.Mapa.route) {
+        composable(route = Routes.Mapa.route) {
             Mapa(navController = navController, mapaViewModel = mapaViewModel)
         }
-        composable(route=Routes.Registro.route) {
+        composable(route = Routes.Registro.route) {
             RegisterScreen(navController = navController, registroViewModel)
         }
-        composable(route=Routes.Main.route) {
+        composable(route = Routes.Main.route) {
             Main(navController = navController, mainViewModel = mainViewModel)
         }
-        composable(route=Routes.CrearRuta.route) {
+        composable(route = Routes.CrearRuta.route) {
             CrearRuta(navController = navController, mapaViewModel, mainViewModel)
         }
         composable(
             route = Routes.Publicacion.route,
             arguments = listOf(navArgument("id") {
-                type= NavType.StringType
+                type = NavType.StringType
             })
         ) { navBackStackEntry ->
             Publicacion(
                 navController = navController,
-                id = navBackStackEntry.arguments?.getString("id")?:""
+                id = navBackStackEntry.arguments?.getString("id") ?: ""
             )
         }
         composable(
@@ -62,7 +69,8 @@ fun CustomNavigator(loginViewModel: LoginViewModel, mapaViewModel: MapaViewModel
         ) { navBackStackEntry ->
             Perfil(
                 navController = navController,
-                id = navBackStackEntry.arguments?.getString("id")?:""
+                id = navBackStackEntry.arguments?.getString("id") ?: "",
+                perfilViewModel = perfilViewModel
             )
         }
     }
