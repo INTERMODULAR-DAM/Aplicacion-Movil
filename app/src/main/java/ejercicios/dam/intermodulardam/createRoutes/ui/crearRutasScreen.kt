@@ -46,7 +46,9 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun CrearRuta(navController: NavHostController, mapaViewModel: MapaViewModel, mainViewModel: MainViewModel) {
-    val currentUser by mainViewModel.user.observeAsState(initial = User("","","","", "","",  false, "", ""))
+    val currentUser by mainViewModel.user.observeAsState(initial = User("","","","", "","",  false, "", "", 0))
+
+    mainViewModel.onInit()
 
     Column(
         modifier = Modifier.fillMaxSize()

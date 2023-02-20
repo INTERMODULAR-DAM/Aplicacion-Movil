@@ -11,4 +11,5 @@ data class UserDTO(
     val admin:Boolean,
     val pfp_path:String,
     val phone_number:String,
+    val following:List<String>,
 )

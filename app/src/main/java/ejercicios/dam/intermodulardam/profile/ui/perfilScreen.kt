@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
+import ejercicios.dam.intermodulardam.comments.ui.ComentariosViewModel
 import ejercicios.dam.intermodulardam.main.domain.entity.Publication
 import ejercicios.dam.intermodulardam.main.domain.entity.User
 import ejercicios.dam.intermodulardam.models.Routes
@@ -35,8 +36,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
-fun Perfil(navController:NavHostController, id:String, perfilViewModel: PerfilViewModel) {
-    val currentUser by perfilViewModel.user.observeAsState(initial = User("","","","", "","",  false, "", ""))
+fun Perfil(navController:NavHostController, id:String, perfilViewModel: PerfilViewModel, comentariosViewModel: ComentariosViewModel) {
+    val currentUser by perfilViewModel.user.observeAsState(initial = User("","","","", "","",  false, "", "", 0))
     val routes by perfilViewModel.posts.observeAsState(initial = listOf())
 
     perfilViewModel.onInit()

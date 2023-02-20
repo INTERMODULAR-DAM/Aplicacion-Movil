@@ -41,7 +41,7 @@ import java.util.*
 
 @Composable
 fun Main(navController:NavHostController, mainViewModel: MainViewModel) {
-    val currentUser by mainViewModel.user.observeAsState(initial = User("","","","", "","",  false, "", ""))
+    val currentUser by mainViewModel.user.observeAsState(initial = User("","","","", "","",  false, "", "", 0))
     val routes by mainViewModel.routes.observeAsState(initial = listOf())
 
     mainViewModel.onInit()
@@ -110,7 +110,7 @@ fun MainDrawer(navController: NavHostController, user: User, coroutineScope: Cor
             .fillMaxSize()
             .background(color = MaterialTheme.colors.backgroundGreen),
     ) {
-        Row(modifier = Modifier.padding(start = 8.dp, top = 32.dp), verticalAlignment = Alignment.Bottom) {
+        Row(modifier = Modifier.padding(start = 8.dp, top = 32.dp).fillMaxWidth(), verticalAlignment = Alignment.Bottom) {
             Box(
                 modifier = Modifier
                     .size(63.dp)
@@ -140,8 +140,12 @@ fun MainDrawer(navController: NavHostController, user: User, coroutineScope: Cor
                 }
             }
         }
+        Spacer(modifier = Modifier.height(6.dp))
+        Row(modifier = Modifier.fillMaxWidth().padding(start = 16.dp, top = 32.dp)) {
+            Text(text = "Siguiendo: ${user.following}", color = Color.White, style = TextStyle(fontFamily = calibri, fontSize = 16.sp))
+        }
         Spacer(modifier = Modifier.height(24.dp))
-        Row(modifier = Modifier.padding(start = 8.dp, top = 32.dp), verticalAlignment = Alignment.Bottom) {
+        Row(modifier = Modifier.padding(start = 8.dp, top = 32.dp).fillMaxWidth(), verticalAlignment = Alignment.Bottom) {
             Box() {
                 Icon(imageVector = Icons.Filled.Person, contentDescription = "Ir a perfil", tint = Color.White)
             }
@@ -166,7 +170,7 @@ fun MainScreen(navController: NavHostController, mainViewModel: MainViewModel, u
 
     LazyColumn(modifier = Modifier
         .fillMaxSize()
-        .scrollable(scrollState,Orientation.Vertical)
+        .scrollable(scrollState, Orientation.Vertical)
         .padding(bottom = 60.dp)) {
         items(routes.size) { index ->
             MainCards(navController = navController, mainViewModel = mainViewModel, user = user, routes[index])

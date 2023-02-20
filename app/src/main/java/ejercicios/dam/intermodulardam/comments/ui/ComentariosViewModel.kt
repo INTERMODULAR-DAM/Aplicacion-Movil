@@ -30,7 +30,7 @@ class ComentariosViewModel @Inject constructor(
     private val _comments = MutableLiveData<List<Comentarios>>()
     val comments: LiveData<List<Comentarios>> = _comments
 
-    init {
+    fun Oninit() {
         viewModelScope.launch {
             _comments.value = comentariosUseCase.invoke(_route.value!!)
         }
@@ -38,6 +38,18 @@ class ComentariosViewModel @Inject constructor(
 
     private val _message = MutableLiveData<String>()
     val message:LiveData<String> = _message
+
+    private val _isButtonEnabled = MutableLiveData<Boolean>()
+    val isButtonEnabled:LiveData<Boolean> = _isButtonEnabled
+
+    fun onCommentChanged(message:String) {
+        _message.value = message
+        _isButtonEnabled.value = validateMessage(message)
+    }
+
+    private fun validateMessage(message:String):Boolean {
+        return message.isNotEmpty()
+    }
 
     fun onCreateComment(userID:String, postID:String, context:Context) {
         viewModelScope.launch {

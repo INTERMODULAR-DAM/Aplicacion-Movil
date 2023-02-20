@@ -1,5 +1,6 @@
 package ejercicios.dam.intermodulardam.main.ui
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -20,14 +21,9 @@ class MainViewModel @Inject constructor(private val repository: MainRepository) 
     private val _routes = MutableLiveData<List<Publication>>()
     val routes:LiveData<List<Publication>> = _routes
 
-    init {
-        viewModelScope.launch {
-            _user.value = repository.getUser()
-        }
-    }
-
     fun onInit() {
         viewModelScope.launch {
+            _user.value = repository.getUser()
             if(_user.value!!.admin) {
                 _routes.value = repository.getAllPosts()
             } else {

@@ -13,6 +13,7 @@ class UserDTOFactory @Inject constructor() {
         admin:Boolean,
         pfp_path:String,
         phone_number:String,
+        following:List<String>
     ) : UserDTO {
         return UserDTO(
             _id = _id,
@@ -23,7 +24,8 @@ class UserDTOFactory @Inject constructor() {
             nick = nick,
             admin = admin,
             pfp_path = pfp_path,
-            phone_number = phone_number
+            phone_number = phone_number,
+            following = following
         )
     }
 }

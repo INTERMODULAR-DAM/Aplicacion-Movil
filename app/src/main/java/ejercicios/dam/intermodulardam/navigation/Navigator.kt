@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import ejercicios.dam.intermodulardam.comments.ui.ComentariosViewModel
 import ejercicios.dam.intermodulardam.createRoutes.ui.CrearRuta
 import ejercicios.dam.intermodulardam.login.ui.Login
 import ejercicios.dam.intermodulardam.login.ui.LoginViewModel
@@ -27,7 +28,8 @@ fun CustomNavigator(
     mapaViewModel: MapaViewModel,
     registroViewModel: RegistroViewModel,
     mainViewModel: MainViewModel,
-    perfilViewModel: PerfilViewModel
+    perfilViewModel: PerfilViewModel,
+    comentariosViewModel:ComentariosViewModel
 ) {
 
     val navController = rememberNavController()
@@ -39,7 +41,7 @@ fun CustomNavigator(
             Login(navController = navController, loginViewModel = loginViewModel)
         }
         composable(route = Routes.Mapa.route) {
-            Mapa(navController = navController, mapaViewModel = mapaViewModel)
+            Mapa(navController = navController, mapaViewModel = mapaViewModel, mainViewModel)
         }
         composable(route = Routes.Registro.route) {
             RegisterScreen(navController = navController, registroViewModel)
@@ -58,6 +60,7 @@ fun CustomNavigator(
         ) { navBackStackEntry ->
             Publicacion(
                 navController = navController,
+                comentariosViewModel,
                 id = navBackStackEntry.arguments?.getString("id") ?: ""
             )
         }
@@ -70,7 +73,8 @@ fun CustomNavigator(
             Perfil(
                 navController = navController,
                 id = navBackStackEntry.arguments?.getString("id") ?: "",
-                perfilViewModel = perfilViewModel
+                perfilViewModel = perfilViewModel,
+                comentariosViewModel,
             )
         }
     }

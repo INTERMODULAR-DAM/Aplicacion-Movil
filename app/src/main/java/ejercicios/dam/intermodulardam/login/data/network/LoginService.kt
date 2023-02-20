@@ -5,9 +5,9 @@ import ejercicios.dam.intermodulardam.login.data.datastore.UserPreferenceService
 import ejercicios.dam.intermodulardam.login.data.network.dto.UserDTO
 import ejercicios.dam.intermodulardam.login.domain.entity.RecoverEmail
 import ejercicios.dam.intermodulardam.login.domain.entity.UserModel
+import ejercicios.dam.intermodulardam.main.domain.entity.User
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.json.JSONObject
 import javax.inject.Inject
 
 class LoginService @Inject constructor(
@@ -24,10 +24,22 @@ class LoginService @Inject constructor(
         }
     }
 
-    suspend fun getLoginUser(): UserDTO? {
+    suspend fun getLoginUser(): UserDTO {
         return withContext(Dispatchers.IO) {
             val response = loginClient.getLoginUser(userService.getToken("authorization"))
-            response.body()?.data!!
+            val user:UserDTO = UserDTO(
+                response.body()?.data!!._id,
+                response.body()?.data!!.email,
+                response.body()?.data!!.name,
+                response.body()?.data!!.lastname,
+                response.body()?.data!!.date,
+                response.body()?.data!!.nick,
+                response.body()?.data!!.admin,
+                response.body()?.data!!.pfp_path,
+                response.body()?.data!!.phone_number,
+                response.body()?.data!!.following
+            )
+            user
         }
     }
 

@@ -29,6 +29,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
 import ejercicios.dam.intermodulardam.R
 import ejercicios.dam.intermodulardam.main.domain.entity.User
+import ejercicios.dam.intermodulardam.main.ui.MainViewModel
 import ejercicios.dam.intermodulardam.models.Routes
 import ejercicios.dam.intermodulardam.ui.theme.calibri
 import ejercicios.dam.intermodulardam.utils.MainGreen
@@ -37,9 +38,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
-fun Mapa(navController:NavHostController, mapaViewModel: MapaViewModel) {
-    val currentUser: User = User("","","","", "","",  false, "", "")
-
+fun Mapa(navController:NavHostController, mapaViewModel: MapaViewModel, mainViewModel: MainViewModel) {
+    val currentUser by mainViewModel.user.observeAsState(initial = User("","","","", "","",  false, "", "", 0))
     Column(
         modifier = Modifier.fillMaxSize()
     ) {

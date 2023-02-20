@@ -16,6 +16,7 @@ data class UserDTO(
     @ColumnInfo(name = "admin") val admin:Boolean,
     @ColumnInfo(name = "pfp_path") val pfp_path:String,
     @ColumnInfo(name = "phone_number") val phone_number:String,
+    @ColumnInfo(name = "following") val following:Int
 )
 
 fun ejercicios.dam.intermodulardam.login.data.network.dto.UserDTO.toDataBase(token:String) =
@@ -29,4 +30,5 @@ fun ejercicios.dam.intermodulardam.login.data.network.dto.UserDTO.toDataBase(tok
         admin = admin,
         pfp_path = pfp_path,
         phone_number = phone_number,
+        following = following.count()
     )

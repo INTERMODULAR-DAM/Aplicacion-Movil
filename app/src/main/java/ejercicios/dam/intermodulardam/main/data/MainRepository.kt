@@ -23,7 +23,8 @@ class MainRepository @Inject constructor(
             userDTO.nick,
             userDTO.admin,
             userDTO.pfp_path,
-            userDTO.phone_number
+            userDTO.phone_number,
+            userDTO.following
         )
     }
 

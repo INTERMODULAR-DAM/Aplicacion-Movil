@@ -33,7 +33,9 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideRoom(context: Context) = Room.databaseBuilder(context, UserDataBase::class.java, WIKITRAIL_APP_DATABASE_NAME).build()
+    fun provideRoom(context: Context) = Room.databaseBuilder(
+        context,
+        UserDataBase::class.java, WIKITRAIL_APP_DATABASE_NAME).build()
 
     @Provides
     @Singleton
