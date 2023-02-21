@@ -13,6 +13,9 @@ class ProfileService @Inject constructor(
     suspend fun getOwnPosts(): List<Publication> {
         return withContext(Dispatchers.IO) {
             val response = client.getOwnPosts(userService.getToken("authorization"))
+            if(response.code() != 200) {
+                listOf<Publication>()
+            }
             response.body()?.data!!
         }
     }
