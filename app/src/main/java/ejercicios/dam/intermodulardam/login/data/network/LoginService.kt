@@ -18,8 +18,12 @@ class LoginService @Inject constructor(
         val user = UserModel(email, password)
         return withContext(Dispatchers.IO) {
             val response = loginClient.doLogin(user)
-            response.body()?.data!!.ifEmpty {
+            if(response.code() != 200) {
                 ""
+            } else {
+                response.body()?.data!!.ifEmpty {
+                    ""
+                }
             }
         }
     }
