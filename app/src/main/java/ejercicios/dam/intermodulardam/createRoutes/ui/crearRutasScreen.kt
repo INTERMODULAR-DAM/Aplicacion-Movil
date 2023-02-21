@@ -45,10 +45,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
-fun CrearRuta(navController: NavHostController, mapaViewModel: MapaViewModel, mainViewModel: MainViewModel) {
+fun CrearRuta(navController: NavHostController, mapaViewModel: MapaViewModel, mainViewModel: MainViewModel, userID:String) {
     val currentUser by mainViewModel.user.observeAsState(initial = User("","","","", "","",  false, "", "", 0))
 
-    mainViewModel.onInit()
+    mainViewModel.onInit(userID)
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -231,7 +231,7 @@ fun CrearRutaScreen(navController: NavHostController, mapaViewModel: MapaViewMod
 
 @Composable
 fun Mapa(mapaViewModel: MapaViewModel, onMapClick: (MutableList<LatLng>) -> Unit) {
-    val currentLocation by mapaViewModel.currentLocation.observeAsState(initial = LatLng(38.55359897196608, -0.12057169825429333))
+    val currentLocation = LatLng(38.55359897196608, -0.12057169825429333)
 
     val cameraPosition = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(currentLocation, 13F)

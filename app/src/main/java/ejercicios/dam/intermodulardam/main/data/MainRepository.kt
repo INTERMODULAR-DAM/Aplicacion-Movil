@@ -12,8 +12,8 @@ class MainRepository @Inject constructor(
     private val userDAO: UserDAO,
     private val api: RutasService
 ) {
-    suspend fun getUser(): User {
-        val userDTO: UserDTO = userDAO.getAllUsers()[0]
+    suspend fun getUser(id:String): User {
+        val userDTO: UserDTO = userDAO.getUserByID(id)
         return User(
             userDTO._id,
             userDTO.email,

@@ -40,11 +40,11 @@ import okhttp3.internal.wait
 import java.util.*
 
 @Composable
-fun Main(navController:NavHostController, mainViewModel: MainViewModel) {
+fun Main(navController:NavHostController, mainViewModel: MainViewModel, userID:String) {
     val currentUser by mainViewModel.user.observeAsState(initial = User("","","","", "","",  false, "", "", 0))
     val routes by mainViewModel.routes.observeAsState(initial = listOf())
 
-    mainViewModel.onInit()
+    mainViewModel.onInit(userID)
 
     Column(
         modifier = Modifier.fillMaxSize()

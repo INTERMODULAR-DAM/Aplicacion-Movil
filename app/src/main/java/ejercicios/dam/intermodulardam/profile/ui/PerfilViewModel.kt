@@ -23,9 +23,9 @@ class PerfilViewModel @Inject constructor(
     private val _posts = MutableLiveData<List<Publication>>()
     val posts: LiveData<List<Publication>> = _posts
 
-    fun onInit() {
+    fun onInit(userID:String) {
         viewModelScope.launch {
-            _user.value = mainRepository.getUser()
+            _user.value = mainRepository.getUser(userID)
             _posts.value = repository.getOwnPosts()
         }
     }

@@ -40,7 +40,7 @@ fun Perfil(navController:NavHostController, id:String, perfilViewModel: PerfilVi
     val currentUser by perfilViewModel.user.observeAsState(initial = User("","","","", "","",  false, "", "", 0))
     val routes by perfilViewModel.posts.observeAsState(initial = listOf())
 
-    perfilViewModel.onInit()
+    perfilViewModel.onInit(id)
 
     if(id.isEmpty()) {
         navController.navigate("main")

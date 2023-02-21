@@ -14,6 +14,7 @@ import ejercicios.dam.intermodulardam.login.domain.usecase.HasTokenUseCase
 import ejercicios.dam.intermodulardam.login.domain.usecase.HasUserLoggedUseCase
 import ejercicios.dam.intermodulardam.login.domain.usecase.LoginUseCase
 import ejercicios.dam.intermodulardam.login.domain.usecase.RecoverPasswordUseCase
+import ejercicios.dam.intermodulardam.models.Routes
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -47,8 +48,8 @@ class LoginViewModel @Inject
     private val _isButtonLoginEnabled = MutableLiveData<Boolean>()
     val isButtonLoginEnabled : LiveData<Boolean> = _isButtonLoginEnabled
 
-    private val _loginOk = MutableLiveData<Boolean>()
-    val loginOk: LiveData<Boolean> = _loginOk
+    private val _loginOk = MutableLiveData<String>()
+    val loginOk: LiveData<String> = _loginOk
 
     fun onLoginChanged(email:String, password:String) {
         _email.value = email
@@ -65,8 +66,8 @@ class LoginViewModel @Inject
         viewModelScope.launch {
             _isLoading.value = true
             _loginOk.value = loginUseCase(email.value!!, password.value!!)
-            if(_loginOk.value == true) {
-                navController.navigate("main")
+            if(_loginOk.value!!.isNotEmpty()) {
+                navController.navigate(Routes.Main.createRoute(_loginOk.value!!))
             } else {
                 Toast.makeText(context, "Ha habido un error con el login", Toast.LENGTH_SHORT).show()
             }

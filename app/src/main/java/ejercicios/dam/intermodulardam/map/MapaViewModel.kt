@@ -3,7 +3,6 @@ package ejercicios.dam.intermodulardam.map
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -18,7 +17,6 @@ import com.google.android.gms.maps.model.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
 import ejercicios.dam.intermodulardam.createRoutes.domain.CreateRouteUseCase
 import ejercicios.dam.intermodulardam.main.domain.entity.CreatePublication
-import ejercicios.dam.intermodulardam.map.domain.LocationState
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -27,36 +25,6 @@ import javax.inject.Inject
 class MapaViewModel @Inject constructor(private val createRouteUseCase: CreateRouteUseCase) : ViewModel() {
 
      lateinit var fusedLocationClient: FusedLocationProviderClient
-     var locationState by mutableStateOf<LocationState>(LocationState.NoPermission)
-
-     private val _currentLocation = MutableLiveData<LatLng>()
-     val currentLocation:LiveData<LatLng> = _currentLocation
-
-     fun getCurrentLocation(context:Context) {
-          locationState = LocationState.LocationLoading
-          if (ActivityCompat.checkSelfPermission(
-                    context,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-               ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                    context,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-               ) != PackageManager.PERMISSION_GRANTED
-          ) {
-               return
-          }
-          fusedLocationClient
-               .getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
-               .addOnSuccessListener { location ->
-                    locationState = if (location == null && locationState !is LocationState.LocationAvailable) {
-                         LocationState.Error
-                    } else {
-                         LocationState.LocationAvailable(LatLng(location.latitude, location.longitude))
-                    }
-                    if(location != null) {
-                         _currentLocation.value = LatLng(location.latitude, location.longitude)
-                    }
-               }
-     }
 
      private val _name = MutableLiveData<String>()
      val name:LiveData<String> = _name

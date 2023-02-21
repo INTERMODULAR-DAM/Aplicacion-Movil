@@ -1,5 +1,14 @@
 package ejercicios.dam.intermodulardam.map
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Context
+import android.content.pm.PackageManager
+import android.widget.Toast
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -8,22 +17,25 @@ import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
@@ -38,7 +50,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
-fun Mapa(navController:NavHostController, mapaViewModel: MapaViewModel, mainViewModel: MainViewModel) {
+fun Mapa(navController:NavHostController, mapaViewModel: MapaViewModel, mainViewModel: MainViewModel, userID:String) {
     val currentUser by mainViewModel.user.observeAsState(initial = User("","","","", "","",  false, "", "", 0))
     Column(
         modifier = Modifier.fillMaxSize()
@@ -59,22 +71,52 @@ fun Mapa(navController:NavHostController, mapaViewModel: MapaViewModel, mainView
     }
 }
 
+@SuppressLint("MissingPermission")
 @Composable
 fun MapaScreen(navController: NavHostController, mapaViewModel: MapaViewModel) {
-    val currentLocation by mapaViewModel.currentLocation.observeAsState(initial = LatLng(38.55359897196608, -0.12057169825429333))
+    val context = LocalContext.current as Activity
+    mapaViewModel.fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
 
+    var currentLocation by rememberSaveable() { mutableStateOf(LatLng(38.55359897196608, -0.12057169825429333)) }
     val cameraPosition = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(currentLocation, 13F)
     }
 
-    Column(modifier = Modifier.fillMaxSize().padding(bottom = 55.dp)) {
-        GoogleMap(
-            cameraPositionState = cameraPosition,
-            properties = MapProperties(isMyLocationEnabled = true, mapType = MapType.HYBRID)
-        ) {
+    val permission = Manifest.permission.ACCESS_FINE_LOCATION
 
+    val isPermissionGranted by rememberSaveable() { mutableStateOf(isPermissionGranted(context, permission)) }
+    var permissionOk by rememberSaveable() { mutableStateOf(false) }
+
+    val launcher = permissionLauncher() { permissionOk = it }
+
+    if(!isPermissionGranted) {
+        SideEffect {
+            launcher.launch(permission)
+        }
+    } else {
+        mapaViewModel.fusedLocationClient
+            .getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
+            .addOnSuccessListener { location ->
+                if (location != null) {
+                    currentLocation = LatLng(location.latitude, location.longitude)
+                }
+            }
+        permissionOk = true
+    }
+    if(permissionOk) {
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .padding(bottom = 55.dp)) {
+            GoogleMap(
+                cameraPositionState = cameraPosition,
+                properties = MapProperties(mapType = MapType.HYBRID, isMyLocationEnabled = true),
+                uiSettings = MapUiSettings(myLocationButtonEnabled = true),
+            ) {
+
+            }
         }
     }
+
 }
 
 @Composable
@@ -171,4 +213,25 @@ fun MapaDrawer(navController: NavHostController, user: User, coroutineScope: Cor
             }
         }
     }
+}
+
+@Composable
+fun permissionLauncher(onClick: (Boolean) -> Unit): ManagedActivityResultLauncher<String, Boolean> {
+
+    return rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted:Boolean ->
+        onClick(isGranted)
+        isGranted
+    }
+}
+
+fun isPermissionGranted(
+    context: Context,
+    permission: String
+): Boolean {
+    return ContextCompat.checkSelfPermission(
+        context,
+        permission
+    ) == PackageManager.PERMISSION_GRANTED
 }

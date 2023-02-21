@@ -1,10 +1,14 @@
 package ejercicios.dam.intermodulardam.register.ui
 
+import android.content.Context
+import android.util.Log
 import android.util.Patterns
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavHostController
 import dagger.hilt.android.lifecycle.HiltViewModel
 import ejercicios.dam.intermodulardam.register.domain.entity.UserRegistroModel
 import ejercicios.dam.intermodulardam.register.domain.usecase.RegistroUseCase
@@ -56,8 +60,7 @@ class RegistroViewModel @Inject constructor(private val registroUseCase: Registr
                     && nick.isNotBlank()
     }
 
-    fun onButtonRegisterPress() :Boolean {
-        var success = false
+    fun onButtonRegisterPress(navController:NavHostController, context: Context) {
         viewModelScope.launch {
             _isLoading.value = true
             val user = UserRegistroModel(
@@ -69,12 +72,14 @@ class RegistroViewModel @Inject constructor(private val registroUseCase: Registr
                 phone.value!!
             )
             val result = registroUseCase(user)
-            if(result) {
-                val validUser = false
-                if(validUser) success = true
+            Log.i("RESULT", result.toString())
+            if (result) {
+                navController.navigate("main")
+            } else {
+                Toast.makeText(context, "Ha habido un error con el registro", Toast.LENGTH_SHORT)
+                    .show()
             }
             _isLoading.value = false
         }
-        return success
     }
 }

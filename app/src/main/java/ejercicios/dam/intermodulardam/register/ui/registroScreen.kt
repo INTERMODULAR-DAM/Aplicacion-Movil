@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -273,6 +274,7 @@ fun Password(password:String, onTextChanged: (String) -> Unit) {
 
 @Composable
 fun BotonRegistro(registerViewModel: RegistroViewModel, navController: NavHostController, registerEnabled:Boolean) {
+    val context = LocalContext.current
     Row(modifier = Modifier
         .padding(0.dp)
         .fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
@@ -281,9 +283,7 @@ fun BotonRegistro(registerViewModel: RegistroViewModel, navController: NavHostCo
                 .width(220.dp)
                 .height(60.dp),
             onClick = {
-                val goToMain = registerViewModel.onButtonRegisterPress()
-                if (goToMain) navController.navigate(Routes.Main.route)
-                else {/*TODO mostrar advertencia de fallo de registro*/}
+               registerViewModel.onButtonRegisterPress(navController, context)
             },
             shape = RoundedCornerShape(40.dp),
             border= BorderStroke(1.dp, Color.Black),

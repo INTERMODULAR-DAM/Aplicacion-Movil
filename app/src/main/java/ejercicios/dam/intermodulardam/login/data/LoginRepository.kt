@@ -1,6 +1,5 @@
 package ejercicios.dam.intermodulardam.login.data
 
-import android.util.Log
 import ejercicios.dam.intermodulardam.login.data.database.dao.UserDAO
 import ejercicios.dam.intermodulardam.login.data.database.entity.toDataBase
 import ejercicios.dam.intermodulardam.login.data.datastore.UserPreferenceService
@@ -13,7 +12,7 @@ class LoginRepository @Inject
                 private val userPreference: UserPreferenceService,
                 private val userDAO: UserDAO) {
 
-    suspend fun doLogin(email:String, password:String) : Boolean {
+    suspend fun doLogin(email:String, password:String) : String {
         val connectionOk = api.doLogin(email, password)
         if(connectionOk.isNotEmpty()) {
             userPreference.addToken("authorization", "bearer $connectionOk")
@@ -22,12 +21,12 @@ class LoginRepository @Inject
                 userDAO.insertAll(
                     listOf(user.toDataBase(userPreference.getToken("authorization")))
                 )
-                return true
+                return user._id
             }
-            return false
+            return ""
 
         }
-        return false
+        return ""
     }
 
     suspend fun getConnectionToken():Boolean = userPreference.getToken("authorization").isNotEmpty()

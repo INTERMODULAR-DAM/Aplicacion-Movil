@@ -9,9 +9,12 @@ import ejercicios.dam.intermodulardam.login.data.database.entity.UserDTO
 import javax.inject.Singleton
 
 @Dao
-interface UserDAO {
+interface UserDAO{
     @Query("SELECT * FROM users ORDER BY name DESC")
     suspend fun getAllUsers(): List<UserDTO>
+
+    @Query("SELECT * FROM users where _id = :id")
+    suspend fun getUserByID(id:String):UserDTO
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(users : List<UserDTO>)

@@ -1,6 +1,7 @@
 package ejercicios.dam.intermodulardam.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavArgument
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -29,7 +30,7 @@ fun CustomNavigator(
     registroViewModel: RegistroViewModel,
     mainViewModel: MainViewModel,
     perfilViewModel: PerfilViewModel,
-    comentariosViewModel:ComentariosViewModel
+    comentariosViewModel: ComentariosViewModel
 ) {
 
     val navController = rememberNavController()
@@ -40,21 +41,44 @@ fun CustomNavigator(
         composable(route = Routes.Login.route) {
             Login(navController = navController, loginViewModel = loginViewModel)
         }
-        composable(route = Routes.Mapa.route) {
-            Mapa(navController = navController, mapaViewModel = mapaViewModel, mainViewModel)
-        }
         composable(route = Routes.Registro.route) {
             RegisterScreen(navController = navController, registroViewModel)
         }
-        composable(route = Routes.Main.route) {
-            Main(navController = navController, mainViewModel = mainViewModel)
-        }
-        composable(route = Routes.CrearRuta.route) {
-            CrearRuta(navController = navController, mapaViewModel, mainViewModel)
+        composable(
+            route = Routes.Mapa.route,
+            arguments = listOf(navArgument("id") {
+                type = NavType.StringType
+            })
+        ) { navBackStackEntry ->
+            Mapa(
+                navController = navController,
+                mapaViewModel = mapaViewModel,
+                mainViewModel,
+                navBackStackEntry.arguments?.getString("id") ?: ""
+            )
         }
         composable(
-            route = Routes.Publicacion.route,
-            arguments = listOf(navArgument("id") {
+            route = Routes.Main.route, arguments = listOf(navArgument("id") {
+                type = NavType.StringType
+            })
+        ) { navBackStackEntry ->
+            Main(
+                navController = navController,
+                mainViewModel = mainViewModel,
+                userID = navBackStackEntry.arguments?.getString("id") ?: ""
+            )
+        }
+        composable(route = Routes.CrearRuta.route, arguments = listOf(navArgument("id") {
+            type = NavType.StringType
+        })) { navBackStackEntry ->
+            CrearRuta(
+                navController = navController,
+                mapaViewModel, mainViewModel,
+                userID = navBackStackEntry.arguments?.getString("id") ?: ""
+            )
+        }
+        composable(
+            route = Routes.Publicacion.route, arguments = listOf(navArgument("id") {
                 type = NavType.StringType
             })
         ) { navBackStackEntry ->
@@ -65,8 +89,7 @@ fun CustomNavigator(
             )
         }
         composable(
-            route = Routes.Perfil.route,
-            arguments = listOf(navArgument("id") {
+            route = Routes.Perfil.route, arguments = listOf(navArgument("id") {
                 type = NavType.StringType
             })
         ) { navBackStackEntry ->

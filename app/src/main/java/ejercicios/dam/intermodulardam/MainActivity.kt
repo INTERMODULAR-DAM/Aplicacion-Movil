@@ -30,8 +30,6 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mapViewModel.fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        mapViewModel.getCurrentLocation(this)
         setContent {
             IntermodularDAMTheme {
                 Surface(
@@ -51,8 +49,5 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
-
-
 
 
