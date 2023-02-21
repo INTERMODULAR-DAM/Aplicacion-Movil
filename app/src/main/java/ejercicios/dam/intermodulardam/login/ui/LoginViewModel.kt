@@ -95,9 +95,9 @@ class LoginViewModel @Inject
         viewModelScope.launch {
             val emailOk = recoverPasswordUseCase.invoke(email)
             if(emailOk) {
-                Toast.makeText(context, "Tu email ha sido enviado correctamente", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "The email has been sent successfully", Toast.LENGTH_SHORT).show()
             } else {
-                Toast.makeText(context, "Ha habido un problema, revisa tu email", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "No account is linked to this email, please enter another email", Toast.LENGTH_SHORT).show()
             }
         }
     }

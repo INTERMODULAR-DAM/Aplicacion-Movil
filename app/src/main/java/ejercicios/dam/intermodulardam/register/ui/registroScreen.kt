@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -28,6 +29,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import ejercicios.dam.intermodulardam.R
 import ejercicios.dam.intermodulardam.models.Routes
 import ejercicios.dam.intermodulardam.ui.theme.calibri
 import ejercicios.dam.intermodulardam.ui.theme.textStyleLogin
@@ -55,72 +57,74 @@ fun RegisterContent(navController: NavHostController, registroViewModel: Registr
 
     Column(modifier = Modifier
         .fillMaxSize()
-        .background(MaterialTheme.colors.backgroundGreen)
-        .padding(horizontal = 30.dp),
+        .background(MaterialTheme.colors.backgroundGreen),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center)
     {
-        Column(modifier = Modifier.padding(10.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-            RegistroTitulo()
-            Spacer(modifier = Modifier
-                .height(3.dp)
-                .fillMaxWidth())
-            Nombre(name) {
-                registroViewModel.onRegistroChanged(name = it, ape = surname, nick = nick, email = email, phone = phone, password = password)
-            }
-            Spacer(modifier = Modifier
-                .height(5.dp)
-                .fillMaxWidth())
-            Apellidos(surname) {
-                registroViewModel.onRegistroChanged(name = name, ape = it, nick = nick, email = email, phone = phone, password = password)
-            }
-            Spacer(modifier = Modifier
-                .height(5.dp)
-                .fillMaxWidth())
-            Nick(nick) {
-                registroViewModel.onRegistroChanged(name = name, ape = surname, nick = it, email = email, phone = phone, password = password)
-            }
-            Spacer(modifier = Modifier
-                .height(5.dp)
-                .fillMaxWidth())
-            Email(email) {
-                registroViewModel.onRegistroChanged(name = name, ape = surname, nick = nick, email = it, phone = phone, password = password)
-            }
-            Spacer(modifier = Modifier
-                .height(5.dp)
-                .fillMaxWidth())
-            Phone(phone) {
-                registroViewModel.onRegistroChanged(name = name, ape = surname, nick = nick, email = email, phone = it, password = password)
-            }
-            Spacer(modifier = Modifier
-                .height(5.dp)
-                .fillMaxWidth())
-            Password(password) {
-                registroViewModel.onRegistroChanged(name = name, ape = surname, nick = nick, email = email, phone = phone, password = it)
-            }
-            Spacer(modifier = Modifier
-                .height(15.dp)
-                .fillMaxWidth())
-            BotonRegistro(registerViewModel = registroViewModel, navController = navController, registerEnabled = isButtonEnabled)
-            Spacer(modifier = Modifier
-                .height(5.dp)
-                .fillMaxWidth())
-            LinkLogin(navController = navController)
+        Logo(Modifier.align(Alignment.CenterHorizontally))
+        TitleRegister(
+            Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(bottom = 10.dp))
+        Name(name) {
+            registroViewModel.onRegistroChanged(name = it, ape = surname, nick = nick, email = email, phone = phone, password = password)
         }
+        MySpacer()
+        LastName(surname) {
+            registroViewModel.onRegistroChanged(name = name, ape = it, nick = nick, email = email, phone = phone, password = password)
+        }
+        MySpacer()
+        Nick(nick) {
+            registroViewModel.onRegistroChanged(name = name, ape = surname, nick = it, email = email, phone = phone, password = password)
+        }
+        MySpacer()
+        Email(email) {
+            registroViewModel.onRegistroChanged(name = name, ape = surname, nick = nick, email = it, phone = phone, password = password)
+        }
+        MySpacer()
+        Phone(phone) {
+            registroViewModel.onRegistroChanged(name = name, ape = surname, nick = nick, email = email, phone = it, password = password)
+        }
+        MySpacer()
+        Password(password) {
+            registroViewModel.onRegistroChanged(name = name, ape = surname, nick = nick, email = email, phone = phone, password = it)
+        }
+        Spacer(modifier = Modifier
+            .height(15.dp)
+            .fillMaxWidth())
+        BotonRegistro(registerViewModel = registroViewModel, navController = navController, registerEnabled = isButtonEnabled)
+        Spacer(modifier = Modifier
+            .height(5.dp)
+            .fillMaxWidth())
+        LinkLogin(navController = navController)
     }
+}
+@Composable
+fun Logo(modifier : Modifier){
+    Image(painter = painterResource(id = R.drawable.logo_letters), contentDescription = "WikiTrail logo", modifier = modifier)
 }
 
 @Composable
-fun RegistroTitulo() {
-    Row(modifier = Modifier
-        .fillMaxWidth()
-        .padding(0.dp), horizontalArrangement = Arrangement.Center) {
-        Text(text="Register", fontSize = 28.sp, color = Color.White, fontWeight = FontWeight.ExtraLight)
-    }
+fun MySpacer(){
+    Spacer(modifier = Modifier
+        .height(10.dp)
+        .fillMaxWidth())
+}
+
+
+@Composable
+fun TitleRegister(modifier: Modifier) {
+    Text(
+        text = "Sign up!",
+        fontSize = 28.sp,
+        color = Color.White,
+        fontWeight = FontWeight.ExtraLight,
+        modifier = modifier
+    )
 }
 
 @Composable
-fun Nombre(name:String, onTextChanged: (String) -> Unit) {
+fun Name(name:String, onTextChanged: (String) -> Unit) {
     Row(modifier = Modifier.padding(0.dp), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
         TextField(
             modifier = Modifier.border(
@@ -143,7 +147,7 @@ fun Nombre(name:String, onTextChanged: (String) -> Unit) {
 }
 
 @Composable
-fun Apellidos(lastname:String, onTextChanged: (String) -> Unit) {
+fun LastName(lastname:String, onTextChanged: (String) -> Unit) {
     Row(modifier = Modifier.padding(0.dp), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
         TextField(
             modifier = Modifier.border(

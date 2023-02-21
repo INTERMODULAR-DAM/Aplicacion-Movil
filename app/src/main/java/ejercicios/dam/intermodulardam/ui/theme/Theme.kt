@@ -29,7 +29,7 @@ private val LightColorPalette = lightColors(
     */
 )
 
-val textStyleLogin = TextStyle(fontFamily = calibri, fontSize = 18.sp);
+val textStyleLogin = TextStyle(fontFamily = calibri, fontSize = 15.sp);
 
 @Composable
 fun IntermodularDAMTheme(
