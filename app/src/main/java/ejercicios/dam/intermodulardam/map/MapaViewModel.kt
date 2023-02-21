@@ -3,6 +3,8 @@ package ejercicios.dam.intermodulardam.map
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -11,12 +13,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavHostController
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.Priority
 import com.google.android.gms.maps.model.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
 import ejercicios.dam.intermodulardam.createRoutes.domain.CreateRouteUseCase
 import ejercicios.dam.intermodulardam.main.domain.entity.CreatePublication
+import ejercicios.dam.intermodulardam.models.Routes
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -95,7 +99,7 @@ class MapaViewModel @Inject constructor(private val createRouteUseCase: CreateRo
                   (isPrivate.or(!isPrivate))
      }
 
-     fun onCreateButtonClick(id:String) {
+     fun onCreateButtonClick(id:String, context: Context, navController:NavHostController) {
           viewModelScope.launch {
                val publication = CreatePublication(
                     name.value!!,
@@ -108,7 +112,12 @@ class MapaViewModel @Inject constructor(private val createRouteUseCase: CreateRo
                     isPrivate.value!!,
                     id
                )
-               createRouteUseCase(publication)
+               val response = createRouteUseCase(publication)
+               if(response) {
+                    navController.navigate("main")
+               } else {
+                    Toast.makeText(context, "Ha habido un problema al crear la ruta", Toast.LENGTH_SHORT).show()
+               }
           }
      }
 }

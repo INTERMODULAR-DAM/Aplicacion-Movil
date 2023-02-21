@@ -1,5 +1,6 @@
 package ejercicios.dam.intermodulardam.main.data
 
+import android.util.Log
 import ejercicios.dam.intermodulardam.login.data.database.dao.UserDAO
 import ejercicios.dam.intermodulardam.login.data.database.entity.UserDTO
 import ejercicios.dam.intermodulardam.main.domain.entity.CreatePublication
@@ -12,8 +13,8 @@ class MainRepository @Inject constructor(
     private val userDAO: UserDAO,
     private val api: RutasService
 ) {
-    suspend fun getUser(id:String): User {
-        val userDTO: UserDTO = userDAO.getUserByID(id)
+    suspend fun getUser(): User {
+        val userDTO = userDAO.getAllUsers()[0]
         return User(
             userDTO._id,
             userDTO.email,

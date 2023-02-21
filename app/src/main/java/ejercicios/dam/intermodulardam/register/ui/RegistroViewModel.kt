@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import dagger.hilt.android.lifecycle.HiltViewModel
+import ejercicios.dam.intermodulardam.models.Routes
 import ejercicios.dam.intermodulardam.register.domain.entity.UserRegistroModel
 import ejercicios.dam.intermodulardam.register.domain.usecase.RegistroUseCase
 import kotlinx.coroutines.launch
@@ -72,7 +73,6 @@ class RegistroViewModel @Inject constructor(private val registroUseCase: Registr
                 phone.value!!
             )
             val result = registroUseCase(user)
-            Log.i("RESULT", result.toString())
             if (result) {
                 navController.navigate("main")
             } else {

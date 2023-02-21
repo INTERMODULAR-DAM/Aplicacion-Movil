@@ -1,5 +1,6 @@
 package ejercicios.dam.intermodulardam.rutas.data.network
 
+import android.util.Log
 import ejercicios.dam.intermodulardam.login.data.datastore.UserPreferenceService
 import ejercicios.dam.intermodulardam.main.domain.entity.CreatePublication
 import ejercicios.dam.intermodulardam.main.domain.entity.Publication
@@ -28,7 +29,11 @@ class RutasService @Inject constructor(
     suspend fun createRoute(publication: CreatePublication):Boolean {
         return withContext(Dispatchers.IO) {
             val response = rutasClient.createRoute(userService.getToken("authorization"), publication)
-            response.body()?.data!!.isNotEmpty()
+            if(response.code() != 200) {
+                false
+            } else {
+                response.body()?.data!!.isNotEmpty()
+            }
         }
     }
 }

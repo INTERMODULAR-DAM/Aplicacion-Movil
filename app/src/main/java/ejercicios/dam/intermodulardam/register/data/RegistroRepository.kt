@@ -19,12 +19,13 @@ class RegistroRepository @Inject constructor(
     private val loginApi:LoginService
 ) {
     suspend fun doRegister(id:String, name:String, surname:String, nick:String, phone:String, password:String) : Boolean {
+        userDAO.deleteAllUsers()
+
         val user = UserRegistroDTO(id, name, surname, nick, password, phone)
         val response = api.doRegister(user)
         if(response.isNotEmpty()) {
             userService.addToken("authorization", "bearer $response")
             val user: UserDTO? = loginApi.getLoginUser()
-            Log.i("USER", "$user")
             if(user != null) {
                 userDAO.insertAll(
                     listOf(user.toDataBase(userService.getToken("authorization")))

@@ -19,6 +19,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
@@ -45,10 +46,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
-fun CrearRuta(navController: NavHostController, mapaViewModel: MapaViewModel, mainViewModel: MainViewModel, userID:String) {
+fun CrearRuta(navController: NavHostController, mapaViewModel: MapaViewModel, mainViewModel: MainViewModel) {
     val currentUser by mainViewModel.user.observeAsState(initial = User("","","","", "","",  false, "", "", 0))
 
-    mainViewModel.onInit(userID)
+    mainViewModel.onInit()
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -223,7 +224,7 @@ fun CrearRutaScreen(navController: NavHostController, mapaViewModel: MapaViewMod
         Row(modifier = Modifier
             .fillMaxWidth()
             .weight(1F)) {
-            CreateRouteButton(mapaViewModel, user.id)
+            CreateRouteButton(mapaViewModel, user.id, navController)
         }
         Spacer(modifier = Modifier.height(80.dp))
     }
@@ -540,14 +541,15 @@ fun Difficulty(difficulty:String, onTextChanged: (String) -> Unit) {
 }
 
 @Composable
-fun CreateRouteButton(mapaViewModel: MapaViewModel, id:String) {
+fun CreateRouteButton(mapaViewModel: MapaViewModel, id:String, navController: NavHostController) {
     val isButtonEnabled by mapaViewModel.isButtonEnabled.observeAsState(initial = false)
 
+    val context = LocalContext.current
     Button(
         modifier = Modifier
             .width(240.dp)
             .height(60.dp),
-        onClick = {mapaViewModel.onCreateButtonClick(id)},
+        onClick = {mapaViewModel.onCreateButtonClick(id, context, navController)},
         shape = RoundedCornerShape(40.dp),
         border= BorderStroke(1.dp, Color.Black),
         enabled = isButtonEnabled,

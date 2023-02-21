@@ -67,7 +67,7 @@ class LoginViewModel @Inject
             _isLoading.value = true
             _loginOk.value = loginUseCase(email.value!!, password.value!!)
             if(_loginOk.value!!.isNotEmpty()) {
-                navController.navigate(Routes.Main.createRoute(_loginOk.value!!))
+                navController.navigate("main")
             } else {
                 Toast.makeText(context, "Ha habido un error con el login", Toast.LENGTH_SHORT).show()
             }

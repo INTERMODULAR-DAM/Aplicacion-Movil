@@ -21,10 +21,9 @@ class MainViewModel @Inject constructor(private val repository: MainRepository) 
     private val _routes = MutableLiveData<List<Publication>>()
     val routes:LiveData<List<Publication>> = _routes
 
-    fun onInit(userID:String) {
+    fun onInit() {
         viewModelScope.launch {
-            _user.value = repository.getUser(userID)
-            Log.i("USER EN MAIN", "${_user.value!!}")
+            _user.value = repository.getUser()
             if(_user.value!!.admin) {
                 _routes.value = repository.getAllPosts()
             } else {

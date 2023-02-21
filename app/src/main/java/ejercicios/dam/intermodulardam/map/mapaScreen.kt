@@ -50,7 +50,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
-fun Mapa(navController:NavHostController, mapaViewModel: MapaViewModel, mainViewModel: MainViewModel, userID:String) {
+fun Mapa(navController:NavHostController, mapaViewModel: MapaViewModel, mainViewModel: MainViewModel) {
     val currentUser by mainViewModel.user.observeAsState(initial = User("","","","", "","",  false, "", "", 0))
     Column(
         modifier = Modifier.fillMaxSize()
