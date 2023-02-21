@@ -9,6 +9,9 @@ class RegistroService @Inject constructor(private val registroClient: RegistroCl
     suspend fun doRegister(user: UserRegistroDTO): Boolean {
         return withContext(Dispatchers.IO) {
             val response = registroClient.register(user)
+            if(response.code != 200) {
+                false
+            }
             response.body()?.data!!.isNotEmpty()
         }
     }
