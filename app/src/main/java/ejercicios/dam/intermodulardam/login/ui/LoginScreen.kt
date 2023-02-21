@@ -23,7 +23,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -38,10 +37,7 @@ import androidx.navigation.NavHostController
 import ejercicios.dam.intermodulardam.R
 import ejercicios.dam.intermodulardam.ui.theme.calibri
 import ejercicios.dam.intermodulardam.ui.theme.textStyleLogin
-import ejercicios.dam.intermodulardam.utils.DisabledBrown
-import ejercicios.dam.intermodulardam.utils.DisabledMainGreen
-import ejercicios.dam.intermodulardam.utils.MainGreen
-import ejercicios.dam.intermodulardam.utils.backgroundGreen
+import ejercicios.dam.intermodulardam.utils.*
 
 @Composable
 fun Login(navController:NavHostController, loginViewModel:LoginViewModel) {
@@ -94,7 +90,7 @@ fun LoginScreen(navController: NavHostController, loginViewModel: LoginViewModel
 
     }
     if (showDialog) {
-        RecoveryDialog(true, loginViewModel, onDismiss = { showDialog = false })
+        RecoveryDialog(loginViewModel, onDismiss = { showDialog = false })
     }
 }
 
@@ -106,25 +102,29 @@ fun Logo() {
 
 @Composable
 fun Title() {
-    Text(text = "Welcome to WikiTrail!", fontSize = 30.sp, fontWeight = FontWeight.ExtraBold, color = Color.White)
+    Text(text = "Welcome to WikiTrail!", fontSize = 28.sp, fontWeight = FontWeight.ExtraBold, color = Color.White)
     Text(text = "Sign in to continue!", fontSize = 18.sp, color = Color.White, fontWeight = FontWeight.ExtraLight)
 }
 
 @Composable
 fun EmailField(email: String, onTextChanged: (String) -> Unit) {
     TextField(
-        modifier = Modifier.border(
-            width = 1.dp,
-            brush = Brush.horizontalGradient(listOf(Color.White,Color.White)),
-            shape = RoundedCornerShape(12.dp)
-        ),
+        modifier = Modifier
+            .border(
+                width = 1.dp,
+                brush = Brush.horizontalGradient(listOf(Color.White, Color.White)),
+                shape = RoundedCornerShape(12.dp)
+            )
+            .width(300.dp),
         value = email,
+        maxLines = 1,
         onValueChange = { onTextChanged(it) },
         label = { PlaceholderForField("User") },
         colors = TextFieldDefaults.outlinedTextFieldColors(
             focusedBorderColor = Color.Transparent,
             unfocusedBorderColor = Color.Transparent,
-            textColor = Color.White
+            textColor = Color.White,
+            cursorColor = Color.White
         ),
         textStyle = textStyleLogin
     )
@@ -134,18 +134,22 @@ fun EmailField(email: String, onTextChanged: (String) -> Unit) {
 fun PasswordField(password:String, onTextChanged: (String) -> Unit) {
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
     TextField(
-        modifier = Modifier.border(
-            width = 1.dp,
-            brush = Brush.horizontalGradient(listOf(Color.White, Color.White)),
-            shape = RoundedCornerShape(12.dp)
-        ),
+        modifier = Modifier
+            .border(
+                width = 1.dp,
+                brush = Brush.horizontalGradient(listOf(Color.White, Color.White)),
+                shape = RoundedCornerShape(12.dp)
+            )
+            .width(300.dp),
         value = password,
+        maxLines = 1,
         onValueChange = { onTextChanged(it) },
         label = { PlaceholderForField("Password") },
         colors = TextFieldDefaults.outlinedTextFieldColors(
             focusedBorderColor = Color.Transparent,
             unfocusedBorderColor = Color.Transparent,
-            textColor = Color.White
+            textColor = Color.White,
+            cursorColor = Color.White
         ),
         visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
@@ -196,50 +200,69 @@ fun LoginButton(navController: NavHostController, loginViewModel: LoginViewModel
 }
 
 @Composable
-fun RecoveryDialog(show:Boolean, loginViewModel: LoginViewModel, onDismiss:() -> Unit) {
+fun RecoveryDialog(loginViewModel: LoginViewModel, onDismiss:() -> Unit) {
     val email:String by loginViewModel.recoveryMail.observeAsState(initial = "")
     val context = LocalContext.current
     val isButtonEnabled:Boolean by loginViewModel.recoveryButton.observeAsState(initial = false)
-    if(show) {
-        Dialog(onDismissRequest = { onDismiss() }, properties = DialogProperties(dismissOnClickOutside = true, dismissOnBackPress = true)) {
-            Column(modifier = Modifier
-                .clip(shape = RoundedCornerShape(5.dp))
-                .background(Color.White)) {
-                Row {
-                    Text("Introduzca su email y recibirá un correo con la nueva contraseña", textAlign = TextAlign.Center, fontFamily = FontFamily.Default)
-                }
-                Spacer(modifier = Modifier
-                    .height(5.dp)
-                    .fillMaxWidth())
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                    OutlinedTextField(
-                        value = email,
-                        onValueChange = {loginViewModel.onRecoveryChanged(email = it)},
-                        label = { Text(text = "Email", color = MaterialTheme.colors.MainGreen) },
-                        textStyle = TextStyle(fontFamily = FontFamily.Default),
-                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                            focusedBorderColor = MaterialTheme.colors.MainGreen,
-                            unfocusedBorderColor = MaterialTheme.colors.DisabledMainGreen
-                        )
-                    )
-                }
-                Spacer(modifier = Modifier
-                    .height(5.dp)
-                    .fillMaxWidth())
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                    Button(
-                        onClick = {
-                            loginViewModel.onRecoveryButtonPress(email, context)
-                            onDismiss()
-                        },
-                        colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.MainGreen, disabledBackgroundColor = MaterialTheme.colors.DisabledMainGreen),
-                        enabled = isButtonEnabled
-                    ) {
-                        Text("Enviar")
-                    }
-                }
-            }
+    Dialog(onDismissRequest = { onDismiss(); loginViewModel.onRecoveryChanged("") }, properties = DialogProperties(dismissOnClickOutside = true, dismissOnBackPress = true)) {
+        Column(modifier = Modifier
+            .clip(shape = RoundedCornerShape(5.dp))
+            .fillMaxWidth()
+            .background(MaterialTheme.colors.backgroundGreen)
+            .border(2.dp, Color.White)
+            )
+             {
+                Text(
+                    "Enter your email address and you will receive an email with your actual password.",
+                    textAlign = TextAlign.Center,
+                    fontFamily = calibri,
+                    color = Color.White,
+                    modifier = Modifier.padding(15.dp),
+                    fontWeight = FontWeight.Bold
+                )
+             Spacer(modifier = Modifier
+                 .height(5.dp)
+                 .fillMaxWidth())
+             TextField(
+                 modifier = Modifier
+                     .border(
+                         width = 1.dp,
+                         brush = Brush.horizontalGradient(listOf(Color.White, Color.White)),
+                         shape = RoundedCornerShape(12.dp)
+                     )
+                     .align(Alignment.CenterHorizontally)
+                     .width(270.dp),
+                 maxLines = 1,
+                 value = email,
+                 onValueChange = { loginViewModel.onRecoveryChanged(it) },
+                 label = { PlaceholderForField("Email") },
+                 colors = TextFieldDefaults.outlinedTextFieldColors(
+                     focusedBorderColor = Color.Transparent,
+                     unfocusedBorderColor = Color.Transparent,
+                     textColor = Color.White,
+                     cursorColor = Color.White
+                 ),
+                 textStyle = textStyleLogin,
+
+             )
+            Spacer(modifier = Modifier
+                .height(5.dp)
+                .fillMaxWidth())
+            Button(
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(5.dp),
+                onClick = {
+                    loginViewModel.onRecoveryButtonPress(email, context)
+                    onDismiss()
+                },
+                colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.MainBrown,
+                    disabledBackgroundColor = Color(0xFF6a6a6a)),
+                enabled = isButtonEnabled
+            ) {
+                Text("Send", color = Color.White )
         }
+    }
     }
 }
 
@@ -295,7 +318,9 @@ fun ForgotPassword(modifier: Modifier) {
 @Composable
 fun WaitingScreen() {
     Column(modifier = Modifier.fillMaxSize()) {
-        Box(modifier = Modifier.fillMaxSize().align(Alignment.CenterHorizontally)) {
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .align(Alignment.CenterHorizontally)) {
             CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
         }
     }

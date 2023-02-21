@@ -1,6 +1,5 @@
 package ejercicios.dam.intermodulardam.rutas.data.network
 
-import android.util.Log
 import ejercicios.dam.intermodulardam.login.data.datastore.UserPreferenceService
 import ejercicios.dam.intermodulardam.main.domain.entity.CreatePublication
 import ejercicios.dam.intermodulardam.main.domain.entity.Publication
