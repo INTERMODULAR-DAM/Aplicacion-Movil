@@ -1,11 +1,11 @@
 package ejercicios.dam.intermodulardam.rutas.data.network
 
-import android.util.Log
 import ejercicios.dam.intermodulardam.login.data.datastore.UserPreferenceService
 import ejercicios.dam.intermodulardam.main.domain.entity.CreatePublication
 import ejercicios.dam.intermodulardam.main.domain.entity.Publication
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.util.Date
 import javax.inject.Inject
 
 class RutasService @Inject constructor(
@@ -34,6 +34,16 @@ class RutasService @Inject constructor(
             } else {
                 response.body()?.data!!.isNotEmpty()
             }
+        }
+    }
+
+    suspend fun getPostbyID(id:String):Publication {
+        return withContext(Dispatchers.IO) {
+            val response = rutasClient.getPostByID(userService.getToken("authorization"), id)
+            if(response.code() != 200) {
+                Publication(arrayListOf(), "", Date(), "", "", "", "", arrayListOf(), "", "", false, "")
+            }
+            response.body()?.data!!
         }
     }
 }

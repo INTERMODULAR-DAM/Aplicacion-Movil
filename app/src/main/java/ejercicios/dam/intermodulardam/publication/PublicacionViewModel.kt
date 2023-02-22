@@ -1,3 +1,0 @@
-package ejercicios.dam.intermodulardam.publication
-
-class PublicacionViewModel

@@ -9,6 +9,8 @@ import ejercicios.dam.intermodulardam.comments.ui.ComentariosViewModel
 @Composable
 fun Publicacion(navController: NavHostController, comentariosViewModel: ComentariosViewModel, id: String) {
     val context = LocalContext.current
+    comentariosViewModel.onInit(id)
+
     if(id.isEmpty()) {
         Toast.makeText(context, "Ha habido un problema con esta publicación", Toast.LENGTH_SHORT).show()
         navController.navigate("main")

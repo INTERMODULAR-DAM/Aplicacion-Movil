@@ -9,6 +9,11 @@ data class RutasResponse(
     @SerializedName("data") val data:ArrayList<Publication>,
 )
 
+data class SinglePostResponse(
+    @SerializedName("status") val status:String,
+    @SerializedName("data") val data:Publication,
+)
+
 data class CrearRutasResponse(
     @SerializedName("status") val status:String,
     @SerializedName("data") val data:String,

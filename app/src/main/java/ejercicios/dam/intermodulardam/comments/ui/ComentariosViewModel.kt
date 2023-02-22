@@ -1,6 +1,7 @@
 package ejercicios.dam.intermodulardam.comments.ui
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -10,15 +11,19 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import ejercicios.dam.intermodulardam.comments.domain.entity.Comentarios
 import ejercicios.dam.intermodulardam.comments.domain.usecase.ComentariosUseCase
 import ejercicios.dam.intermodulardam.comments.domain.usecase.CreateCommentUseCase
+import ejercicios.dam.intermodulardam.main.data.MainRepository
 import ejercicios.dam.intermodulardam.main.domain.entity.Publication
 import ejercicios.dam.intermodulardam.main.domain.entity.User
+import ejercicios.dam.intermodulardam.publication.data.PublicationRepository
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class ComentariosViewModel @Inject constructor(
     private val comentariosUseCase: ComentariosUseCase,
-    private val createCommentUseCase: CreateCommentUseCase
+    private val createCommentUseCase: CreateCommentUseCase,
+    private val publicationRepository: PublicationRepository,
+    private val mainRepository: MainRepository
 ) : ViewModel() {
 
     private val _user = MutableLiveData<User>()
@@ -30,9 +35,13 @@ class ComentariosViewModel @Inject constructor(
     private val _comments = MutableLiveData<List<Comentarios>>()
     val comments: LiveData<List<Comentarios>> = _comments
 
-    fun Oninit() {
+    fun onInit(id:String) {
         viewModelScope.launch {
-            _comments.value = comentariosUseCase.invoke(_route.value!!)
+            _user.value = mainRepository.getUser()
+            _route.value = publicationRepository.getPostByID(id)
+            if(_route.value!!.id.isNotEmpty()) {
+                _comments.value = comentariosUseCase.invoke(_route.value!!)
+            }
         }
     }
 
