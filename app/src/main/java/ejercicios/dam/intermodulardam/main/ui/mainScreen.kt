@@ -1,5 +1,6 @@
 package ejercicios.dam.intermodulardam.main.ui
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.scrollable
@@ -32,12 +33,15 @@ import ejercicios.dam.intermodulardam.main.domain.entity.Publication
 import ejercicios.dam.intermodulardam.main.domain.entity.User
 import ejercicios.dam.intermodulardam.models.Routes
 import ejercicios.dam.intermodulardam.ui.theme.calibri
+import ejercicios.dam.intermodulardam.utils.Constants.IP_ADDRESS
 import ejercicios.dam.intermodulardam.utils.MainGreen
 import ejercicios.dam.intermodulardam.utils.backgroundGreen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import okhttp3.internal.wait
+import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.time.Duration.Companion.days
 
 @Composable
 fun Main(navController:NavHostController, mainViewModel: MainViewModel) {
@@ -70,10 +74,10 @@ fun MainTopBar(coroutineScope: CoroutineScope, scaffoldState: ScaffoldState) {
     TopAppBar(modifier = Modifier
         .fillMaxWidth()
         .padding(0.dp),
-        backgroundColor = (MaterialTheme.colors.MainGreen)) {
+        backgroundColor = (MaterialTheme.colors.backgroundGreen)) {
         Row(modifier= Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
             IconButton(onClick = { coroutineScope.launch { scaffoldState.drawerState.open() } }, modifier = Modifier.weight(1F)) {
-                Icon(imageVector = Icons.Filled.Menu , contentDescription = "Desplegar Menu lateral", tint = Color.White)
+                Icon(imageVector = Icons.Filled.Menu , contentDescription = "Left-hand menu", tint = Color.White)
             }
             Text(modifier = Modifier.weight(7F), text = "Wikitrail", color = Color.White, fontWeight = FontWeight.W800)
         }
@@ -85,7 +89,7 @@ fun BottomNavigationBar(navController: NavHostController) {
     BottomAppBar(modifier = Modifier
         .fillMaxWidth()
         .padding(0.dp),
-        backgroundColor = MaterialTheme.colors.MainGreen)
+        backgroundColor = MaterialTheme.colors.backgroundGreen)
     {
         Row(modifier = Modifier.fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically,
@@ -110,7 +114,9 @@ fun MainDrawer(navController: NavHostController, user: User, coroutineScope: Cor
             .fillMaxSize()
             .background(color = MaterialTheme.colors.backgroundGreen),
     ) {
-        Row(modifier = Modifier.padding(start = 8.dp, top = 32.dp).fillMaxWidth(), verticalAlignment = Alignment.Bottom) {
+        Row(modifier = Modifier
+            .padding(start = 8.dp, top = 32.dp)
+            .fillMaxWidth(), verticalAlignment = Alignment.Bottom) {
             Box(
                 modifier = Modifier
                     .size(63.dp)
@@ -122,7 +128,7 @@ fun MainDrawer(navController: NavHostController, user: User, coroutineScope: Cor
                         .size(63.dp)
                         .scale(1F),
                     painter = rememberAsyncImagePainter(
-                    "http://192.168.230.74:8080/api/v1/imgs/users/"+ user.pfp_path
+                    "http://$IP_ADDRESS/api/v1/imgs/users/"+ user.pfp_path
                     ),
                     contentDescription = "Foto de Perfil",
                     contentScale = ContentScale.Crop)
@@ -141,11 +147,15 @@ fun MainDrawer(navController: NavHostController, user: User, coroutineScope: Cor
             }
         }
         Spacer(modifier = Modifier.height(6.dp))
-        Row(modifier = Modifier.fillMaxWidth().padding(start = 16.dp, top = 32.dp)) {
-            Text(text = "Siguiendo: ${user.following}", color = Color.White, style = TextStyle(fontFamily = calibri, fontSize = 16.sp))
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 16.dp, top = 32.dp)) {
+            Text(text = "Following: ${user.following}", color = Color.White, style = TextStyle(fontFamily = calibri, fontSize = 16.sp))
         }
         Spacer(modifier = Modifier.height(24.dp))
-        Row(modifier = Modifier.padding(start = 8.dp, top = 32.dp).fillMaxWidth(), verticalAlignment = Alignment.Bottom) {
+        Row(modifier = Modifier
+            .padding(start = 8.dp, top = 32.dp)
+            .fillMaxWidth(), verticalAlignment = Alignment.Bottom) {
             Box() {
                 Icon(imageVector = Icons.Filled.Person, contentDescription = "Ir a perfil", tint = Color.White)
             }
@@ -179,48 +189,126 @@ fun MainScreen(navController: NavHostController, mainViewModel: MainViewModel, u
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@SuppressLint("SimpleDateFormat")
 @Composable
 fun MainCards(navController: NavHostController, mainViewModel: MainViewModel, user: User, route:Publication) {
     Card(modifier = Modifier
         .padding(5.dp)
         .fillMaxWidth()
-        .combinedClickable(onDoubleClick = {
+        .clickable {
             navController.navigate(
                 Routes.Publicacion.createRoute(
                     route.id
                 )
             )
-        }) {/**/ },
+        },
         elevation = 5.dp) {
         Column(modifier = Modifier
             .fillMaxSize()
             .padding(5.dp)) {
-            Row(modifier = Modifier
+            Column(modifier = Modifier
                 .fillMaxWidth()
                 .height(200.dp)) {
-                if(route.photos.size > 0) {
-                    Image(
-                        modifier = Modifier.fillMaxSize(),
-                        painter = rememberAsyncImagePainter(
-                            "http://192.168.230.74:8080/api/v1/imgs/posts/${route.photos[0]}"
-                        ), contentDescription = "Foto de la ruta",
-                        contentScale = ContentScale.Crop
-                    )
-                } else {
-                    Image(
-                        modifier = Modifier.fillMaxSize(),
-                        painter = rememberAsyncImagePainter(
-                            "http://192.168.230.74:8080/api/v1/imgs/posts/noPhotos.png"
-                        ), contentDescription = "Foto por defecto",
-                        contentScale = ContentScale.Crop
-                    )
+                RouteTitle(route.name, Modifier.align(Alignment.Start))
+                RouteCategory(route.category)
+                Divider(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 10.dp),
+                    color = Color.LightGray)
+                Row(horizontalArrangement = Arrangement.SpaceBetween) {
+                    Column(modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .padding(horizontal = 10.dp)) {
+                        RouteImage(route)
+                        RouteUser(user)
+                    }
+
+                    Divider(
+                        Modifier
+                            .fillMaxHeight()
+                            .width(1.dp)
+                            .padding(vertical = 10.dp))
+
+                    Row(horizontalArrangement = Arrangement.SpaceEvenly) {
+                        Column(modifier = Modifier
+                            .align(Alignment.CenterVertically)
+                            .padding(horizontal = 10.dp)) {
+                            RouteParameter("Distance",route.distance)
+                            RouteParameter("Difficulty",route.difficulty)
+                        }
+                        Column(modifier = Modifier
+                            .align(Alignment.CenterVertically)) {
+                            RouteParameter("Duration",route.duration)
+                            RouteParameter("Date", SimpleDateFormat("dd/MM/yyyy").format(route.date) )
+
+                        }
+                    }
+
                 }
-            }
-            Spacer(modifier = Modifier.height(2.dp))
-            Row(modifier = Modifier.fillMaxWidth()) {
-                Text(text = route.name)
             }
         }
     }
+}
+
+@Composable
+fun RouteUser(user: User) {
+    Text(text = "USUARIOOO", fontSize = 16.sp, modifier = Modifier.padding(10.dp))
+}
+
+@Composable
+fun RouteImage(route : Publication) {
+    if(route.photos.size > 0) {
+        Image(
+            modifier = Modifier
+                .width(70.dp)
+                .height(70.dp),
+            painter = rememberAsyncImagePainter(
+                "http://$IP_ADDRESS/api/v1/imgs/posts/${route.id + "/" + route.photos[0]}"
+            ), contentDescription = "Route photo",
+            contentScale = ContentScale.Crop
+        )
+    } else {
+        Image(
+            modifier = Modifier
+                .width(80.dp)
+                .height(80.dp),
+            painter = rememberAsyncImagePainter(
+                "http://$IP_ADDRESS/api/v1/imgs/posts/noPhotos.png"
+            ), contentDescription = "Default photo",
+            contentScale = ContentScale.Crop
+        )
+    }
+}
+
+@Composable
+fun RouteParameter(parameter : String, value: String) {
+    Column(Modifier.padding(10.dp)) {
+        Text(text = parameter, color = Color.Gray, fontSize = 12.sp, fontFamily = calibri)
+        Text(text = value, fontSize = 16.sp, fontFamily = calibri, fontWeight = FontWeight.Bold)
+    }
+}
+
+@Composable
+fun RouteCategory(category: String) {
+    Text(
+        text = category,
+        fontFamily = calibri,
+        modifier = Modifier.padding(horizontal = 15.dp, vertical = 2.dp),
+        fontSize = 16.sp,
+        fontWeight = FontWeight.Bold,
+        color = Color.Gray
+    )
+
+}
+
+@Composable
+fun RouteTitle(title : String, modifier: Modifier) {
+    Text(
+        text = title,
+        modifier = modifier.padding(horizontal = 14.dp),
+        fontSize = 22.sp,
+        fontFamily = calibri,
+        fontWeight = FontWeight.ExtraBold,
+    )
 }

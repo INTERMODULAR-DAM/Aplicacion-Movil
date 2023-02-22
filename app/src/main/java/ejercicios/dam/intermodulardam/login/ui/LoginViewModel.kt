@@ -58,8 +58,7 @@ class LoginViewModel @Inject
     }
 
     private fun enableLogin(email: String, password: String): Boolean {
-        return Patterns.EMAIL_ADDRESS.matcher(email).matches() &&
-                password.length > 6
+        return email.length > 1 && password.length > 6
     }
 
     fun onButtonLoginPress(navController: NavHostController, context: Context) {
@@ -69,7 +68,7 @@ class LoginViewModel @Inject
             if(_loginOk.value!!.isNotEmpty()) {
                 navController.navigate("main")
             } else {
-                Toast.makeText(context, "Ha habido un error con el login", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Wrong user or password, please try again", Toast.LENGTH_SHORT).show()
             }
             _isLoading.value = false
         }

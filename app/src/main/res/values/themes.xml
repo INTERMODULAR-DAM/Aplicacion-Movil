@@ -2,7 +2,7 @@
 <resources>
 
     <style name="Theme.IntermodularDAM" parent="android:Theme.Material.Light.NoActionBar">
-        <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:statusBarColor">@color/backGroundGreen</item>
+        <item name="android:navigationBarColor">@color/backGroundGreen</item>
     </style>
 </resources>

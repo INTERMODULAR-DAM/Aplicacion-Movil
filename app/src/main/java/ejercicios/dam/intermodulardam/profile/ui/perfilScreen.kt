@@ -30,6 +30,7 @@ import ejercicios.dam.intermodulardam.main.domain.entity.Publication
 import ejercicios.dam.intermodulardam.main.domain.entity.User
 import ejercicios.dam.intermodulardam.models.Routes
 import ejercicios.dam.intermodulardam.ui.theme.calibri
+import ejercicios.dam.intermodulardam.utils.Constants.IP_ADDRESS
 import ejercicios.dam.intermodulardam.utils.MainGreen
 import ejercicios.dam.intermodulardam.utils.backgroundGreen
 import kotlinx.coroutines.CoroutineScope
@@ -124,7 +125,7 @@ fun PerfilDrawer(navController: NavHostController, user:User, coroutineScope: Co
                         .size(63.dp)
                         .scale(1F),
                     painter = rememberAsyncImagePainter(
-                        "http://192.168.230.74:8080/api/v1/imgs/users/"+ user.pfp_path
+                        "http://$IP_ADDRESS/api/v1/imgs/users/"+ user.pfp_path
                     ),
                     contentDescription = "Foto de Perfil",
                     contentScale = ContentScale.Crop)

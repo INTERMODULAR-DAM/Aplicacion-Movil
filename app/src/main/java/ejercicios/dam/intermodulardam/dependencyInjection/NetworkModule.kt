@@ -9,6 +9,7 @@ import ejercicios.dam.intermodulardam.login.data.network.LoginClient
 import ejercicios.dam.intermodulardam.profile.data.network.ProfileClient
 import ejercicios.dam.intermodulardam.register.data.network.RegistroClient
 import ejercicios.dam.intermodulardam.rutas.data.network.RutasClient
+import ejercicios.dam.intermodulardam.utils.Constants.IP_ADDRESS
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -41,7 +42,7 @@ class NetworkModule {
     @Singleton
     @Provides
     fun provideRetrofit(httpClient: OkHttpClient): Retrofit {
-        return Retrofit.Builder().baseUrl("http://192.168.230.74:8080/")
+        return Retrofit.Builder().baseUrl("http://$IP_ADDRESS/")
             .addConverterFactory(GsonConverterFactory.create())
             .client(httpClient).build()
     }
