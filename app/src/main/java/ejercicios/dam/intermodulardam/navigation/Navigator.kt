@@ -41,7 +41,7 @@ fun CustomNavigator(
             Login(navController = navController, loginViewModel = loginViewModel)
         }
         composable(route = Routes.Mapa.route) {
-            Mapa(navController = navController, mapaViewModel = mapaViewModel, mainViewModel)
+            Mapa(navController = navController, mapaViewModel = mapaViewModel)
         }
         composable(route = Routes.Registro.route) {
             RegisterScreen(navController = navController, registroViewModel)

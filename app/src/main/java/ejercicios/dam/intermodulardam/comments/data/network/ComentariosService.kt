@@ -1,6 +1,5 @@
 package ejercicios.dam.intermodulardam.comments.data.network
 
-import android.util.Log
 import ejercicios.dam.intermodulardam.comments.domain.entity.Comentarios
 import ejercicios.dam.intermodulardam.login.data.datastore.UserPreferenceService
 import ejercicios.dam.intermodulardam.main.domain.entity.Publication

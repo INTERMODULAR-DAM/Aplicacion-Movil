@@ -19,6 +19,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
@@ -28,6 +29,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import coil.compose.rememberAsyncImagePainter
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
@@ -39,6 +41,7 @@ import ejercicios.dam.intermodulardam.models.Routes
 import ejercicios.dam.intermodulardam.register.ui.PlaceholderForField
 import ejercicios.dam.intermodulardam.ui.theme.calibri
 import ejercicios.dam.intermodulardam.ui.theme.textStyleLogin
+import ejercicios.dam.intermodulardam.utils.Constants
 import ejercicios.dam.intermodulardam.utils.DisabledBrown
 import ejercicios.dam.intermodulardam.utils.MainGreen
 import ejercicios.dam.intermodulardam.utils.backgroundGreen
@@ -86,10 +89,12 @@ fun CrearRutaScreen(navController: NavHostController, mapaViewModel: MapaViewMod
     Column(modifier = Modifier
         .fillMaxSize()
         .background(MaterialTheme.colors.backgroundGreen)
-        .scrollable(scrollState, Orientation.Vertical)) {
+        .scrollable(scrollState, Orientation.Vertical)
+        .padding(top = 8.dp)) {
         Row(modifier = Modifier
             .fillMaxWidth()
-            .weight(1F)) {
+            .weight(1F),
+        horizontalArrangement = Arrangement.Center) {
             Name(name) {
                 mapaViewModel.onRouteChanged(
                     name = it,
@@ -105,7 +110,8 @@ fun CrearRutaScreen(navController: NavHostController, mapaViewModel: MapaViewMod
         }
         Row(modifier = Modifier
             .fillMaxWidth()
-            .weight(1F)) {
+            .weight(1F),
+            horizontalArrangement = Arrangement.Center) {
             Distance(distance) {
                 mapaViewModel.onRouteChanged(
                     name = name,
@@ -122,7 +128,8 @@ fun CrearRutaScreen(navController: NavHostController, mapaViewModel: MapaViewMod
         Spacer(modifier = Modifier.height(5.dp))
         Row(modifier = Modifier
             .fillMaxWidth()
-            .weight(1F)) {
+            .weight(1F),
+            horizontalArrangement = Arrangement.Center) {
             Category(category) {
                 mapaViewModel.onRouteChanged(
                     name = name,
@@ -139,7 +146,8 @@ fun CrearRutaScreen(navController: NavHostController, mapaViewModel: MapaViewMod
         Spacer(modifier = Modifier.height(5.dp))
         Row(modifier = Modifier
             .fillMaxWidth()
-            .weight(1F)) {
+            .weight(1F),
+            horizontalArrangement = Arrangement.Center) {
             Difficulty(difficulty) {
                 mapaViewModel.onRouteChanged(
                     name = name,
@@ -156,7 +164,8 @@ fun CrearRutaScreen(navController: NavHostController, mapaViewModel: MapaViewMod
         Spacer(modifier = Modifier.height(5.dp))
         Row(modifier = Modifier
             .fillMaxWidth()
-            .weight(1F)) {
+            .weight(1F),
+            horizontalArrangement = Arrangement.Center) {
             Duration(duration) {
                 mapaViewModel.onRouteChanged(
                     name = name,
@@ -173,7 +182,8 @@ fun CrearRutaScreen(navController: NavHostController, mapaViewModel: MapaViewMod
         Spacer(modifier = Modifier.height(5.dp))
         Row(modifier = Modifier
             .fillMaxWidth()
-            .weight(1F)) {
+            .weight(1F),
+            horizontalArrangement = Arrangement.Center) {
             Description(description) {
                 mapaViewModel.onRouteChanged(
                     name = name,
@@ -190,7 +200,8 @@ fun CrearRutaScreen(navController: NavHostController, mapaViewModel: MapaViewMod
         Spacer(modifier = Modifier.height(5.dp))
         Row(modifier = Modifier
             .fillMaxWidth()
-            .weight(1F)) {
+            .weight(1F),
+            horizontalArrangement = Arrangement.Center) {
             Private(isPrivate) {
                 mapaViewModel.onRouteChanged(
                     name = name,
@@ -223,7 +234,8 @@ fun CrearRutaScreen(navController: NavHostController, mapaViewModel: MapaViewMod
         }
         Row(modifier = Modifier
             .fillMaxWidth()
-            .weight(1F)) {
+            .weight(1F),
+            horizontalArrangement = Arrangement.Center) {
             CreateRouteButton(mapaViewModel, user.id, navController)
         }
         Spacer(modifier = Modifier.height(80.dp))
@@ -262,10 +274,10 @@ fun CrearRutaTopBar(coroutineScope: CoroutineScope, scaffoldState: ScaffoldState
     TopAppBar(modifier = Modifier
         .fillMaxWidth()
         .padding(0.dp),
-        backgroundColor = (MaterialTheme.colors.MainGreen)) {
+        backgroundColor = (MaterialTheme.colors.backgroundGreen)) {
         Row(modifier= Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
             IconButton(onClick = { coroutineScope.launch { scaffoldState.drawerState.open() } }, modifier = Modifier.weight(1F)) {
-                Icon(imageVector = Icons.Filled.Menu , contentDescription = "Desplegar Menu lateral", tint = Color.White)
+                Icon(imageVector = Icons.Filled.Menu , contentDescription = "Left-hand menu", tint = Color.White)
             }
             Text(modifier = Modifier.weight(7F), text = "Wikitrail", color = Color.White, fontWeight = FontWeight.W800)
         }
@@ -280,7 +292,9 @@ fun CrearRutaDrawer(navController: NavHostController, user: User, coroutineScope
             .fillMaxSize()
             .background(color = MaterialTheme.colors.backgroundGreen),
     ) {
-        Row(modifier = Modifier.padding(start = 8.dp, top = 32.dp), verticalAlignment = Alignment.Bottom) {
+        Row(modifier = Modifier
+            .padding(start = 8.dp, top = 32.dp)
+            .fillMaxWidth(), verticalAlignment = Alignment.Bottom) {
             Box(
                 modifier = Modifier
                     .size(63.dp)
@@ -289,20 +303,16 @@ fun CrearRutaDrawer(navController: NavHostController, user: User, coroutineScope
             ) {
                 Image(
                     modifier = Modifier
-                        .scale(1f),
-                    painter = painterResource(id = R.drawable.ic_launcher_background),
-                    contentDescription = "",
-                )
-
-                Image(
-                    modifier = Modifier
-                        .scale(1f),
-                    painter = painterResource(id = R.drawable.ic_launcher_foreground),
-                    contentDescription = "",
-                )
+                        .size(63.dp)
+                        .scale(1F),
+                    painter = rememberAsyncImagePainter(
+                        "http://${Constants.IP_ADDRESS}/api/v1/imgs/users/"+ user.pfp_path
+                    ),
+                    contentDescription = "Foto de Perfil",
+                    contentScale = ContentScale.Crop)
             }
             Box(modifier = Modifier.padding(start = 8.dp)) {
-                Text(text = "user.name", color = Color.White, style = TextStyle(fontFamily = calibri, fontSize = 20.sp))
+                Text(text = user.name, color = Color.White, style = TextStyle(fontFamily = calibri, fontSize = 24.sp))
             }
 
             Box(modifier = Modifier) {
@@ -314,9 +324,17 @@ fun CrearRutaDrawer(navController: NavHostController, user: User, coroutineScope
                 }
             }
         }
+        Spacer(modifier = Modifier.height(6.dp))
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 16.dp, top = 32.dp)) {
+            Text(text = "Following: ${user.following}", color = Color.White, style = TextStyle(fontFamily = calibri, fontSize = 16.sp))
+        }
         Spacer(modifier = Modifier.height(24.dp))
-        Row(modifier = Modifier.padding(start = 8.dp, top = 32.dp), verticalAlignment = Alignment.Bottom) {
-            Box {
+        Row(modifier = Modifier
+            .padding(start = 8.dp, top = 32.dp)
+            .fillMaxWidth(), verticalAlignment = Alignment.Bottom) {
+            Box() {
                 Icon(imageVector = Icons.Filled.Person, contentDescription = "Ir a perfil", tint = Color.White)
             }
             Box(modifier = Modifier.padding(start = 8.dp)) {
@@ -335,7 +353,7 @@ fun BottomNavigationBar(navController: NavHostController) {
     BottomAppBar(modifier = Modifier
         .fillMaxWidth()
         .padding(0.dp),
-        backgroundColor = MaterialTheme.colors.MainGreen)
+        backgroundColor = MaterialTheme.colors.backgroundGreen)
     {
         Row(modifier = Modifier.fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically,
@@ -343,7 +361,7 @@ fun BottomNavigationBar(navController: NavHostController) {
             IconButton(onClick = { navController.navigate(Routes.Main.route) }) {
                 Icon(imageVector = Icons.Filled.House, contentDescription = "Página Principal", tint = Color.White)
             }
-            IconButton(onClick = { navController.navigate(Routes.CrearRuta.route)}, enabled = false) {
+            IconButton(onClick = { navController.navigate(Routes.CrearRuta.route) }, enabled = false) {
                 Icon(imageVector = Icons.Filled.Add, contentDescription = "Crear Ruta", tint = Color.White)
             }
             IconButton(onClick = { navController.navigate(Routes.Mapa.route) }) {

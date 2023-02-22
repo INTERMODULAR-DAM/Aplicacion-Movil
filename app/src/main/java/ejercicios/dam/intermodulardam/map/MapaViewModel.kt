@@ -1,34 +1,45 @@
 package ejercicios.dam.intermodulardam.map
 
-import android.Manifest
 import android.content.Context
-import android.content.pm.PackageManager
-import android.util.Log
 import android.widget.Toast
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.core.app.ActivityCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.Priority
 import com.google.android.gms.maps.model.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
 import ejercicios.dam.intermodulardam.createRoutes.domain.CreateRouteUseCase
+import ejercicios.dam.intermodulardam.main.data.MainRepository
 import ejercicios.dam.intermodulardam.main.domain.entity.CreatePublication
-import ejercicios.dam.intermodulardam.models.Routes
+import ejercicios.dam.intermodulardam.main.domain.entity.Publication
+import ejercicios.dam.intermodulardam.main.domain.entity.User
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
 @HiltViewModel
-class MapaViewModel @Inject constructor(private val createRouteUseCase: CreateRouteUseCase) : ViewModel() {
+class MapaViewModel @Inject constructor(private val createRouteUseCase: CreateRouteUseCase, private val repository: MainRepository) : ViewModel() {
 
      lateinit var fusedLocationClient: FusedLocationProviderClient
+
+     private val _user = MutableLiveData<User>()
+     val user:LiveData<User> = _user
+
+     private val _routes = MutableLiveData<List<Publication>>()
+     val routes:LiveData<List<Publication>> = _routes
+
+     fun onInit() {
+          viewModelScope.launch {
+               _user.value = repository.getUser()
+               if(_user.value!!.admin) {
+                    _routes.value = repository.getAllPosts()
+               } else {
+                    _routes.value = repository.getAllPublicPosts()
+               }
+          }
+     }
 
      private val _name = MutableLiveData<String>()
      val name:LiveData<String> = _name
