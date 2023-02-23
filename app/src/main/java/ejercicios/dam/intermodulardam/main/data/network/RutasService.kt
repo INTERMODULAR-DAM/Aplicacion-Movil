@@ -1,5 +1,6 @@
-package ejercicios.dam.intermodulardam.rutas.data.network
+package ejercicios.dam.intermodulardam.main.data.network
 
+import ejercicios.dam.intermodulardam.login.data.network.dto.UserDTO
 import ejercicios.dam.intermodulardam.login.data.datastore.UserPreferenceService
 import ejercicios.dam.intermodulardam.main.domain.entity.CreatePublication
 import ejercicios.dam.intermodulardam.main.domain.entity.Publication
@@ -41,9 +42,29 @@ class RutasService @Inject constructor(
         return withContext(Dispatchers.IO) {
             val response = rutasClient.getPostByID(userService.getToken("authorization"), id)
             if(response.code() != 200) {
-                Publication(arrayListOf(), "", Date(), "", "", "", "", arrayListOf(), "", "", false, "")
+                return@withContext Publication(arrayListOf(), "", Date(), "", "", "", "", arrayListOf(), "", "", false, "")
             }
             response.body()?.data!!
+        }
+    }
+
+    suspend fun getUserById(user : String): UserDTO {
+        return withContext(Dispatchers.IO){
+            val response = rutasClient.getUserById(userService.getToken("authorization"), user).body()?.data!!
+
+            val user = UserDTO(
+                response._id,
+                response.email,
+                response.name,
+                response.lastname,
+                response.date,
+                response.nick,
+                response.admin,
+                response.pfp_path,
+                response.phone_number,
+                response.following
+            )
+            user
         }
     }
 }

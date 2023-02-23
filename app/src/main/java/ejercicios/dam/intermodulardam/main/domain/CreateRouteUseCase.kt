@@ -1,4 +1,4 @@
-package ejercicios.dam.intermodulardam.createRoutes.domain
+package ejercicios.dam.intermodulardam.main.domain
 
 import ejercicios.dam.intermodulardam.main.data.MainRepository
 import ejercicios.dam.intermodulardam.main.domain.entity.CreatePublication
@@ -9,3 +9,7 @@ class CreateRouteUseCase @Inject constructor(private val repository: MainReposit
         return repository.createRoute(publication)
     }
 }
+
+
+
+

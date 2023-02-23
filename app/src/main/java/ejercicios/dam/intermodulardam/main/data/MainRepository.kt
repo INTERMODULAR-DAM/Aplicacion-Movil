@@ -2,11 +2,11 @@ package ejercicios.dam.intermodulardam.main.data
 
 import android.util.Log
 import ejercicios.dam.intermodulardam.login.data.database.dao.UserDAO
-import ejercicios.dam.intermodulardam.login.data.database.entity.UserDTO
+import ejercicios.dam.intermodulardam.login.data.network.dto.UserDTO
 import ejercicios.dam.intermodulardam.main.domain.entity.CreatePublication
 import ejercicios.dam.intermodulardam.main.domain.entity.Publication
 import ejercicios.dam.intermodulardam.main.domain.entity.User
-import ejercicios.dam.intermodulardam.rutas.data.network.RutasService
+import ejercicios.dam.intermodulardam.main.data.network.RutasService
 import javax.inject.Inject
 
 class MainRepository @Inject constructor(
@@ -40,4 +40,13 @@ class MainRepository @Inject constructor(
     suspend fun createRoute(publication: CreatePublication):Boolean {
         return api.createRoute(publication)
     }
+
+    suspend fun getPostByID(id:String): Publication {
+        return api.getPostbyID(id)
+    }
+
+    suspend fun getUserById(user: String): UserDTO {
+        return api.getUserById(user)
+    }
+
 }

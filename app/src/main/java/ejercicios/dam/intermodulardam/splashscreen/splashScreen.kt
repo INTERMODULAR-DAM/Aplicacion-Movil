@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import ejercicios.dam.intermodulardam.BuildConfig
-import ejercicios.dam.intermodulardam.models.Routes
+import ejercicios.dam.intermodulardam.Routes
 import ejercicios.dam.intermodulardam.R
 import ejercicios.dam.intermodulardam.utils.backgroundGreen
 import kotlinx.coroutines.delay

@@ -18,16 +18,12 @@ class LoginRepository @Inject
 
         val connectionOk = api.doLogin(email, password)
         if(connectionOk.isNotEmpty()) {
-            userPreference.addToken("authorization", "bearer $connectionOk")
-            val user: UserDTO? = api.getLoginUser()
-            if(user != null) {
-                userDAO.insertAll(
-                    listOf(user.toDataBase(userPreference.getToken("authorization")))
-                )
-                return user._id
-            }
-            return ""
-
+            userPreference.addToken("authorization", "Bearer $connectionOk")
+            val user: UserDTO = api.getLoginUser()
+            userDAO.insertAll(
+                listOf(user.toDataBase(userPreference.getToken("authorization")))
+            )
+            return user._id
         }
         return ""
     }

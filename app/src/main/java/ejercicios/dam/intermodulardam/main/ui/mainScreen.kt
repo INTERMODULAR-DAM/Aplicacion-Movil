@@ -7,6 +7,7 @@ import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -18,7 +19,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -31,17 +31,14 @@ import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import ejercicios.dam.intermodulardam.main.domain.entity.Publication
 import ejercicios.dam.intermodulardam.main.domain.entity.User
-import ejercicios.dam.intermodulardam.models.Routes
+import ejercicios.dam.intermodulardam.Routes
 import ejercicios.dam.intermodulardam.ui.theme.calibri
 import ejercicios.dam.intermodulardam.utils.Constants.IP_ADDRESS
-import ejercicios.dam.intermodulardam.utils.MainGreen
+import ejercicios.dam.intermodulardam.utils.MainBrown
 import ejercicios.dam.intermodulardam.utils.backgroundGreen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import okhttp3.internal.wait
 import java.text.SimpleDateFormat
-import java.util.*
-import kotlin.time.Duration.Companion.days
 
 @Composable
 fun Main(navController:NavHostController, mainViewModel: MainViewModel) {
@@ -130,7 +127,7 @@ fun MainDrawer(navController: NavHostController, user: User, coroutineScope: Cor
                     painter = rememberAsyncImagePainter(
                     "http://$IP_ADDRESS/api/v1/imgs/users/"+ user.pfp_path
                     ),
-                    contentDescription = "Foto de Perfil",
+                    contentDescription = "Profile photo",
                     contentScale = ContentScale.Crop)
             }
             Box(modifier = Modifier.padding(start = 8.dp)) {
@@ -150,7 +147,7 @@ fun MainDrawer(navController: NavHostController, user: User, coroutineScope: Cor
         Row(modifier = Modifier
             .fillMaxWidth()
             .padding(start = 16.dp, top = 32.dp)) {
-            Text(text = "Following: ${user.following}", color = Color.White, style = TextStyle(fontFamily = calibri, fontSize = 16.sp))
+            Text(text = "Followers:", color = Color.White, style = TextStyle(fontFamily = calibri, fontSize = 16.sp))
         }
         Spacer(modifier = Modifier.height(24.dp))
         Row(modifier = Modifier
@@ -161,7 +158,7 @@ fun MainDrawer(navController: NavHostController, user: User, coroutineScope: Cor
             }
             Box(modifier = Modifier.padding(start = 8.dp)) {
                 ClickableText(
-                    text = AnnotatedString("Perfil"),
+                    text = AnnotatedString("Profile"),
                     style = TextStyle(fontFamily = calibri, fontSize = 20.sp, color = Color.White),
                     onClick = {navController.navigate(Routes.Perfil.createRoute(user.id))}
                 )
@@ -173,9 +170,6 @@ fun MainDrawer(navController: NavHostController, user: User, coroutineScope: Cor
 
 @Composable
 fun MainScreen(navController: NavHostController, mainViewModel: MainViewModel, user: User, routes:List<Publication>) {
-    /*TODO FILTERS? quiza en el drawer debajo de perfil?
-    *  Spacer(modifier = Modifier.height(10.dp))*/
-
     val scrollState = rememberScrollState()
 
     LazyColumn(modifier = Modifier
@@ -183,6 +177,7 @@ fun MainScreen(navController: NavHostController, mainViewModel: MainViewModel, u
         .scrollable(scrollState, Orientation.Vertical)
         .padding(bottom = 60.dp)) {
         items(routes.size) { index ->
+            val postCreator =
             MainCards(navController = navController, mainViewModel = mainViewModel, user = user, routes[index])
             Spacer(modifier = Modifier.height(5.dp))
         }
@@ -195,6 +190,8 @@ fun MainCards(navController: NavHostController, mainViewModel: MainViewModel, us
     Card(modifier = Modifier
         .padding(5.dp)
         .fillMaxWidth()
+        .clip(RoundedCornerShape(10.dp))
+        .border(1.dp, MaterialTheme.colors.MainBrown, RoundedCornerShape(10.dp))
         .clickable {
             navController.navigate(
                 Routes.Publicacion.createRoute(
@@ -202,13 +199,11 @@ fun MainCards(navController: NavHostController, mainViewModel: MainViewModel, us
                 )
             )
         },
-        elevation = 5.dp) {
+        elevation = 20.dp) {
         Column(modifier = Modifier
             .fillMaxSize()
-            .padding(5.dp)) {
-            Column(modifier = Modifier
-                .fillMaxWidth()
-                .height(200.dp)) {
+            .padding(5.dp)
+            .height(200.dp)){
                 RouteTitle(route.name, Modifier.align(Alignment.Start))
                 RouteCategory(route.category)
                 Divider(
@@ -217,10 +212,13 @@ fun MainCards(navController: NavHostController, mainViewModel: MainViewModel, us
                         .padding(horizontal = 10.dp),
                     color = Color.LightGray)
                 Row(horizontalArrangement = Arrangement.SpaceBetween) {
-                    Column(modifier = Modifier
+                    Column(verticalArrangement =Arrangement.SpaceEvenly ,
+                        modifier = Modifier
                         .align(Alignment.CenterVertically)
-                        .padding(horizontal = 10.dp)) {
-                        RouteImage(route)
+                        .padding(vertical = 5.dp)) {
+                        Box(contentAlignment = Alignment.Center){
+                            RouteImage(route)
+                        }
                         RouteUser(user)
                     }
 
@@ -244,8 +242,6 @@ fun MainCards(navController: NavHostController, mainViewModel: MainViewModel, us
 
                         }
                     }
-
-                }
             }
         }
     }
@@ -253,32 +249,36 @@ fun MainCards(navController: NavHostController, mainViewModel: MainViewModel, us
 
 @Composable
 fun RouteUser(user: User) {
-    Text(text = "USUARIOOO", fontSize = 16.sp, modifier = Modifier.padding(10.dp))
+    Text(text = user.name, fontSize = 16.sp, modifier = Modifier.padding(10.dp))
 }
 
 @Composable
 fun RouteImage(route : Publication) {
     if(route.photos.size > 0) {
-        Image(
-            modifier = Modifier
-                .width(70.dp)
-                .height(70.dp),
-            painter = rememberAsyncImagePainter(
-                "http://$IP_ADDRESS/api/v1/imgs/posts/${route.id + "/" + route.photos[0]}"
-            ), contentDescription = "Route photo",
-            contentScale = ContentScale.Crop
-        )
+        val photos = route.photos
+        photos.sortDescending()
+        for(i in 0 until route.photos.size){
+            if(i == 3){
+                break
+            }
+            PostPhoto(name = route.id + "/" + photos[i], modifier = Modifier.width((80+(i*15)).dp).height((80+(i*15)).dp).padding(start = (60-(15*i)).dp))
+        }
     } else {
-        Image(
-            modifier = Modifier
-                .width(80.dp)
-                .height(80.dp),
-            painter = rememberAsyncImagePainter(
-                "http://$IP_ADDRESS/api/v1/imgs/posts/noPhotos.png"
-            ), contentDescription = "Default photo",
-            contentScale = ContentScale.Crop
-        )
+        PostPhoto(name = "noPhotos.png", modifier = Modifier
+            .width(80.dp)
+            .height(80.dp))
     }
+}
+
+@Composable
+fun PostPhoto(name : String, modifier : Modifier){
+    Image(
+        modifier = modifier,
+        painter = rememberAsyncImagePainter(
+            "http://$IP_ADDRESS/api/v1/imgs/posts/$name"
+        ), contentDescription = "Post photo",
+        contentScale = ContentScale.Crop
+    )
 }
 
 @Composable

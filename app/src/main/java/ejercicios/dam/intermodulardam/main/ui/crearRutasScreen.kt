@@ -21,7 +21,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -33,17 +32,15 @@ import coil.compose.rememberAsyncImagePainter
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
-import ejercicios.dam.intermodulardam.R
 import ejercicios.dam.intermodulardam.main.domain.entity.User
 import ejercicios.dam.intermodulardam.main.ui.MainViewModel
 import ejercicios.dam.intermodulardam.map.MapaViewModel
-import ejercicios.dam.intermodulardam.models.Routes
+import ejercicios.dam.intermodulardam.Routes
 import ejercicios.dam.intermodulardam.register.ui.PlaceholderForField
 import ejercicios.dam.intermodulardam.ui.theme.calibri
 import ejercicios.dam.intermodulardam.ui.theme.textStyleLogin
 import ejercicios.dam.intermodulardam.utils.Constants
 import ejercicios.dam.intermodulardam.utils.DisabledBrown
-import ejercicios.dam.intermodulardam.utils.MainGreen
 import ejercicios.dam.intermodulardam.utils.backgroundGreen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch

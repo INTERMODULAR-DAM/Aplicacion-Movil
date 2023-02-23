@@ -14,7 +14,6 @@ import ejercicios.dam.intermodulardam.login.domain.usecase.HasTokenUseCase
 import ejercicios.dam.intermodulardam.login.domain.usecase.HasUserLoggedUseCase
 import ejercicios.dam.intermodulardam.login.domain.usecase.LoginUseCase
 import ejercicios.dam.intermodulardam.login.domain.usecase.RecoverPasswordUseCase
-import ejercicios.dam.intermodulardam.models.Routes
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,7 +28,7 @@ class LoginViewModel @Inject
 
     init {
         viewModelScope.launch {
-            if(hasToken.invoke() && hasUserLogged.invoke()) {
+            if(hasToken() && hasUserLogged()) {
                 Log.i("A", "tenemos token y usuario")
             }
         }

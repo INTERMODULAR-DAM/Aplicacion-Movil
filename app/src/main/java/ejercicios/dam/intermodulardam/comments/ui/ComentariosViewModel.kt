@@ -1,7 +1,6 @@
 package ejercicios.dam.intermodulardam.comments.ui
 
 import android.content.Context
-import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -14,7 +13,6 @@ import ejercicios.dam.intermodulardam.comments.domain.usecase.CreateCommentUseCa
 import ejercicios.dam.intermodulardam.main.data.MainRepository
 import ejercicios.dam.intermodulardam.main.domain.entity.Publication
 import ejercicios.dam.intermodulardam.main.domain.entity.User
-import ejercicios.dam.intermodulardam.publication.data.PublicationRepository
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,7 +20,6 @@ import javax.inject.Inject
 class ComentariosViewModel @Inject constructor(
     private val comentariosUseCase: ComentariosUseCase,
     private val createCommentUseCase: CreateCommentUseCase,
-    private val publicationRepository: PublicationRepository,
     private val mainRepository: MainRepository
 ) : ViewModel() {
 
@@ -38,9 +35,9 @@ class ComentariosViewModel @Inject constructor(
     fun onInit(id:String) {
         viewModelScope.launch {
             _user.value = mainRepository.getUser()
-            _route.value = publicationRepository.getPostByID(id)
+            _route.value = mainRepository.getPostByID(id)
             if(_route.value!!.id.isNotEmpty()) {
-                _comments.value = comentariosUseCase.invoke(_route.value!!)
+                _comments.value = comentariosUseCase(_route.value!!)
             }
         }
     }
@@ -63,9 +60,9 @@ class ComentariosViewModel @Inject constructor(
     fun onCreateComment(userID:String, postID:String, context:Context) {
         viewModelScope.launch {
             val comment = Comentarios(_message.value!!, userID, postID)
-            val createdOk = createCommentUseCase.invoke(comment)
+            val createdOk = createCommentUseCase(comment)
             if(!createdOk) {
-                Toast.makeText(context, "Ha habido un problema al crear el comentario", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "An error has ocurred creating the comment", Toast.LENGTH_LONG).show()
             }
         }
     }

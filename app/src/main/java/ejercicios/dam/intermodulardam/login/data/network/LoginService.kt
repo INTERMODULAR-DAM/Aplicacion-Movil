@@ -31,8 +31,7 @@ class LoginService @Inject constructor(
     suspend fun getLoginUser(): UserDTO {
         return withContext(Dispatchers.IO) {
             val response = loginClient.getLoginUser(userService.getToken("authorization"))
-            Log.i("RESPONSE", "$response")
-            val user:UserDTO = UserDTO(
+            val user = UserDTO(
                 response.body()?.data!!._id,
                 response.body()?.data!!.email,
                 response.body()?.data!!.name,

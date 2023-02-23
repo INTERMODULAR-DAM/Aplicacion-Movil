@@ -16,7 +16,7 @@ import ejercicios.dam.intermodulardam.main.ui.Main
 import ejercicios.dam.intermodulardam.main.ui.MainViewModel
 import ejercicios.dam.intermodulardam.map.Mapa
 import ejercicios.dam.intermodulardam.map.MapaViewModel
-import ejercicios.dam.intermodulardam.models.Routes
+import ejercicios.dam.intermodulardam.Routes
 import ejercicios.dam.intermodulardam.profile.ui.Perfil
 import ejercicios.dam.intermodulardam.profile.ui.PerfilViewModel
 import ejercicios.dam.intermodulardam.publication.Publicacion

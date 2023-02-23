@@ -4,7 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -18,7 +17,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -28,7 +26,7 @@ import coil.compose.rememberAsyncImagePainter
 import ejercicios.dam.intermodulardam.comments.ui.ComentariosViewModel
 import ejercicios.dam.intermodulardam.main.domain.entity.Publication
 import ejercicios.dam.intermodulardam.main.domain.entity.User
-import ejercicios.dam.intermodulardam.models.Routes
+import ejercicios.dam.intermodulardam.Routes
 import ejercicios.dam.intermodulardam.ui.theme.calibri
 import ejercicios.dam.intermodulardam.utils.Constants.IP_ADDRESS
 import ejercicios.dam.intermodulardam.utils.MainGreen

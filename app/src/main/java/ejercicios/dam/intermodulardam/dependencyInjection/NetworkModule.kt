@@ -8,7 +8,7 @@ import ejercicios.dam.intermodulardam.comments.data.network.ComentariosClient
 import ejercicios.dam.intermodulardam.login.data.network.LoginClient
 import ejercicios.dam.intermodulardam.profile.data.network.ProfileClient
 import ejercicios.dam.intermodulardam.register.data.network.RegistroClient
-import ejercicios.dam.intermodulardam.rutas.data.network.RutasClient
+import ejercicios.dam.intermodulardam.main.data.network.RutasClient
 import ejercicios.dam.intermodulardam.utils.Constants.IP_ADDRESS
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -60,7 +60,7 @@ class NetworkModule {
 
     @Singleton
     @Provides
-    fun provideRutasClient(retrofit: Retrofit):RutasClient {
+    fun provideRutasClient(retrofit: Retrofit): RutasClient {
         return retrofit.create(RutasClient::class.java)
     }
 

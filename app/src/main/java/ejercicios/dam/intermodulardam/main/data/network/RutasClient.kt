@@ -1,10 +1,12 @@
-package ejercicios.dam.intermodulardam.rutas.data.network
+package ejercicios.dam.intermodulardam.main.data.network
 
+import ejercicios.dam.intermodulardam.login.data.database.entity.UserDTO
 import ejercicios.dam.intermodulardam.main.domain.entity.CreatePublication
 import ejercicios.dam.intermodulardam.main.domain.entity.User
-import ejercicios.dam.intermodulardam.rutas.data.network.response.CrearRutasResponse
-import ejercicios.dam.intermodulardam.rutas.data.network.response.RutasResponse
-import ejercicios.dam.intermodulardam.rutas.data.network.response.SinglePostResponse
+import ejercicios.dam.intermodulardam.main.data.network.response.CrearRutasResponse
+import ejercicios.dam.intermodulardam.main.data.network.response.RutasResponse
+import ejercicios.dam.intermodulardam.main.data.network.response.SinglePostResponse
+import ejercicios.dam.intermodulardam.main.data.network.response.userCreator
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -21,4 +23,7 @@ interface RutasClient {
 
     @POST("/api/v1/posts/")
     suspend fun createRoute(@Header("authorization") token:String, @Body publication: CreatePublication):Response<CrearRutasResponse>
+
+    @GET("/api/v1/users/")
+    suspend fun getUserById(@Header("authorization") token: String, @Body _id: String) : Response<userCreator>
 }

@@ -1,7 +1,6 @@
 package ejercicios.dam.intermodulardam.register.ui
 
 import android.content.Context
-import android.util.Log
 import android.util.Patterns
 import android.widget.Toast
 import androidx.lifecycle.LiveData
@@ -10,7 +9,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import dagger.hilt.android.lifecycle.HiltViewModel
-import ejercicios.dam.intermodulardam.models.Routes
 import ejercicios.dam.intermodulardam.register.domain.entity.UserRegistroModel
 import ejercicios.dam.intermodulardam.register.domain.usecase.RegistroUseCase
 import kotlinx.coroutines.launch

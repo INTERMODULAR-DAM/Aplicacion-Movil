@@ -5,7 +5,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
-import android.widget.Toast
+import android.util.Log
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -27,7 +27,6 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -41,14 +40,10 @@ import com.google.android.gms.location.Priority
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
-import ejercicios.dam.intermodulardam.R
-import ejercicios.dam.intermodulardam.main.domain.entity.Publication
 import ejercicios.dam.intermodulardam.main.domain.entity.User
-import ejercicios.dam.intermodulardam.main.ui.MainViewModel
-import ejercicios.dam.intermodulardam.models.Routes
+import ejercicios.dam.intermodulardam.Routes
 import ejercicios.dam.intermodulardam.ui.theme.calibri
 import ejercicios.dam.intermodulardam.utils.Constants
-import ejercicios.dam.intermodulardam.utils.MainGreen
 import ejercicios.dam.intermodulardam.utils.backgroundGreen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -97,11 +92,10 @@ fun MapaScreen(navController: NavHostController, mapaViewModel: MapaViewModel) {
     var permissionOk by rememberSaveable() { mutableStateOf(false) }
 
     val launcher = permissionLauncher() { permissionOk = it }
-
+    Log.d("PRUEBAAAAAAAAA", isPermissionGranted(context, permission).toString())
     if(!isPermissionGranted) {
-        SideEffect {
-            launcher.launch(permission)
-        }
+        launcher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+
     } else {
         mapaViewModel.fusedLocationClient
             .getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
@@ -232,12 +226,10 @@ fun MapaDrawer(navController: NavHostController, user: User, coroutineScope: Cor
 
 @Composable
 fun permissionLauncher(onClick: (Boolean) -> Unit): ManagedActivityResultLauncher<String, Boolean> {
-
     return rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted:Boolean ->
         onClick(isGranted)
-        isGranted
     }
 }
 

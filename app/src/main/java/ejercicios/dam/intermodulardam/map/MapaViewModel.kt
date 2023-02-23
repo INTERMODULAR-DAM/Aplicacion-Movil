@@ -10,7 +10,7 @@ import androidx.navigation.NavHostController
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.maps.model.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
-import ejercicios.dam.intermodulardam.createRoutes.domain.CreateRouteUseCase
+import ejercicios.dam.intermodulardam.main.domain.CreateRouteUseCase
 import ejercicios.dam.intermodulardam.main.data.MainRepository
 import ejercicios.dam.intermodulardam.main.domain.entity.CreatePublication
 import ejercicios.dam.intermodulardam.main.domain.entity.Publication
@@ -127,7 +127,7 @@ class MapaViewModel @Inject constructor(private val createRouteUseCase: CreateRo
                if(response) {
                     navController.navigate("main")
                } else {
-                    Toast.makeText(context, "Ha habido un problema al crear la ruta", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "An error has ocurred creating the route", Toast.LENGTH_SHORT).show()
                }
           }
      }
