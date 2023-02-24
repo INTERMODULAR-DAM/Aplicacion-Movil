@@ -94,8 +94,9 @@ fun MapaScreen(navController: NavHostController, mapaViewModel: MapaViewModel) {
     val launcher = permissionLauncher() { permissionOk = it }
     Log.d("PRUEBAAAAAAAAA", isPermissionGranted(context, permission).toString())
     if(!isPermissionGranted) {
-        launcher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-
+        SideEffect {
+            launcher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+        }
     } else {
         mapaViewModel.fusedLocationClient
             .getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
@@ -115,12 +116,30 @@ fun MapaScreen(navController: NavHostController, mapaViewModel: MapaViewModel) {
                 properties = MapProperties(mapType = MapType.HYBRID, isMyLocationEnabled = true),
                 uiSettings = MapUiSettings(myLocationButtonEnabled = true),
             ) {
+                routes.forEach { route ->
+                    val latlngList:MutableList<LatLng> = mutableListOf()
+                    for(i in 0 until route.track.size) {
+                        latlngList += LatLng(route.track[i].lat, route.track[i].lng)
+                    }
+                    Marker(
+                        state = rememberMarkerState(position = latlngList[0]),
+                        title = route.name,
+                        snippet = "Description: ${route.description}"
 
+                    )
+                    Polyline(points = latlngList, color = Color.Red)
+                    Marker(
+                        state = rememberMarkerState(position = latlngList[latlngList.size -1]),
+                        title = "Fin de la ruta",
+                        snippet = "Duración:  ${route.duration} \n Dificultad: ${route.difficulty}"
+                    )
+                }
             }
         }
     }
 
 }
+
 
 @Composable
 fun MapaTopBar(coroutineScope: CoroutineScope, scaffoldState: ScaffoldState) {

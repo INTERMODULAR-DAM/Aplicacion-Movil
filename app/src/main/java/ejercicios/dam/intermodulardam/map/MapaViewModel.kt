@@ -13,6 +13,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import ejercicios.dam.intermodulardam.main.domain.CreateRouteUseCase
 import ejercicios.dam.intermodulardam.main.data.MainRepository
 import ejercicios.dam.intermodulardam.main.domain.entity.CreatePublication
+import ejercicios.dam.intermodulardam.main.domain.entity.LatitudeLongitude
 import ejercicios.dam.intermodulardam.main.domain.entity.Publication
 import ejercicios.dam.intermodulardam.main.domain.entity.User
 import kotlinx.coroutines.launch
@@ -112,23 +113,33 @@ class MapaViewModel @Inject constructor(private val createRouteUseCase: CreateRo
 
      fun onCreateButtonClick(id:String, context: Context, navController:NavHostController) {
           viewModelScope.launch {
+               val latlngList: MutableList<LatitudeLongitude> = mutableListOf()
+               _track.value!!.forEach { LatLng ->
+                    latlngList += LatitudeLongitude(LatLng.latitude, LatLng.longitude)
+               }
+
                val publication = CreatePublication(
                     name.value!!,
                     category.value!!,
                     distance.value!!,
                     difficulty.value!!,
-                    track.value!!,
+                    latlngList,
                     duration.value!!,
                     description.value!!,
                     isPrivate.value!!,
                     id
                )
                val response = createRouteUseCase(publication)
-               if(response) {
+               if (response) {
                     navController.navigate("main")
                } else {
-                    Toast.makeText(context, "An error has ocurred creating the route", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                         context,
+                         "An error has ocurred creating the route",
+                         Toast.LENGTH_SHORT
+                    ).show()
                }
           }
      }
+
 }

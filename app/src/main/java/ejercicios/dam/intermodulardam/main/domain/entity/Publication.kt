@@ -13,7 +13,7 @@ data class Publication(
     @SerializedName("category") val category:String,
     @SerializedName("distance") val distance:String,
     @SerializedName("difficulty") val difficulty:String,
-    @SerializedName("track") val track:ArrayList<LatLng>,
+    @SerializedName("track") val track:List<LatitudeLongitude>,
     @SerializedName("duration") val duration:String,
     @SerializedName("description") val description:String,
     @SerializedName("privacity") val privacity:Boolean,
@@ -25,9 +25,14 @@ data class CreatePublication(
     @SerializedName("category") val category:String,
     @SerializedName("distance") val distance:String,
     @SerializedName("difficulty") val difficulty:String,
-    @SerializedName("track") val track:MutableList<LatLng>,
+    @SerializedName("track") val track:List<LatitudeLongitude>,
     @SerializedName("duration") val duration:String,
     @SerializedName("description") val description:String,
     @SerializedName("privacity") val privacity:Boolean,
     @SerializedName("user") val user:String,
+)
+
+data class LatitudeLongitude(
+    @SerializedName("lat") val lat:Double,
+    @SerializedName("lng") val lng:Double
 )
