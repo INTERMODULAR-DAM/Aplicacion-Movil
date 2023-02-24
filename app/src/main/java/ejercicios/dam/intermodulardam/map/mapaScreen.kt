@@ -5,7 +5,6 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
-import android.util.Log
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -92,7 +91,6 @@ fun MapaScreen(navController: NavHostController, mapaViewModel: MapaViewModel) {
     var permissionOk by rememberSaveable() { mutableStateOf(false) }
 
     val launcher = permissionLauncher() { permissionOk = it }
-    Log.d("PRUEBAAAAAAAAA", isPermissionGranted(context, permission).toString())
     if(!isPermissionGranted) {
         SideEffect {
             launcher.launch(Manifest.permission.ACCESS_FINE_LOCATION)

@@ -1,5 +1,8 @@
 package ejercicios.dam.intermodulardam.createRoutes.ui
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.app.Activity
 import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.scrollable
@@ -29,13 +32,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
+import ejercicios.dam.intermodulardam.Routes
 import ejercicios.dam.intermodulardam.main.domain.entity.User
 import ejercicios.dam.intermodulardam.main.ui.MainViewModel
 import ejercicios.dam.intermodulardam.map.MapaViewModel
-import ejercicios.dam.intermodulardam.Routes
+import ejercicios.dam.intermodulardam.map.isPermissionGranted
+import ejercicios.dam.intermodulardam.map.permissionLauncher
 import ejercicios.dam.intermodulardam.register.ui.PlaceholderForField
 import ejercicios.dam.intermodulardam.ui.theme.calibri
 import ejercicios.dam.intermodulardam.ui.theme.textStyleLogin
@@ -239,28 +246,51 @@ fun CrearRutaScreen(navController: NavHostController, mapaViewModel: MapaViewMod
     }
 }
 
+@SuppressLint("MissingPermission")
 @Composable
 fun Mapa(mapaViewModel: MapaViewModel, onMapClick: (MutableList<LatLng>) -> Unit) {
-    val currentLocation = LatLng(38.55359897196608, -0.12057169825429333)
-
+    var currentLocation = LatLng(38.55359897196608, -0.12057169825429333)
     val cameraPosition = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(currentLocation, 13F)
     }
     var track by rememberSaveable { mutableStateOf<List<LatLng>>(value = listOf()) }
 
+    val context = LocalContext.current as Activity
+    mapaViewModel.fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+    val permission = Manifest.permission.ACCESS_FINE_LOCATION
 
-    GoogleMap(
-        cameraPositionState = cameraPosition,
-        properties = MapProperties(isMyLocationEnabled = true, mapType = MapType.HYBRID),
-        onMapClick = { location ->
-            track = track + location
-            onMapClick(track.toMutableList())
+    val isPermissionGranted by rememberSaveable() { mutableStateOf(isPermissionGranted(context, permission)) }
+    var permissionOk by rememberSaveable() { mutableStateOf(false) }
+
+    val launcher = permissionLauncher() { permissionOk = it }
+    if(!isPermissionGranted) {
+        SideEffect {
+            launcher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
-    ) {
-        track.forEach { point ->
-            Marker(state = MarkerState(point))
+    } else {
+        mapaViewModel.fusedLocationClient
+            .getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
+            .addOnSuccessListener { location ->
+                if (location != null) {
+                    currentLocation = LatLng(location.latitude, location.longitude)
+                }
+            }
+        permissionOk = true
+    }
+    if(permissionOk) {
+        GoogleMap(
+            cameraPositionState = cameraPosition,
+            properties = MapProperties(isMyLocationEnabled = true, mapType = MapType.HYBRID),
+            onMapClick = { location ->
+                track = track + location
+                onMapClick(track.toMutableList())
+            }
+        ) {
+            track.forEach { point ->
+                Marker(state = MarkerState(point))
+            }
+            Polyline(points = track, color = Color.Red)
         }
-        Polyline(points = track, color = Color.Red)
     }
 }
 
