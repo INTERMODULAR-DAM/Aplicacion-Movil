@@ -2,7 +2,7 @@ package ejercicios.dam.intermodulardam.register.data.dto
 
 import javax.inject.Inject
 
-class UserRegistroDTOFactory @Inject constructor() {
+class UserRegisterDTOFactory @Inject constructor() {
     operator fun invoke(
         email:String,
         name:String,
@@ -10,8 +10,8 @@ class UserRegistroDTOFactory @Inject constructor() {
         nick:String,
         password: String,
         phone_number:String,
-    ) : UserRegistroDTO {
-        return UserRegistroDTO(
+    ) : UserRegisterDTO {
+        return UserRegisterDTO(
             email = email,
             name = name,
             lastname = lastname,

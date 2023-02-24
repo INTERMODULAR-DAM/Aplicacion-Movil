@@ -1,14 +1,14 @@
 package ejercicios.dam.intermodulardam.comments.data.network.response
 
 import com.google.gson.annotations.SerializedName
-import ejercicios.dam.intermodulardam.comments.domain.entity.Comentarios
+import ejercicios.dam.intermodulardam.comments.domain.entity.Comment
 
-data class ComentariosResponse(
+data class CommentResponse(
     @SerializedName("status") val status:Int,
-    @SerializedName("data") val data:List<Comentarios>,
+    @SerializedName("data") val data:List<Comment>
 )
 
 data class DeleteCommentResponse(
     @SerializedName("status") val status:Int,
-    @SerializedName("data") val data:String
+    @SerializedName("data") val data:String,
 )

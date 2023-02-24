@@ -7,23 +7,26 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import ejercicios.dam.intermodulardam.comments.data.dto.ComentariosDTO
-import ejercicios.dam.intermodulardam.comments.domain.entity.Comentarios
-import ejercicios.dam.intermodulardam.comments.domain.usecase.ComentariosUseCase
+import ejercicios.dam.intermodulardam.comments.data.dto.CommentDTO
+import ejercicios.dam.intermodulardam.comments.domain.entity.Comment
+import ejercicios.dam.intermodulardam.comments.domain.usecase.CommentsUseCase
 import ejercicios.dam.intermodulardam.comments.domain.usecase.CreateCommentUseCase
 import ejercicios.dam.intermodulardam.comments.domain.usecase.DeleteCommentUseCase
 import ejercicios.dam.intermodulardam.main.data.MainRepository
+import ejercicios.dam.intermodulardam.main.domain.GetPostById
+import ejercicios.dam.intermodulardam.main.domain.GetUserUseCase
 import ejercicios.dam.intermodulardam.main.domain.entity.Publication
 import ejercicios.dam.intermodulardam.main.domain.entity.User
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ComentariosViewModel @Inject constructor(
-    private val comentariosUseCase: ComentariosUseCase,
+class CommentViewModel @Inject constructor(
+    private val comentariosUseCase: CommentsUseCase,
     private val createCommentUseCase: CreateCommentUseCase,
     private val deleteCommentUseCase: DeleteCommentUseCase,
-    private val mainRepository: MainRepository
+    private val GetPostById : GetPostById,
+    private val GetUserUseCase : GetUserUseCase
 ) : ViewModel() {
 
     private val _user = MutableLiveData<User>()
@@ -32,14 +35,14 @@ class ComentariosViewModel @Inject constructor(
     private val _route = MutableLiveData<Publication>()
     val route: LiveData<Publication> = _route
 
-    private val _comments = MutableLiveData<List<Comentarios>>()
-    val comments: LiveData<List<Comentarios>> = _comments
+    private val _comments = MutableLiveData<List<Comment>>()
+    val comments: LiveData<List<Comment>> = _comments
 
     fun onInit(id:String) {
         viewModelScope.launch {
-            _user.value = mainRepository.getUser()
-            _route.value = mainRepository.getPostByID(id)
-            if(_route.value!!.id.isNotEmpty()) {
+            _user.value = GetUserUseCase()
+            _route.value = GetPostById(id)
+            if(_route.value!!.id.isNotEmpty()){
                 _comments.value = comentariosUseCase(_route.value!!)
             }
         }
@@ -62,7 +65,7 @@ class ComentariosViewModel @Inject constructor(
 
     fun onCreateComment(userID:String, postID:String, context:Context) {
         viewModelScope.launch {
-            val comment = ComentariosDTO(_message.value!!, userID, postID)
+            val comment = CommentDTO(_message.value!!, userID, postID)
             val createdOk = createCommentUseCase(comment)
             if(!createdOk) {
                 Toast.makeText(context, "An error has ocurred creating the comment", Toast.LENGTH_LONG).show()

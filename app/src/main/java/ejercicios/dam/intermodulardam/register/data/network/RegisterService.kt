@@ -6,7 +6,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 
-class RegistroService @Inject constructor(
+class RegisterService @Inject constructor(
     private val registroClient: RegistroClient,
 ) {
     suspend fun doRegister(user: UserRegistroDTO): String {

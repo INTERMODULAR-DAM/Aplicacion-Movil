@@ -36,7 +36,7 @@ import ejercicios.dam.intermodulardam.ui.theme.textStyleLogin
 import ejercicios.dam.intermodulardam.utils.*
 
 @Composable
-fun RegisterScreen(navController: NavHostController, registroViewModel: RegistroViewModel) {
+fun RegisterScreen(navController: NavHostController, registroViewModel: RegisterViewModel) {
     val isLoading: Boolean by registroViewModel.isLoading.observeAsState(initial = false)
     if(isLoading) {
         WaitingScreen()
@@ -46,7 +46,7 @@ fun RegisterScreen(navController: NavHostController, registroViewModel: Registro
 }
 
 @Composable
-fun RegisterContent(navController: NavHostController, registroViewModel: RegistroViewModel) {
+fun RegisterContent(navController: NavHostController, registroViewModel: RegisterViewModel) {
     val name: String by registroViewModel.nombre.observeAsState(initial = "")
     val surname: String by registroViewModel.apellidos.observeAsState(initial = "")
     val nick:String by registroViewModel.nick.observeAsState(initial = "")
@@ -272,7 +272,7 @@ fun Password(password:String, onTextChanged: (String) -> Unit) {
 }
 
 @Composable
-fun BotonRegistro(registerViewModel: RegistroViewModel, navController: NavHostController, registerEnabled:Boolean) {
+fun BotonRegistro(registerViewModel: RegisterViewModel, navController: NavHostController, registerEnabled:Boolean) {
     val context = LocalContext.current
     Row(modifier = Modifier
         .padding(0.dp)

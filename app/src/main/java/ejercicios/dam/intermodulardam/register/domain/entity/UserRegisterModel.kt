@@ -2,7 +2,7 @@ package ejercicios.dam.intermodulardam.register.domain.entity
 
 import com.google.gson.annotations.SerializedName
 
-data class UserRegistroModel(
+data class UserRegisterModel(
     @SerializedName("email") val email:String,
     @SerializedName("name") val name:String,
     @SerializedName("surname") val surname:String,

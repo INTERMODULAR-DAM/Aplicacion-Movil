@@ -41,8 +41,11 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
 import ejercicios.dam.intermodulardam.main.domain.entity.User
 import ejercicios.dam.intermodulardam.Routes
+import ejercicios.dam.intermodulardam.ui.composable.MainBottomBar
+import ejercicios.dam.intermodulardam.ui.composable.MainDrawer
+import ejercicios.dam.intermodulardam.ui.composable.MainTopBar
 import ejercicios.dam.intermodulardam.ui.theme.calibri
-import ejercicios.dam.intermodulardam.utils.Constants
+import ejercicios.dam.intermodulardam.utils.Constants.IP_ADDRESS
 import ejercicios.dam.intermodulardam.utils.backgroundGreen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -63,10 +66,10 @@ fun Mapa(navController:NavHostController, mapaViewModel: MapaViewModel) {
                 .padding(0.dp)
                 .fillMaxSize(),
             scaffoldState = scaffoldState,
-            topBar = { MapaTopBar(coroutineScope, scaffoldState) },
+            topBar = { MainTopBar(coroutineScope, scaffoldState) },
             content = { MapaScreen(navController = navController, mapaViewModel = mapaViewModel) },
-            bottomBar = { BottomNavigationBar(navController = navController) },
-            drawerContent = { MapaDrawer(navController = navController, currentUser, coroutineScope, scaffoldState) },
+            bottomBar = { MainBottomBar(navController = navController) },
+            drawerContent = { MainDrawer(navController = navController, currentUser, coroutineScope, scaffoldState) },
             drawerGesturesEnabled = false
         )
     }
@@ -128,117 +131,14 @@ fun MapaScreen(navController: NavHostController, mapaViewModel: MapaViewModel) {
                     Polyline(points = latlngList, color = Color.Red)
                     Marker(
                         state = rememberMarkerState(position = latlngList[latlngList.size -1]),
-                        title = "Fin de la ruta",
-                        snippet = "Duración: ${route.duration}",
+                        title = "End of the route",
+                        snippet = "Duration:  ${route.duration} \n Difficulty: ${route.difficulty}"
                     )
                 }
             }
         }
     }
 
-}
-
-
-@Composable
-fun MapaTopBar(coroutineScope: CoroutineScope, scaffoldState: ScaffoldState) {
-    TopAppBar(modifier = Modifier
-        .fillMaxWidth()
-        .padding(0.dp),
-        backgroundColor = (MaterialTheme.colors.backgroundGreen)) {
-        Row(modifier= Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
-            IconButton(onClick = { coroutineScope.launch { scaffoldState.drawerState.open() } }, modifier = Modifier.weight(1F)) {
-                Icon(imageVector = Icons.Filled.Menu , contentDescription = "Left-hand menu", tint = Color.White)
-            }
-            Text(modifier = Modifier.weight(7F), text = "Wikitrail", color = Color.White, fontWeight = FontWeight.W800)
-        }
-    }
-}
-
-
-@Composable
-fun BottomNavigationBar(navController: NavHostController) {
-    BottomAppBar(modifier = Modifier
-        .fillMaxWidth()
-        .padding(0.dp),
-        backgroundColor = MaterialTheme.colors.backgroundGreen)
-    {
-        Row(modifier = Modifier.fillMaxSize(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceEvenly) {
-            IconButton(onClick = { navController.navigate(Routes.Main.route) }) {
-                Icon(imageVector = Icons.Filled.House, contentDescription = "Página Principal", tint = Color.White)
-            }
-            IconButton(onClick = { navController.navigate(Routes.CrearRuta.route) }) {
-                Icon(imageVector = Icons.Filled.Add, contentDescription = "Crear Ruta", tint = Color.White)
-            }
-            IconButton(onClick = { navController.navigate(Routes.Mapa.route) }, enabled = false) {
-                Icon(imageVector = Icons.Filled.Map, contentDescription = "Mapa", tint = Color.White)
-            }
-        }
-    }
-}
-
-@Composable
-fun MapaDrawer(navController: NavHostController, user: User, coroutineScope: CoroutineScope, scaffoldState: ScaffoldState) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = MaterialTheme.colors.backgroundGreen),
-    ) {
-        Row(modifier = Modifier
-            .padding(start = 8.dp, top = 32.dp)
-            .fillMaxWidth(), verticalAlignment = Alignment.Bottom) {
-            Box(
-                modifier = Modifier
-                    .size(63.dp)
-                    .clip(CircleShape),
-                contentAlignment = Alignment.Center,
-            ) {
-                Image(
-                    modifier = Modifier
-                        .size(63.dp)
-                        .scale(1F),
-                    painter = rememberAsyncImagePainter(
-                        "http://${Constants.IP_ADDRESS}/api/v1/imgs/users/"+ user.pfp_path
-                    ),
-                    contentDescription = "Foto de Perfil",
-                    contentScale = ContentScale.Crop)
-            }
-            Box(modifier = Modifier.padding(start = 8.dp)) {
-                Text(text = user.name, color = Color.White, style = TextStyle(fontFamily = calibri, fontSize = 24.sp))
-            }
-
-            Box(modifier = Modifier) {
-                IconButton(
-                    modifier = Modifier
-                        .absoluteOffset(130.dp, (-32).dp),
-                    onClick = { coroutineScope.launch { scaffoldState.drawerState.close() } }) {
-                    Icon(imageVector = Icons.Filled.Menu, contentDescription = "Cerrar Drawer", tint = Color.White)
-                }
-            }
-        }
-        Spacer(modifier = Modifier.height(6.dp))
-        Row(modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 16.dp, top = 32.dp)) {
-            Text(text = "Following: ${user.following}", color = Color.White, style = TextStyle(fontFamily = calibri, fontSize = 16.sp))
-        }
-        Spacer(modifier = Modifier.height(24.dp))
-        Row(modifier = Modifier
-            .padding(start = 8.dp, top = 32.dp)
-            .fillMaxWidth(), verticalAlignment = Alignment.Bottom) {
-            Box() {
-                Icon(imageVector = Icons.Filled.Person, contentDescription = "Ir a perfil", tint = Color.White)
-            }
-            Box(modifier = Modifier.padding(start = 8.dp)) {
-                ClickableText(
-                    text = AnnotatedString("Perfil"),
-                    style = TextStyle(fontFamily = calibri, fontSize = 20.sp, color = Color.White),
-                    onClick = {navController.navigate(Routes.Perfil.createRoute(user.id))}
-                )
-            }
-        }
-    }
 }
 
 @Composable

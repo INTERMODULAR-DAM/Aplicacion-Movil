@@ -4,13 +4,14 @@ import ejercicios.dam.intermodulardam.login.data.network.dto.UserDTO
 import ejercicios.dam.intermodulardam.login.data.datastore.UserPreferenceService
 import ejercicios.dam.intermodulardam.main.domain.entity.CreatePublication
 import ejercicios.dam.intermodulardam.main.domain.entity.Publication
+import ejercicios.dam.intermodulardam.main.domain.entity.User
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.Date
 import javax.inject.Inject
 
-class RutasService @Inject constructor(
-    private val rutasClient: RutasClient,
+class RouteService @Inject constructor(
+    private val rutasClient: RouteClient,
     private val userService: UserPreferenceService
 ) {
     suspend fun getAllRoutes():List<Publication> {
@@ -52,7 +53,7 @@ class RutasService @Inject constructor(
         return withContext(Dispatchers.IO){
             val response = rutasClient.getUserById(userService.getToken("authorization"), user).body()?.data!!
 
-            val user = UserDTO(
+            val user = User(
                 response._id,
                 response.email,
                 response.name,

@@ -1,9 +1,8 @@
 package ejercicios.dam.intermodulardam.register.data.dto
 
 import com.google.gson.annotations.SerializedName
-import java.util.*
 
-data class UserRegistroDTO(
+data class UserRegisterDTO(
     @SerializedName("email") val email:String,
     @SerializedName("name") val name:String,
     @SerializedName("lastname") val lastname:String,

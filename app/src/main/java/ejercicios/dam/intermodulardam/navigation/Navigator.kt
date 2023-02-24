@@ -6,11 +6,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import ejercicios.dam.intermodulardam.comments.ui.ComentariosViewModel
+import ejercicios.dam.intermodulardam.comments.ui.CommentViewModel
 import ejercicios.dam.intermodulardam.createRoutes.ui.CrearRuta
 import ejercicios.dam.intermodulardam.login.ui.Login
 import ejercicios.dam.intermodulardam.login.ui.LoginViewModel
-import ejercicios.dam.intermodulardam.register.ui.RegistroViewModel
+import ejercicios.dam.intermodulardam.register.ui.RegisterViewModel
 import ejercicios.dam.intermodulardam.register.ui.RegisterScreen
 import ejercicios.dam.intermodulardam.main.ui.Main
 import ejercicios.dam.intermodulardam.main.ui.MainViewModel
@@ -26,10 +26,10 @@ import ejercicios.dam.intermodulardam.splashscreen.SplashScreen
 fun CustomNavigator(
     loginViewModel: LoginViewModel,
     mapaViewModel: MapaViewModel,
-    registroViewModel: RegistroViewModel,
+    registroViewModel: RegisterViewModel,
     mainViewModel: MainViewModel,
     perfilViewModel: PerfilViewModel,
-    comentariosViewModel:ComentariosViewModel
+    comentariosViewModel:CommentViewModel
 ) {
 
     val navController = rememberNavController()

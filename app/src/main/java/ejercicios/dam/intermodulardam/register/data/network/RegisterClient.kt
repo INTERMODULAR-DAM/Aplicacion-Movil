@@ -6,7 +6,7 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
 
-interface RegistroClient {
+interface RegisterClient {
     @POST("/api/v1/users/signUp/")
     suspend fun register(@Body user:UserRegistroDTO):Response<DefaultResponse>
 }

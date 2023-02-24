@@ -4,17 +4,16 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import ejercicios.dam.intermodulardam.comments.data.network.ComentariosClient
+import ejercicios.dam.intermodulardam.comments.data.network.CommentClient
 import ejercicios.dam.intermodulardam.login.data.network.LoginClient
 import ejercicios.dam.intermodulardam.profile.data.network.ProfileClient
 import ejercicios.dam.intermodulardam.register.data.network.RegistroClient
-import ejercicios.dam.intermodulardam.main.data.network.RutasClient
+import ejercicios.dam.intermodulardam.main.data.network.RouteClient
 import ejercicios.dam.intermodulardam.utils.Constants.IP_ADDRESS
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
 import javax.inject.Singleton
 
 @Module
@@ -60,14 +59,14 @@ class NetworkModule {
 
     @Singleton
     @Provides
-    fun provideRutasClient(retrofit: Retrofit): RutasClient {
-        return retrofit.create(RutasClient::class.java)
+    fun provideRutasClient(retrofit: Retrofit): RouteClient {
+        return retrofit.create(RouteClient::class.java)
     }
 
     @Singleton
     @Provides
-    fun provideComentariosClient(retrofit: Retrofit):ComentariosClient {
-        return retrofit.create(ComentariosClient::class.java)
+    fun provideComentariosClient(retrofit: Retrofit):CommentClient {
+        return retrofit.create(CommentClient::class.java)
     }
 
     @Singleton

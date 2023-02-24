@@ -115,7 +115,7 @@ class MapaViewModel @Inject constructor(private val createRouteUseCase: CreateRo
           viewModelScope.launch {
                val latlngList: MutableList<LatitudeLongitude> = mutableListOf()
                _track.value!!.forEach { LatLng ->
-                    latlngList += LatitudeLongitude(LatLng.latitude, LatLng.longitude)
+                    latlngList.add(LatitudeLongitude(LatLng.latitude, LatLng.longitude))
                }
 
                val publication = CreatePublication(

@@ -9,13 +9,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import dagger.hilt.android.lifecycle.HiltViewModel
-import ejercicios.dam.intermodulardam.register.domain.entity.UserRegistroModel
-import ejercicios.dam.intermodulardam.register.domain.usecase.RegistroUseCase
+import ejercicios.dam.intermodulardam.register.domain.entity.UserRegisterModel
+import ejercicios.dam.intermodulardam.register.domain.usecase.RegisterUseCase
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class RegistroViewModel @Inject constructor(private val registroUseCase: RegistroUseCase) :ViewModel() {
+class RegisterViewModel @Inject constructor(private val registroUseCase: RegisterUseCase) :ViewModel() {
     private val _nombre = MutableLiveData<String>()
     val nombre : LiveData<String> = _nombre
 
@@ -62,7 +62,7 @@ class RegistroViewModel @Inject constructor(private val registroUseCase: Registr
     fun onButtonRegisterPress(navController:NavHostController, context: Context) {
         viewModelScope.launch {
             _isLoading.value = true
-            val user = UserRegistroModel(
+            val user = UserRegisterModel(
                 email.value!!,
                 nombre.value!!,
                 apellidos.value!!,

@@ -9,23 +9,23 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import dagger.hilt.android.AndroidEntryPoint
-import ejercicios.dam.intermodulardam.comments.ui.ComentariosViewModel
+import ejercicios.dam.intermodulardam.comments.ui.CommentViewModel
 import ejercicios.dam.intermodulardam.login.ui.LoginViewModel
 import ejercicios.dam.intermodulardam.main.ui.MainViewModel
 import ejercicios.dam.intermodulardam.map.MapaViewModel
 import ejercicios.dam.intermodulardam.navigation.CustomNavigator
 import ejercicios.dam.intermodulardam.profile.ui.PerfilViewModel
-import ejercicios.dam.intermodulardam.register.ui.RegistroViewModel
+import ejercicios.dam.intermodulardam.register.ui.RegisterViewModel
 import ejercicios.dam.intermodulardam.ui.theme.IntermodularDAMTheme
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val loginViewModel: LoginViewModel by viewModels()
     private val mapViewModel: MapaViewModel by viewModels()
-    private val registroViewModel: RegistroViewModel by viewModels()
+    private val registroViewModel: RegisterViewModel by viewModels()
     private val mainViewModel: MainViewModel by viewModels()
     private val perfilViewModel: PerfilViewModel by viewModels()
-    private val comentariosViewModel: ComentariosViewModel by viewModels()
+    private val comentariosViewModel: CommentViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
