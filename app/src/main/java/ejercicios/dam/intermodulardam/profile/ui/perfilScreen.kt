@@ -1,9 +1,13 @@
 package ejercicios.dam.intermodulardam.profile.ui
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import android.annotation.SuppressLint
+import androidx.compose.foundation.*
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -27,12 +31,15 @@ import ejercicios.dam.intermodulardam.comments.ui.ComentariosViewModel
 import ejercicios.dam.intermodulardam.main.domain.entity.Publication
 import ejercicios.dam.intermodulardam.main.domain.entity.User
 import ejercicios.dam.intermodulardam.Routes
+import ejercicios.dam.intermodulardam.main.ui.*
 import ejercicios.dam.intermodulardam.ui.theme.calibri
 import ejercicios.dam.intermodulardam.utils.Constants.IP_ADDRESS
+import ejercicios.dam.intermodulardam.utils.MainBrown
 import ejercicios.dam.intermodulardam.utils.MainGreen
 import ejercicios.dam.intermodulardam.utils.backgroundGreen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 
 @Composable
 fun Perfil(navController:NavHostController, id:String, perfilViewModel: PerfilViewModel, comentariosViewModel: ComentariosViewModel) {
@@ -62,7 +69,18 @@ fun Perfil(navController:NavHostController, id:String, perfilViewModel: PerfilVi
 
 @Composable
 fun PerfilScreen(navController: NavHostController, perfilViewModel: PerfilViewModel, user: User, routes: List<Publication>) {
+    val scrollState = rememberScrollState()
 
+    LazyColumn(modifier = Modifier
+        .fillMaxSize()
+        .scrollable(scrollState, Orientation.Vertical)
+        .padding(bottom = 60.dp)) {
+        items(routes.size) { index ->
+            val postCreator =
+                ProfileCards(navController, perfilViewModel, user, routes[index])
+            Spacer(modifier = Modifier.height(5.dp))
+        }
+    }
 }
 
 @Composable
@@ -70,10 +88,10 @@ fun PerfilTopBar(coroutineScope: CoroutineScope, scaffoldState: ScaffoldState) {
     TopAppBar(modifier = Modifier
         .fillMaxWidth()
         .padding(0.dp),
-        backgroundColor = (MaterialTheme.colors.MainGreen)) {
+        backgroundColor = (MaterialTheme.colors.backgroundGreen)) {
         Row(modifier= Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
             IconButton(onClick = { coroutineScope.launch { scaffoldState.drawerState.open() } }, modifier = Modifier.weight(1F)) {
-                Icon(imageVector = Icons.Filled.Menu , contentDescription = "Desplegar Menu lateral", tint = Color.White)
+                Icon(imageVector = Icons.Filled.Menu , contentDescription = "Left-hand menu", tint = Color.White)
             }
             Text(modifier = Modifier.weight(7F), text = "Wikitrail", color = Color.White, fontWeight = FontWeight.W800)
         }
@@ -86,7 +104,7 @@ fun PerfilBottomBar(navController: NavHostController) {
     BottomAppBar(modifier = Modifier
         .fillMaxWidth()
         .padding(0.dp),
-        backgroundColor = MaterialTheme.colors.MainGreen)
+        backgroundColor = MaterialTheme.colors.backgroundGreen)
     {
         Row(modifier = Modifier.fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically,
@@ -143,7 +161,69 @@ fun PerfilDrawer(navController: NavHostController, user:User, coroutineScope: Co
         }
         Spacer(modifier = Modifier.height(24.dp))
         Row(modifier = Modifier.padding(start = 8.dp, top = 32.dp), verticalAlignment = Alignment.Bottom) {
-            /*TODO ADD SOMETHING?*/
         }
     }
+}
+
+@SuppressLint("SimpleDateFormat")
+@Composable
+fun ProfileCards(navController: NavHostController, perfilViewModel: PerfilViewModel, user:User, route:Publication) {
+    Card(modifier = Modifier
+        .padding(5.dp)
+        .fillMaxWidth()
+        .clip(RoundedCornerShape(10.dp))
+        .border(1.dp, MaterialTheme.colors.MainBrown, RoundedCornerShape(10.dp))
+        .clickable {
+            navController.navigate(
+                Routes.Publicacion.createRoute(
+                    route.id
+                )
+            )
+        },
+        elevation = 20.dp) {
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .padding(5.dp)
+            .height(200.dp)){
+            RouteTitle(route.name, Modifier.align(Alignment.Start))
+            RouteCategory(route.category)
+            Divider(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 10.dp),
+                color = Color.LightGray)
+            Row(horizontalArrangement = Arrangement.SpaceBetween) {
+                Column(verticalArrangement =Arrangement.SpaceEvenly ,
+                    modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .padding(vertical = 5.dp)) {
+                    Box(contentAlignment = Alignment.Center){
+                        RouteImage(route)
+                    }
+                    RouteUser(user)
+                }
+
+                Divider(
+                    Modifier
+                        .fillMaxHeight()
+                        .width(1.dp)
+                        .padding(vertical = 10.dp))
+
+                Row(horizontalArrangement = Arrangement.SpaceEvenly) {
+                    Column(modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .padding(horizontal = 10.dp)) {
+                        RouteParameter("Distance",route.distance)
+                        RouteParameter("Difficulty",route.difficulty)
+                    }
+                    Column(modifier = Modifier
+                        .align(Alignment.CenterVertically)) {
+                        RouteParameter("Duration",route.duration)
+                        RouteParameter("Date", SimpleDateFormat("dd/MM/yyyy").format(route.date) )
+                    }
+                }
+            }
+        }
+    }
+
 }
