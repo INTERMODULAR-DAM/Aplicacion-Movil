@@ -1,5 +1,6 @@
 package ejercicios.dam.intermodulardam.main.ui
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.Orientation
@@ -55,6 +56,8 @@ fun Publicacion(navController: NavHostController, comentariosViewModel: Comentar
         val comments by comentariosViewModel.comments.observeAsState(initial = listOf())
 
         comentariosViewModel.onInit(id)
+
+        Log.i("Comentarios", "$comments")
 
         Column(
             modifier = Modifier.fillMaxSize()
@@ -213,10 +216,27 @@ fun CommentsContent(user:User, route: Publication, comment: Comentarios, comenta
         .clip(RoundedCornerShape(10.dp))
         .border(1.dp, MaterialTheme.colors.MainBrown, RoundedCornerShape(10.dp)),
         elevation = 20.dp) {
-        Text(text = comment.message)
-        if(user.id == comment.user) {
-            IconButton(onClick = { comentariosViewModel.onDeleteComment(context, comment.user) }) {
-                Icon(imageVector = Icons.Filled.Delete, contentDescription = "Borrar Comentario", tint = Color.Red)
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .padding(5.dp)) {
+            //Mostrar comentarios propios a la derecha con otro background y boton de borrar
+            if(user.id == comment.user) {
+                Row() {
+                    Text(text = user.name)
+                    Text(text = comment.message)
+                }
+                Spacer(modifier = Modifier.height(10.dp))
+                Row(horizontalArrangement = Arrangement.End) {
+                    IconButton(onClick = { comentariosViewModel.onDeleteComment(context, comment.id) }) {
+                        Icon(imageVector = Icons.Filled.Delete, contentDescription = "Borrar Comentario", tint = Color.Red)
+                    }
+                }
+                //Mostrar otros comentarios a la izquierda con background default
+            } else {
+                Row() {
+                    Text(text = user.name)
+                    Text(text = comment.message)
+                }
             }
         }
     }

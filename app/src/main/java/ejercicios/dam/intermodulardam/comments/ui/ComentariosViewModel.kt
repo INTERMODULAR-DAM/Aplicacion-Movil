@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import ejercicios.dam.intermodulardam.comments.data.dto.ComentariosDTO
 import ejercicios.dam.intermodulardam.comments.domain.entity.Comentarios
 import ejercicios.dam.intermodulardam.comments.domain.usecase.ComentariosUseCase
 import ejercicios.dam.intermodulardam.comments.domain.usecase.CreateCommentUseCase
@@ -61,7 +62,7 @@ class ComentariosViewModel @Inject constructor(
 
     fun onCreateComment(userID:String, postID:String, context:Context) {
         viewModelScope.launch {
-            val comment = Comentarios(_message.value!!, userID, postID)
+            val comment = ComentariosDTO(_message.value!!, userID, postID)
             val createdOk = createCommentUseCase(comment)
             if(!createdOk) {
                 Toast.makeText(context, "An error has ocurred creating the comment", Toast.LENGTH_LONG).show()

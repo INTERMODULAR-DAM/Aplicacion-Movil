@@ -1,5 +1,6 @@
 package ejercicios.dam.intermodulardam.comments.data.network
 
+import ejercicios.dam.intermodulardam.comments.data.dto.ComentariosDTO
 import ejercicios.dam.intermodulardam.comments.domain.entity.Comentarios
 import ejercicios.dam.intermodulardam.login.data.datastore.UserPreferenceService
 import ejercicios.dam.intermodulardam.main.domain.entity.Publication
@@ -22,7 +23,7 @@ class ComentariosService @Inject constructor(
         }
     }
 
-    suspend fun createComment(comentario:Comentarios):Boolean {
+    suspend fun createComment(comentario:ComentariosDTO):Boolean {
         return withContext(Dispatchers.IO) {
             val response = client.createComment(userService.getToken("authorization"), comentario)
             response.body()?.data!!.isEmpty()

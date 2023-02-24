@@ -1,5 +1,6 @@
 package ejercicios.dam.intermodulardam.comments.data
 
+import ejercicios.dam.intermodulardam.comments.data.dto.ComentariosDTO
 import ejercicios.dam.intermodulardam.comments.data.network.ComentariosService
 import ejercicios.dam.intermodulardam.comments.domain.entity.Comentarios
 import ejercicios.dam.intermodulardam.main.domain.entity.Publication
@@ -10,7 +11,7 @@ class ComentariosRepository @Inject constructor(private val api: ComentariosServ
         return api.getComments(publication)
     }
 
-    suspend fun createComment(comentario:Comentarios):Boolean {
+    suspend fun createComment(comentario:ComentariosDTO):Boolean {
         return api.createComment(comentario)
     }
 

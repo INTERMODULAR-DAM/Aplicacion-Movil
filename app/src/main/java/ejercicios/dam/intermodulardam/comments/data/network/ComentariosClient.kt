@@ -1,5 +1,6 @@
 package ejercicios.dam.intermodulardam.comments.data.network
 
+import ejercicios.dam.intermodulardam.comments.data.dto.ComentariosDTO
 import ejercicios.dam.intermodulardam.comments.data.network.response.ComentariosResponse
 import ejercicios.dam.intermodulardam.comments.data.network.response.DeleteCommentResponse
 import ejercicios.dam.intermodulardam.comments.domain.entity.Comentarios
@@ -24,10 +25,10 @@ interface ComentariosClient {
     @POST("/api/v1/comments")
     suspend fun createComment(
         @Header("authorization") token:String,
-        @Body comentario:Comentarios):Response<DefaultResponse>
+        @Body comentario:ComentariosDTO):Response<DefaultResponse>
 
     @DELETE("api/v1/comments")
     suspend fun deleteComment(
         @Header("authorization") token:String,
-        @Body() id:String): Response<DeleteCommentResponse>
+        @Query("_id") id:String): Response<DeleteCommentResponse>
 }
