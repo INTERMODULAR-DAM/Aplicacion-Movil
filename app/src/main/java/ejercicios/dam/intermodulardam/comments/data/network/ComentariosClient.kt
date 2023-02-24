@@ -1,11 +1,13 @@
 package ejercicios.dam.intermodulardam.comments.data.network
 
 import ejercicios.dam.intermodulardam.comments.data.network.response.ComentariosResponse
+import ejercicios.dam.intermodulardam.comments.data.network.response.DeleteCommentResponse
 import ejercicios.dam.intermodulardam.comments.domain.entity.Comentarios
 import ejercicios.dam.intermodulardam.login.data.network.response.DefaultResponse
 import ejercicios.dam.intermodulardam.main.domain.entity.Publication
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
@@ -24,4 +26,8 @@ interface ComentariosClient {
         @Header("authorization") token:String,
         @Body comentario:Comentarios):Response<DefaultResponse>
 
+    @DELETE("api/v1/comments")
+    suspend fun deleteComment(
+        @Header("authorization") token:String,
+        @Body() id:String): Response<DeleteCommentResponse>
 }

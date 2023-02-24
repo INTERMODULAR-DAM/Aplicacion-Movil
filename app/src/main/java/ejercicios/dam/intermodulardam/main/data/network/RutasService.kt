@@ -42,7 +42,7 @@ class RutasService @Inject constructor(
         return withContext(Dispatchers.IO) {
             val response = rutasClient.getPostByID(userService.getToken("authorization"), id)
             if(response.code() != 200) {
-                return@withContext Publication(arrayListOf(), "", Date(), "", "", "", "", arrayListOf(), "", "", false, "")
+                Publication(arrayListOf(), "", Date(), "", "", "", "", arrayListOf(), "", "", false, "")
             }
             response.body()?.data!!
         }

@@ -19,7 +19,7 @@ import ejercicios.dam.intermodulardam.map.MapaViewModel
 import ejercicios.dam.intermodulardam.Routes
 import ejercicios.dam.intermodulardam.profile.ui.Perfil
 import ejercicios.dam.intermodulardam.profile.ui.PerfilViewModel
-import ejercicios.dam.intermodulardam.publication.Publicacion
+import ejercicios.dam.intermodulardam.main.ui.Publicacion
 import ejercicios.dam.intermodulardam.splashscreen.SplashScreen
 
 @Composable

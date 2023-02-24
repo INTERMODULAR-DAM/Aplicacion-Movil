@@ -124,14 +124,14 @@ fun MapaScreen(navController: NavHostController, mapaViewModel: MapaViewModel) {
                     Marker(
                         state = rememberMarkerState(position = latlngList[0]),
                         title = route.name,
-                        snippet = "Description: ${route.description}"
+                        snippet = "Descripción: ${route.description}"
 
                     )
                     Polyline(points = latlngList, color = Color.Red)
                     Marker(
                         state = rememberMarkerState(position = latlngList[latlngList.size -1]),
                         title = "Fin de la ruta",
-                        snippet = "Duración:  ${route.duration} \n Dificultad: ${route.difficulty}"
+                        snippet = "Duración: ${route.duration}",
                     )
                 }
             }

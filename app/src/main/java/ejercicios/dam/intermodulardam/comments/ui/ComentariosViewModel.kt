@@ -10,6 +10,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import ejercicios.dam.intermodulardam.comments.domain.entity.Comentarios
 import ejercicios.dam.intermodulardam.comments.domain.usecase.ComentariosUseCase
 import ejercicios.dam.intermodulardam.comments.domain.usecase.CreateCommentUseCase
+import ejercicios.dam.intermodulardam.comments.domain.usecase.DeleteCommentUseCase
 import ejercicios.dam.intermodulardam.main.data.MainRepository
 import ejercicios.dam.intermodulardam.main.domain.entity.Publication
 import ejercicios.dam.intermodulardam.main.domain.entity.User
@@ -20,6 +21,7 @@ import javax.inject.Inject
 class ComentariosViewModel @Inject constructor(
     private val comentariosUseCase: ComentariosUseCase,
     private val createCommentUseCase: CreateCommentUseCase,
+    private val deleteCommentUseCase: DeleteCommentUseCase,
     private val mainRepository: MainRepository
 ) : ViewModel() {
 
@@ -63,6 +65,18 @@ class ComentariosViewModel @Inject constructor(
             val createdOk = createCommentUseCase(comment)
             if(!createdOk) {
                 Toast.makeText(context, "An error has ocurred creating the comment", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    fun onDeleteComment(context:Context, id:String) {
+        viewModelScope.launch {
+            val result = deleteCommentUseCase.invoke(id)
+            if(result) {
+                Toast.makeText(context, "Comentario Borrado con Éxito", Toast.LENGTH_LONG).show()
+                _comments.value = comentariosUseCase(_route.value!!)
+            } else {
+                Toast.makeText(context, "Ha habido un problema al borrar el comentario", Toast.LENGTH_LONG).show()
             }
         }
     }

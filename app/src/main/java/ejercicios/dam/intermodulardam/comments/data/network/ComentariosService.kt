@@ -14,7 +14,11 @@ class ComentariosService @Inject constructor(
     suspend fun getComments(publication: Publication): List<Comentarios> {
         return withContext(Dispatchers.IO) {
             val response = client.getComments(userService.getToken("authorization"), publication.id)
-            response.body()?.data!!
+            if(response.code() != 200) {
+                listOf()
+            } else {
+                response.body()?.data!!
+            }
         }
     }
 
@@ -22,6 +26,13 @@ class ComentariosService @Inject constructor(
         return withContext(Dispatchers.IO) {
             val response = client.createComment(userService.getToken("authorization"), comentario)
             response.body()?.data!!.isEmpty()
+        }
+    }
+
+    suspend fun deleteComment(id:String):Boolean {
+        return withContext(Dispatchers.IO) {
+            val response = client.deleteComment(userService.getToken("authorization"), id)
+            response.code() == 200
         }
     }
 }

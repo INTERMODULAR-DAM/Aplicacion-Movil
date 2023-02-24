@@ -13,4 +13,8 @@ class ComentariosRepository @Inject constructor(private val api: ComentariosServ
     suspend fun createComment(comentario:Comentarios):Boolean {
         return api.createComment(comentario)
     }
+
+    suspend fun deleteComment(id:String):Boolean {
+        return api.deleteComment(id)
+    }
 }
