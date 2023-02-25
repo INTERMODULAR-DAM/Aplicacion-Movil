@@ -10,7 +10,7 @@ import javax.inject.Singleton
 
 @Dao
 interface UserDAO{
-    @Query("SELECT * FROM users ORDER BY name DESC")
+    @Query("SELECT * FROM users")
     suspend fun getAllUsers(): List<UserDTO>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

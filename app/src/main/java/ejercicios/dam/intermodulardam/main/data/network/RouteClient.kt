@@ -5,11 +5,11 @@ import ejercicios.dam.intermodulardam.main.data.network.response.CreateRouteResp
 import ejercicios.dam.intermodulardam.main.data.network.response.RoutesResponse
 import ejercicios.dam.intermodulardam.main.data.network.response.SinglePostResponse
 import ejercicios.dam.intermodulardam.main.data.network.response.UserCreator
+import ejercicios.dam.intermodulardam.main.domain.entity.User
 import retrofit2.Response
 import retrofit2.http.*
 
 interface RouteClient {
-
     @GET("/api/v1/posts/")
     suspend fun getPostByID(@Header("authorization") token:String, @Header("_id") id:String):Response<SinglePostResponse>
 

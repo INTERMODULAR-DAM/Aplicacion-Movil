@@ -1,5 +1,6 @@
 package ejercicios.dam.intermodulardam.main.domain
 
+import android.util.Log
 import ejercicios.dam.intermodulardam.main.data.MainRepository
 import ejercicios.dam.intermodulardam.main.domain.entity.User
 import javax.inject.Inject

@@ -12,18 +12,18 @@ class MainRepository @Inject constructor(
     private val api: RouteService
 ) {
     suspend fun getUser(): User {
-        val userDTO = userDAO.getAllUsers()[0]
+        val userDTO = userDAO.getAllUsers()
         return User(
-            userDTO._id,
-            userDTO.email,
-            userDTO.name,
-            userDTO.lastname,
-            userDTO.date,
-            userDTO.nick,
-            userDTO.admin,
-            userDTO.pfp_path,
-            userDTO.phone_number,
-            userDTO.following
+            userDTO[userDTO.size-1]._id,
+            userDTO[userDTO.size-1].email,
+            userDTO[userDTO.size-1].name,
+            userDTO[userDTO.size-1].lastname,
+            userDTO[userDTO.size-1].date,
+            userDTO[userDTO.size-1].nick,
+            userDTO[userDTO.size-1].admin,
+            userDTO[userDTO.size-1].pfp_path,
+            userDTO[userDTO.size-1].phone_number,
+            userDTO[userDTO.size-1].following
         )
     }
 

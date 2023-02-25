@@ -25,51 +25,53 @@ class MainViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _currentUser = MutableLiveData<User>()
-    val currentUser:LiveData<User> = _currentUser
+    val currentUser = _currentUser
 
     private val _usersCreators = MutableLiveData<MutableList<User>>()
-    val usersCreators : LiveData<MutableList<User>> = _usersCreators
+    val usersCreators = _usersCreators
 
     private val _routes = MutableLiveData<List<Publication>>()
-    val routes:LiveData<List<Publication>> = _routes
+    val routes = _routes
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading = _isLoading
 
-   init{
-       isLoading.postValue(true)
+    init {
         _usersCreators.value = mutableListOf()
-        viewModelScope.launch(Dispatchers.IO){
-            getCurrentUser()
-            getAllPost()
-            getAllCreators()
-            isLoading.postValue(false)
+        //isLoading.value = true
+    }
+
+   fun onInit(){
+       _isLoading.value = true
+        viewModelScope.launch{
+            _currentUser.value = GetUser()
+            if(_currentUser.value!!.admin){
+                _routes.value = GetAllPosts()
+            }else {
+                _routes.value = GetAllPublicPosts()
+            }
+            for (i in 0 until _routes.value!!.size) {
+                val user = GetUserCreator(_routes.value!![i].user)
+                _usersCreators.value = (_usersCreators.value?.plus(user)?: listOf(user)) as MutableList<User>
+            }
+            Log.d("SFDGSDFGSDFGSFDG", _isLoading.value.toString())
+            _isLoading.value = false
         }
    }
 
     private suspend fun getCurrentUser(){
-        withContext(Dispatchers.Main){
-            _currentUser.postValue(GetUser())
-        }
-    }
 
+        getAllPost()
+    }
 
     suspend fun getAllPost() {
-        withContext(Dispatchers.Main){
-            if(_currentUser.value!!.admin){
-                _routes.postValue(GetAllPosts())
-            }else {
-                _routes.postValue(GetAllPublicPosts())
-            }
-        }
+
+
+        getAllCreators()
     }
 
-
     suspend fun getAllCreators(){
-        withContext(Dispatchers.Main) {
-            for (i in 0 until _routes.value!!.size) {
-                _usersCreators.value!!.add(GetUserCreator(_routes.value!![i].user))
-            }
-        }
+
+        Log.d("TSGSDFGSDFGSDFG", "${_usersCreators.value}")
     }
 }

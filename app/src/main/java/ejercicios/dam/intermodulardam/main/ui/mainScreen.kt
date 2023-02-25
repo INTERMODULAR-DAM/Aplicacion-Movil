@@ -1,6 +1,7 @@
 package ejercicios.dam.intermodulardam.main.ui
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.scrollable
@@ -9,10 +10,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,44 +35,49 @@ import java.text.SimpleDateFormat
 
 @Composable
 fun Main(navController:NavHostController, mainViewModel: MainViewModel) {
-    val currentUser by mainViewModel.currentUser.observeAsState(initial = User("","","","", "","",  false, "", "", 0))
-    val scaffoldState = rememberScaffoldState()
-    val coroutineScope = rememberCoroutineScope()
-    Scaffold(
-        scaffoldState = scaffoldState,
-        topBar = { MainTopBar(coroutineScope, scaffoldState) },
-        content = { MainScreen(navController, mainViewModel, currentUser) },
-        bottomBar = { MainBottomBar(navController = navController)},
-        drawerContent = { MainDrawer(navController = navController, currentUser, coroutineScope, scaffoldState)},
-        drawerGesturesEnabled = false
-    )
+    val isLoading by mainViewModel.isLoading.observeAsState(false)
 
+    LaunchedEffect(key1 = true){
+        mainViewModel.onInit()
+    }
+
+    if(isLoading!!){
+        WaitingScreen()
+    }else{
+        val currentUser by mainViewModel.currentUser.observeAsState(initial = User("","","","", "","",  false, "", "", 0))
+        val scaffoldState = rememberScaffoldState()
+        val coroutineScope = rememberCoroutineScope()
+        Scaffold(
+            scaffoldState = scaffoldState,
+            topBar = { MainTopBar(coroutineScope, scaffoldState) },
+            content = { MainScreen(navController, mainViewModel, currentUser) },
+            bottomBar = { MainBottomBar(navController = navController)},
+            drawerContent = { MainDrawer(navController = navController, currentUser, coroutineScope, scaffoldState)},
+            drawerGesturesEnabled = false
+        )
+    }
 }
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun MainScreen(navController: NavHostController, mainViewModel: MainViewModel, user: User) {
+    val routes by mainViewModel.routes.observeAsState(listOf())
+    val users by mainViewModel.usersCreators.observeAsState(mutableListOf())
 
-    val routes by mainViewModel.routes.observeAsState()
-    val users by mainViewModel.usersCreators.observeAsState()
-    val isLoading by mainViewModel.isLoading.observeAsState()
-    if(isLoading!!){
-        WaitingScreen()
-    }else{
-        val scrollState = rememberScrollState()
-
-        LazyColumn(modifier = Modifier
-            .fillMaxSize()
-            .scrollable(scrollState, Orientation.Vertical)
-            .padding(bottom = 60.dp)) {
-            items(routes!!.size) { index ->
-                MainCards(
-                    navController = navController,
-                    user = user,
-                    userCreator = users!![index],
-                    route = routes!![index]
-                )
-            }
+    val scrollState = rememberScrollState()
+    Log.d("USERS", users.toString())
+    Log.d("POSTS", routes.toString())
+    LazyColumn(modifier = Modifier
+        .fillMaxSize()
+        .scrollable(scrollState, Orientation.Vertical)
+        .padding(bottom = 60.dp)) {
+        items(routes!!.size) { index ->
+            MainCards(
+                navController = navController,
+                user = user,
+                userCreator = users!![index],
+                route = routes!![index]
+            )
         }
     }
 }
@@ -212,7 +216,9 @@ fun RouteUser(user: User, modifier: Modifier) {
                 .size(26.dp)
                 .align(Alignment.CenterVertically)
         )
-        Text(text = user.nick, fontSize = 14.sp, color = Color.White, fontFamily = calibri, modifier = Modifier.padding(10.dp).align(Alignment.CenterVertically))
+        Text(text = user.nick, fontSize = 14.sp, color = Color.White, fontFamily = calibri, modifier = Modifier
+            .padding(10.dp)
+            .align(Alignment.CenterVertically))
     }
 }
 
