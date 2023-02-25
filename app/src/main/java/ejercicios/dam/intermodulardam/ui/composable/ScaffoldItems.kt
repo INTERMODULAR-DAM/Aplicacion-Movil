@@ -43,7 +43,7 @@ fun MainBottomBar(navController: NavHostController) {
             IconButton(onClick = { navController.navigate(Routes.Main.route) }) {
                 Icon(imageVector = Icons.Filled.House, contentDescription = "Main page", tint = Color.White)
             }
-            IconButton(onClick = { navController.navigate(Routes.CrearRuta.route) }, enabled = false) {
+            IconButton(onClick = { navController.navigate(Routes.CrearRuta.route) }) {
                 Icon(imageVector = Icons.Filled.Add, contentDescription = "Create Route", tint = Color.White)
             }
             IconButton(onClick = { navController.navigate(Routes.Mapa.route) }) {
