@@ -41,7 +41,7 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 
 @Composable
-fun Perfil(navController:NavHostController, id:String, perfilViewModel: PerfilViewModel, comentariosViewModel: CommentViewModel) {
+fun Perfil(navController:NavHostController, id:String, perfilViewModel: PerfilViewModel) {
     val currentUser by perfilViewModel.user.observeAsState(initial = User("","","","", "","",  false, "", "", 0))
     val routes by perfilViewModel.posts.observeAsState(initial = listOf())
 
@@ -69,15 +69,23 @@ fun Perfil(navController:NavHostController, id:String, perfilViewModel: PerfilVi
 @Composable
 fun PerfilScreen(navController: NavHostController, perfilViewModel: PerfilViewModel, user: User, routes: List<Publication>) {
     val scrollState = rememberScrollState()
-
-    LazyColumn(modifier = Modifier
+    
+    Column(modifier = Modifier
         .fillMaxSize()
-        .scrollable(scrollState, Orientation.Vertical)
-        .padding(bottom = 60.dp)) {
-        items(routes.size) { index ->
-            val postCreator =
-                ProfileCards(navController, perfilViewModel, user, routes[index])
-            Spacer(modifier = Modifier.height(5.dp))
+        .padding(top = 10.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        PerfilImage(user)
+        Spacer(modifier = Modifier.height(10.dp))
+        UserInfo(user, navController)
+        Row {
+            LazyColumn(modifier = Modifier
+                .scrollable(scrollState, Orientation.Vertical)
+                .padding(bottom = 60.dp)) {
+                items(routes.size) { index ->
+                    val postCreator =
+                        ProfileCards(navController, perfilViewModel, user, routes[index])
+                    Spacer(modifier = Modifier.height(5.dp))
+                }
+            }
         }
     }
 }
@@ -224,5 +232,31 @@ fun ProfileCards(navController: NavHostController, perfilViewModel: PerfilViewMo
             }
         }
     }
+}
 
+@Composable
+fun PerfilImage(user:User) {
+    Row{
+        Image(
+            rememberAsyncImagePainter(model = "http://$IP_ADDRESS/api/v1/imgs/users/${user.pfp_path}"),
+            contentDescription = "User PFP",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .clip(CircleShape)
+                .size(78.dp)
+                .align(Alignment.CenterVertically)
+        )
+    }
+}
+
+@Composable
+fun UserInfo(user:User, navController: NavHostController) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Text(text = user.nick, fontSize = 34.sp, fontFamily = calibri, modifier = Modifier
+            .padding(10.dp)
+            .align(Alignment.CenterVertically))
+        IconButton(onClick = { navController.navigate(Routes.EditProfile.createRoute(user.id)) }) {
+            Icon(imageVector = Icons.Filled.Edit, contentDescription = "Editar Perfil")
+        }
+    }
 }

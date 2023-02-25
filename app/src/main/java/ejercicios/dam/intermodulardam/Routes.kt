@@ -13,5 +13,7 @@ sealed class Routes(val route:String) {
     object Publicacion: Routes("publicacion/{id}") {
         fun createRoute(id:String) = "publicacion/$id"
     }
-
+    object EditProfile:Routes("editProfile/{id}") {
+        fun createRoute(id:String) = "editProfile/$id"
+    }
 }

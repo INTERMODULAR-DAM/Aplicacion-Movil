@@ -18,6 +18,7 @@ import ejercicios.dam.intermodulardam.map.Mapa
 import ejercicios.dam.intermodulardam.map.MapaViewModel
 import ejercicios.dam.intermodulardam.Routes
 import ejercicios.dam.intermodulardam.main.ui.PublicationViewModel
+import ejercicios.dam.intermodulardam.profile.ui.EditProfile
 import ejercicios.dam.intermodulardam.profile.ui.Perfil
 import ejercicios.dam.intermodulardam.profile.ui.PerfilViewModel
 import ejercicios.dam.intermodulardam.publication.PublicationView
@@ -78,7 +79,18 @@ fun CustomNavigator(
                 navController = navController,
                 id = navBackStackEntry.arguments?.getString("id") ?: "",
                 perfilViewModel = profileViewModel,
-                commentViewModel,
+            )
+        }
+        composable(
+            route = Routes.EditProfile.route,
+            arguments = listOf(navArgument("id") {
+                type = NavType.StringType
+            })
+        ) { navBackStackEntry ->
+            EditProfile(
+                navController = navController,
+                id = navBackStackEntry.arguments?.getString("id") ?: "",
+                perfilViewModel = profileViewModel,
             )
         }
     }
