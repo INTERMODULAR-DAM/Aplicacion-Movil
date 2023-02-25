@@ -8,47 +8,26 @@ import android.content.pm.PackageManager
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
-import coil.compose.rememberAsyncImagePainter
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
 import ejercicios.dam.intermodulardam.main.domain.entity.User
-import ejercicios.dam.intermodulardam.Routes
 import ejercicios.dam.intermodulardam.ui.composable.MainBottomBar
 import ejercicios.dam.intermodulardam.ui.composable.MainDrawer
 import ejercicios.dam.intermodulardam.ui.composable.MainTopBar
-import ejercicios.dam.intermodulardam.ui.theme.calibri
-import ejercicios.dam.intermodulardam.utils.Constants.IP_ADDRESS
-import ejercicios.dam.intermodulardam.utils.backgroundGreen
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
 @Composable
 fun Mapa(navController:NavHostController, mapaViewModel: MapaViewModel) {
@@ -125,7 +104,7 @@ fun MapaScreen(navController: NavHostController, mapaViewModel: MapaViewModel) {
                     Marker(
                         state = rememberMarkerState(position = latlngList[0]),
                         title = route.name,
-                        snippet = "Descripción: ${route.description}"
+                        snippet = "Description: ${route.description}"
 
                     )
                     Polyline(points = latlngList, color = Color.Red)

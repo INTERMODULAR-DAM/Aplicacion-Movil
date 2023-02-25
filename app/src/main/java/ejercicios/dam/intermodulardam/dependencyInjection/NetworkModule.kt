@@ -7,7 +7,7 @@ import dagger.hilt.components.SingletonComponent
 import ejercicios.dam.intermodulardam.comments.data.network.CommentClient
 import ejercicios.dam.intermodulardam.login.data.network.LoginClient
 import ejercicios.dam.intermodulardam.profile.data.network.ProfileClient
-import ejercicios.dam.intermodulardam.register.data.network.RegistroClient
+import ejercicios.dam.intermodulardam.register.data.network.RegisterClient
 import ejercicios.dam.intermodulardam.main.data.network.RouteClient
 import ejercicios.dam.intermodulardam.utils.Constants.IP_ADDRESS
 import okhttp3.Interceptor
@@ -53,8 +53,8 @@ class NetworkModule {
 
     @Singleton
     @Provides
-    fun provideRegisterClient(retrofit: Retrofit) : RegistroClient {
-        return retrofit.create(RegistroClient::class.java)
+    fun provideRegisterClient(retrofit: Retrofit) : RegisterClient {
+        return retrofit.create(RegisterClient::class.java)
     }
 
     @Singleton

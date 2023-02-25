@@ -35,7 +35,6 @@ import ejercicios.dam.intermodulardam.main.ui.*
 import ejercicios.dam.intermodulardam.ui.theme.calibri
 import ejercicios.dam.intermodulardam.utils.Constants.IP_ADDRESS
 import ejercicios.dam.intermodulardam.utils.MainBrown
-import ejercicios.dam.intermodulardam.utils.MainGreen
 import ejercicios.dam.intermodulardam.utils.backgroundGreen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -200,7 +199,7 @@ fun ProfileCards(navController: NavHostController, perfilViewModel: PerfilViewMo
                     Box(contentAlignment = Alignment.Center){
                         RouteImage(route)
                     }
-                    RouteUser(user)
+                    RouteUser(user, Modifier.align(Alignment.CenterHorizontally))
                 }
 
                 Divider(

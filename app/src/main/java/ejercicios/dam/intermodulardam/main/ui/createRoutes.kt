@@ -44,6 +44,9 @@ import ejercicios.dam.intermodulardam.map.MapaViewModel
 import ejercicios.dam.intermodulardam.map.isPermissionGranted
 import ejercicios.dam.intermodulardam.map.permissionLauncher
 import ejercicios.dam.intermodulardam.register.ui.PlaceholderForField
+import ejercicios.dam.intermodulardam.ui.composable.MainBottomBar
+import ejercicios.dam.intermodulardam.ui.composable.MainDrawer
+import ejercicios.dam.intermodulardam.ui.composable.MainTopBar
 import ejercicios.dam.intermodulardam.ui.theme.calibri
 import ejercicios.dam.intermodulardam.ui.theme.textStyleLogin
 import ejercicios.dam.intermodulardam.utils.Constants
@@ -54,9 +57,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun CrearRuta(navController: NavHostController, mapaViewModel: MapaViewModel, mainViewModel: MainViewModel) {
-    val currentUser by mainViewModel.user.observeAsState(initial = User("","","","", "","",  false, "", "", 0))
-
-    mainViewModel.onInit()
+    val currentUser by mainViewModel.currentUser.observeAsState(initial = User("","","","", "","",  false, "", "", 0))
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -68,10 +69,10 @@ fun CrearRuta(navController: NavHostController, mapaViewModel: MapaViewModel, ma
                 .padding(0.dp)
                 .fillMaxSize(),
             scaffoldState = scaffoldState,
-            topBar = { CrearRutaTopBar(coroutineScope, scaffoldState) },
+            topBar = { MainTopBar(coroutineScope, scaffoldState) },
             content = { CrearRutaScreen(navController, mapaViewModel, currentUser) },
-            bottomBar = { BottomNavigationBar(navController = navController) },
-            drawerContent = { CrearRutaDrawer(navController = navController, currentUser, coroutineScope, scaffoldState) },
+            bottomBar = { MainBottomBar(navController = navController) },
+            drawerContent = { MainDrawer(navController = navController, currentUser, coroutineScope, scaffoldState) },
             drawerGesturesEnabled = false
         )
     }

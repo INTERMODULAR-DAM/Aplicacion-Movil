@@ -1,33 +1,64 @@
 package ejercicios.dam.intermodulardam.publication
 
-import android.widget.Toast
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import ejercicios.dam.intermodulardam.comments.ui.CommentViewModel
-import ejercicios.dam.intermodulardam.main.ui.MainScreen
+import ejercicios.dam.intermodulardam.main.domain.entity.Publication
+import ejercicios.dam.intermodulardam.main.domain.entity.User
+import ejercicios.dam.intermodulardam.main.ui.PublicationViewModel
+import ejercicios.dam.intermodulardam.main.ui.WaitingScreen
 import ejercicios.dam.intermodulardam.ui.composable.MainBottomBar
 import ejercicios.dam.intermodulardam.ui.composable.MainDrawer
 import ejercicios.dam.intermodulardam.ui.composable.MainTopBar
 
 @Composable
-fun Publicacion(navController: NavHostController, commentsViewModel: CommentViewModel, id: String) {
-    val context = LocalContext.current
-    commentsViewModel.onInit(id)
+fun PublicationView(navController: NavHostController, publicationViewModel: PublicationViewModel, commentsViewModel: CommentViewModel, id: String) {
 
-    val scaffoldState = rememberScaffoldState()
-    val coroutineScope = rememberCoroutineScope()
-    Scaffold(
-        scaffoldState = scaffoldState,
-        topBar = { MainTopBar(coroutineScope, scaffoldState) },
-        content = { PublicationView(navController) },
-        bottomBar = { MainBottomBar(navController = navController) },
-        drawerContent = { MainDrawer(navController = navController, currentUser, coroutineScope, scaffoldState) },
-        drawerGesturesEnabled = false
-    )
+    publicationViewModel.onInit(id)
+    val userCreator by publicationViewModel.user.observeAsState()
+    val currentUser by publicationViewModel.currentUser.observeAsState()
+    val route by publicationViewModel.route.observeAsState()
+    val isLoading by publicationViewModel.isLoading.observeAsState()
+
+    if(isLoading!!){
+        WaitingScreen()
+    }else{
+        val scaffoldState = rememberScaffoldState()
+        val coroutineScope = rememberCoroutineScope()
+        Scaffold(
+            scaffoldState = scaffoldState,
+            topBar = { MainTopBar(coroutineScope, scaffoldState) },
+            content = {
+                ContentPublicationView(
+                    route = route!!,
+                    userCreator = userCreator!!,
+                    currentUser = currentUser!!,
+                    commentsViewModel = commentsViewModel
+                ) },
+            bottomBar = { MainBottomBar(navController = navController) },
+            drawerContent = { MainDrawer(navController = navController, currentUser!!, coroutineScope, scaffoldState) },
+            drawerGesturesEnabled = false
+        )
+    }
+
+
+
+}
+
+@Composable
+fun ContentPublicationView(
+    route: Publication,
+    userCreator: User,
+    currentUser: User,
+    commentsViewModel: CommentViewModel) {
+    Text("${route.name} ${userCreator.name} ${currentUser.name} ")
+
 }
 
 /*@Composable

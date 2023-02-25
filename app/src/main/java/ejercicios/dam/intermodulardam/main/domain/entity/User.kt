@@ -10,5 +10,5 @@ data class User(
     val admin:Boolean,
     val pfp_path:String,
     val phone_number:String,
-    val following:Int,
+    val following: Int,
 )

@@ -7,8 +7,8 @@ import ejercicios.dam.intermodulardam.main.domain.entity.Publication
 import javax.inject.Inject
 
 class ComentariosRepository @Inject constructor(private val api: CommentService) {
-    suspend fun getComments(publication: Publication):List<Comment> {
-        return api.getComments(publication)
+    suspend fun getComments(id : String):MutableList<Comment> {
+        return api.getComments(id)
     }
 
     suspend fun createComment(comentario: CommentDTO):Boolean {

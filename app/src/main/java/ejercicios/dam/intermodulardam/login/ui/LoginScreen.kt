@@ -41,12 +41,7 @@ import ejercicios.dam.intermodulardam.utils.*
 
 @Composable
 fun Login(navController:NavHostController, loginViewModel:LoginViewModel) {
-    val isLoading: Boolean by loginViewModel.isLoading.observeAsState(initial = false)
-    if(isLoading) {
-        WaitingScreen()
-    } else {
         LoginScreen(navController, loginViewModel)
-    }
 }
 
 @Composable
@@ -312,16 +307,4 @@ fun ForgotPassword(modifier: Modifier) {
         ),
         modifier = modifier
     )
-}
-
-
-@Composable
-fun WaitingScreen() {
-    Column(modifier = Modifier.fillMaxSize()) {
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .align(Alignment.CenterHorizontally)) {
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-        }
-    }
 }

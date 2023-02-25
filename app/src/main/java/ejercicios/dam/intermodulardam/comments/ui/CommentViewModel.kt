@@ -9,10 +9,9 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import ejercicios.dam.intermodulardam.comments.data.dto.CommentDTO
 import ejercicios.dam.intermodulardam.comments.domain.entity.Comment
-import ejercicios.dam.intermodulardam.comments.domain.usecase.CommentsUseCase
+import ejercicios.dam.intermodulardam.comments.domain.usecase.GetAllCommentsUseCase
 import ejercicios.dam.intermodulardam.comments.domain.usecase.CreateCommentUseCase
 import ejercicios.dam.intermodulardam.comments.domain.usecase.DeleteCommentUseCase
-import ejercicios.dam.intermodulardam.main.data.MainRepository
 import ejercicios.dam.intermodulardam.main.domain.GetPostById
 import ejercicios.dam.intermodulardam.main.domain.GetUserUseCase
 import ejercicios.dam.intermodulardam.main.domain.entity.Publication
@@ -22,10 +21,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CommentViewModel @Inject constructor(
-    private val comentariosUseCase: CommentsUseCase,
+    private val GetAllCommentsUseCase: GetAllCommentsUseCase,
     private val createCommentUseCase: CreateCommentUseCase,
     private val deleteCommentUseCase: DeleteCommentUseCase,
-    private val GetPostById : GetPostById,
+    private val GetPostByIdUseCase : GetPostById,
     private val GetUserUseCase : GetUserUseCase
 ) : ViewModel() {
 
@@ -41,9 +40,9 @@ class CommentViewModel @Inject constructor(
     fun onInit(id:String) {
         viewModelScope.launch {
             _user.value = GetUserUseCase()
-            _route.value = GetPostById(id)
+            _route.value = GetPostByIdUseCase(id)
             if(_route.value!!.id.isNotEmpty()){
-                _comments.value = comentariosUseCase(_route.value!!)
+                _comments.value = GetAllCommentsUseCase(_route.value!!.id)
             }
         }
     }
@@ -78,7 +77,7 @@ class CommentViewModel @Inject constructor(
             val result = deleteCommentUseCase.invoke(id)
             if(result) {
                 Toast.makeText(context, "Comentario Borrado con Éxito", Toast.LENGTH_LONG).show()
-                _comments.value = comentariosUseCase(_route.value!!)
+                _comments.value = GetAllCommentsUseCase(_route.value!!.id)
             } else {
                 Toast.makeText(context, "Ha habido un problema al borrar el comentario", Toast.LENGTH_LONG).show()
             }

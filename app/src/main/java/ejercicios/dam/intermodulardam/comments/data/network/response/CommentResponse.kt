@@ -5,7 +5,7 @@ import ejercicios.dam.intermodulardam.comments.domain.entity.Comment
 
 data class CommentResponse(
     @SerializedName("status") val status:Int,
-    @SerializedName("data") val data:List<Comment>
+    @SerializedName("data") val data:MutableList<Comment>
 )
 
 data class DeleteCommentResponse(

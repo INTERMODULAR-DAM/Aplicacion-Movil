@@ -12,11 +12,11 @@ class CommentService @Inject constructor(
     private val client: CommentClient,
     private val userService: UserPreferenceService
 ) {
-    suspend fun getComments(publication: Publication): List<Comment> {
+    suspend fun getComments(id : String): MutableList<Comment> {
         return withContext(Dispatchers.IO) {
-            val response = client.getComments(userService.getToken("authorization"), publication.id)
+            val response = client.getComments(userService.getToken("authorization"), id)
             if(response.code() != 200) {
-                listOf()
+                mutableListOf()
             } else {
                 response.body()?.data!!
             }

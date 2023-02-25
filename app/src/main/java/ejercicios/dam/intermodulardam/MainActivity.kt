@@ -12,6 +12,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import ejercicios.dam.intermodulardam.comments.ui.CommentViewModel
 import ejercicios.dam.intermodulardam.login.ui.LoginViewModel
 import ejercicios.dam.intermodulardam.main.ui.MainViewModel
+import ejercicios.dam.intermodulardam.main.ui.PublicationViewModel
 import ejercicios.dam.intermodulardam.map.MapaViewModel
 import ejercicios.dam.intermodulardam.navigation.CustomNavigator
 import ejercicios.dam.intermodulardam.profile.ui.PerfilViewModel
@@ -22,10 +23,11 @@ import ejercicios.dam.intermodulardam.ui.theme.IntermodularDAMTheme
 class MainActivity : ComponentActivity() {
     private val loginViewModel: LoginViewModel by viewModels()
     private val mapViewModel: MapaViewModel by viewModels()
-    private val registroViewModel: RegisterViewModel by viewModels()
+    private val registerViewModel: RegisterViewModel by viewModels()
     private val mainViewModel: MainViewModel by viewModels()
-    private val perfilViewModel: PerfilViewModel by viewModels()
-    private val comentariosViewModel: CommentViewModel by viewModels()
+    private val profileViewModel: PerfilViewModel by viewModels()
+    private val commentViewModel: CommentViewModel by viewModels()
+    private val publicationViewModel : PublicationViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,10 +41,11 @@ class MainActivity : ComponentActivity() {
                     CustomNavigator(
                         loginViewModel,
                         mapViewModel,
-                        registroViewModel,
+                        registerViewModel,
                         mainViewModel,
-                        perfilViewModel,
-                        comentariosViewModel
+                        profileViewModel,
+                        commentViewModel,
+                        publicationViewModel
                     )
                 }
             }

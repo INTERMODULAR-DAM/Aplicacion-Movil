@@ -5,8 +5,8 @@ import ejercicios.dam.intermodulardam.comments.domain.entity.Comment
 import ejercicios.dam.intermodulardam.main.domain.entity.Publication
 import javax.inject.Inject
 
-class CommentsUseCase @Inject constructor(private val repository: ComentariosRepository) {
-    suspend operator fun invoke(publication: Publication):List<Comment> {
-        return repository.getComments(publication)
+class GetAllCommentsUseCase @Inject constructor(private val repository: ComentariosRepository) {
+    suspend operator fun invoke(id : String):MutableList<Comment> {
+        return repository.getComments(id)
     }
 }

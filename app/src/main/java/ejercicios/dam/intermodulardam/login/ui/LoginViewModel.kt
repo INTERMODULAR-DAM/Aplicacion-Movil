@@ -41,9 +41,6 @@ class LoginViewModel @Inject
     private val _password = MutableLiveData<String>()
     val password : LiveData<String> = _password
 
-    private val _isLoading = MutableLiveData<Boolean>()
-    val isLoading : LiveData<Boolean> = _isLoading
-
     private val _isButtonLoginEnabled = MutableLiveData<Boolean>()
     val isButtonLoginEnabled : LiveData<Boolean> = _isButtonLoginEnabled
 
@@ -62,14 +59,12 @@ class LoginViewModel @Inject
 
     fun onButtonLoginPress(navController: NavHostController, context: Context) {
         viewModelScope.launch {
-            _isLoading.value = true
             _loginOk.value = loginUseCase(email.value!!, password.value!!)
             if(_loginOk.value!!.isNotEmpty()) {
                 navController.navigate("main")
             } else {
                 Toast.makeText(context, "Wrong user or password, please try again", Toast.LENGTH_SHORT).show()
             }
-            _isLoading.value = false
         }
     }
 

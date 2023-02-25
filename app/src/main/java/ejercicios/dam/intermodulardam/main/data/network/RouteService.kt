@@ -1,6 +1,6 @@
 package ejercicios.dam.intermodulardam.main.data.network
 
-import ejercicios.dam.intermodulardam.login.data.network.dto.UserDTO
+import android.util.Log
 import ejercicios.dam.intermodulardam.login.data.datastore.UserPreferenceService
 import ejercicios.dam.intermodulardam.main.domain.entity.CreatePublication
 import ejercicios.dam.intermodulardam.main.domain.entity.Publication
@@ -49,10 +49,9 @@ class RouteService @Inject constructor(
         }
     }
 
-    suspend fun getUserById(user : String): UserDTO {
+    suspend fun getUserById(user : String): User {
         return withContext(Dispatchers.IO){
             val response = rutasClient.getUserById(userService.getToken("authorization"), user).body()?.data!!
-
             val user = User(
                 response._id,
                 response.email,
@@ -63,7 +62,7 @@ class RouteService @Inject constructor(
                 response.admin,
                 response.pfp_path,
                 response.phone_number,
-                response.following
+                response.following.size
             )
             user
         }

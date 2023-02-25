@@ -1,7 +1,6 @@
 package ejercicios.dam.intermodulardam.main.data
 
 import ejercicios.dam.intermodulardam.login.data.database.dao.UserDAO
-import ejercicios.dam.intermodulardam.login.data.network.dto.UserDTO
 import ejercicios.dam.intermodulardam.main.domain.entity.CreatePublication
 import ejercicios.dam.intermodulardam.main.domain.entity.Publication
 import ejercicios.dam.intermodulardam.main.domain.entity.User

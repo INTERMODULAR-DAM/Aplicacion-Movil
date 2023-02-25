@@ -28,27 +28,21 @@ import coil.compose.rememberAsyncImagePainter
 import ejercicios.dam.intermodulardam.main.domain.entity.Publication
 import ejercicios.dam.intermodulardam.main.domain.entity.User
 import ejercicios.dam.intermodulardam.Routes
-import ejercicios.dam.intermodulardam.login.data.network.dto.UserDTO
 import ejercicios.dam.intermodulardam.ui.composable.*
 import ejercicios.dam.intermodulardam.ui.theme.*
 import ejercicios.dam.intermodulardam.utils.*
 import ejercicios.dam.intermodulardam.utils.Constants.IP_ADDRESS
-import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 
 @Composable
 fun Main(navController:NavHostController, mainViewModel: MainViewModel) {
-    val currentUser by mainViewModel.user.observeAsState(initial = User("","","","", "","",  false, "", "", 0))
-    val routes by mainViewModel.routes.observeAsState(initial = listOf())
-
-    mainViewModel.onInit()
-
+    val currentUser by mainViewModel.currentUser.observeAsState(initial = User("","","","", "","",  false, "", "", 0))
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = { MainTopBar(coroutineScope, scaffoldState) },
-        content = { MainScreen(navController, mainViewModel, currentUser, routes) },
+        content = { MainScreen(navController, mainViewModel, currentUser) },
         bottomBar = { MainBottomBar(navController = navController)},
         drawerContent = { MainDrawer(navController = navController, currentUser, coroutineScope, scaffoldState)},
         drawerGesturesEnabled = false
@@ -56,28 +50,30 @@ fun Main(navController:NavHostController, mainViewModel: MainViewModel) {
 
 }
 
-
-@OptIn(DelicateCoroutinesApi::class)
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
-fun MainScreen(navController: NavHostController, mainViewModel: MainViewModel, user: User, routes:List<Publication>) {
-    val scrollState = rememberScrollState()
+fun MainScreen(navController: NavHostController, mainViewModel: MainViewModel, user: User) {
 
-    LazyColumn(modifier = Modifier
-        .fillMaxSize()
-        .scrollable(scrollState, Orientation.Vertical)
-        .padding(bottom = 60.dp)) {
-        items(routes.size) { index ->
-//            var creatorUser  = UserDTO("", "", "", "", "", "", false, "", "", listOf())
-//            GlobalScope.launch(Dispatchers.IO) {
-//                creatorUser = mainViewModel.getPostCreator(routes[index].user)
-//            }
-            MainCards(
-                navController = navController,
-                mainViewModel = mainViewModel,
-                user = user,
-                route = routes[index]
-            )
+    val routes by mainViewModel.routes.observeAsState()
+    val users by mainViewModel.usersCreators.observeAsState()
+    val isLoading by mainViewModel.isLoading.observeAsState()
+    if(isLoading!!){
+        WaitingScreen()
+    }else{
+        val scrollState = rememberScrollState()
+
+        LazyColumn(modifier = Modifier
+            .fillMaxSize()
+            .scrollable(scrollState, Orientation.Vertical)
+            .padding(bottom = 60.dp)) {
+            items(routes!!.size) { index ->
+                MainCards(
+                    navController = navController,
+                    user = user,
+                    userCreator = users!![index],
+                    route = routes!![index]
+                )
+            }
         }
     }
 }
@@ -86,9 +82,10 @@ fun MainScreen(navController: NavHostController, mainViewModel: MainViewModel, u
 @Composable
 fun MainCards(
     navController: NavHostController,
-    mainViewModel: MainViewModel,
     user: User,
-    route: Publication) {
+    route: Publication,
+    userCreator: User
+) {
     Card(modifier = Modifier
         .padding(5.dp)
         .fillMaxWidth()
@@ -162,7 +159,10 @@ fun MainCards(
                 .fillMaxSize()
                 .padding(5.dp)
                 .height(250.dp)){
-                RouteTitle(route.name, Modifier.align(Alignment.Start).padding(bottom = 10.dp))
+                RouteTitle(route.name,
+                    Modifier
+                        .align(Alignment.Start)
+                        .padding(bottom = 10.dp))
                 RouteCategory(route.category)
                 Divider(
                     Modifier
@@ -176,9 +176,7 @@ fun MainCards(
                             .padding(vertical = 5.dp)
                             .width(150.dp)) {
                             RouteImage(route)
-
-                        RouteParameter("Created at", SimpleDateFormat("dd/MM/yyyy").format(route.date))
-                        //RouteUser()
+                        RouteUser(userCreator, Modifier.align(Alignment.CenterHorizontally))
                     }
                     Divider(
                         Modifier
@@ -194,6 +192,7 @@ fun MainCards(
                         RouteParameter("Distance", route.distance)
                         RouteParameter("Difficulty", route.difficulty)
                         RouteParameter("Duration", route.duration)
+                        RouteParameter("Created at", SimpleDateFormat("dd/MM/yyyy").format(route.date))
                     }
                 }
             }
@@ -202,28 +201,25 @@ fun MainCards(
 }
 
 @Composable
-fun RouteUser(user: UserDTO) {
-    Column{
-        Text(text = "Created by:", color = Color.LightGray, fontSize = 18.sp, fontFamily = calibri, modifier = Modifier.align(Alignment.CenterHorizontally))
-        Row{
-            Image(
-                rememberAsyncImagePainter(model = "http://$IP_ADDRESS/api/v1/imgs/users/${user.pfp_path}"),
-                contentDescription = "User PFP",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .clip(CircleShape)
-                    .size(40.dp)
-            )
-            Text(text = user.nick, fontSize = 14.sp, color = Color.White, modifier = Modifier.padding(10.dp))
-        }
+fun RouteUser(user: User, modifier: Modifier) {
+    Row{
+        Image(
+            rememberAsyncImagePainter(model = "http://$IP_ADDRESS/api/v1/imgs/users/${user.pfp_path}"),
+            contentDescription = "User PFP",
+            contentScale = ContentScale.Crop,
+            modifier = modifier
+                .clip(CircleShape)
+                .size(26.dp)
+                .align(Alignment.CenterVertically)
+        )
+        Text(text = user.nick, fontSize = 14.sp, color = Color.White, fontFamily = calibri, modifier = Modifier.padding(10.dp).align(Alignment.CenterVertically))
     }
 }
 
 @Composable
 fun RouteImage(route : Publication) {
     val modifier = Modifier
-        .size(120.dp, 160.dp)
-        .padding(top = 40.dp)
+        .size(130.dp)
 
     if(route.photos.size > 0) {
         PostPhoto(name = route.id + "/" + route.photos[0], modifier = modifier)
@@ -274,3 +270,15 @@ fun RouteTitle(title : String, modifier: Modifier) {
         fontWeight = FontWeight.ExtraBold,
     )
 }
+
+@Composable
+fun WaitingScreen() {
+    Column(modifier = Modifier.fillMaxSize()) {
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .align(Alignment.CenterHorizontally)) {
+            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+        }
+    }
+}
+
