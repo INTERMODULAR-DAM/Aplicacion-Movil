@@ -206,7 +206,7 @@ fun CrearRutaScreen(navController: NavHostController, mapaViewModel: MapaViewMod
         Row(modifier = Modifier
             .fillMaxWidth()
             .weight(1F),
-            horizontalArrangement = Arrangement.Center) {
+            horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
             Private(isPrivate) {
                 mapaViewModel.onRouteChanged(
                     name = name,
@@ -483,7 +483,12 @@ fun Description(description:String, onTextChanged: (String) -> Unit) {
 fun Private(private:Boolean, onCheckChanged: (Boolean) -> Unit) {
     Checkbox(
         checked = private,
-        onCheckedChange = {onCheckChanged(it)}
+        onCheckedChange = {onCheckChanged(it)},
+        colors = CheckboxDefaults.colors(
+            uncheckedColor = Color.White,
+            checkedColor = Color.White,
+            checkmarkColor = MaterialTheme.colors.backgroundGreen,
+        )
     ) 
     Text(text = "Make private", color = Color.White)
 }
@@ -505,16 +510,28 @@ fun Category(category:String, onTextChanged: (String) -> Unit) {
         }
     ) {
         TextField(
+            modifier = Modifier
+                .border(
+                    width = 1.dp,
+                    brush = Brush.horizontalGradient(listOf(Color.White, Color.White)),
+                    shape = RoundedCornerShape(12.dp)
+                ),
             readOnly = true,
             value = selectedOptionText,
             onValueChange = {},
-            label = { Text("Choose a category") },
+            label = { PlaceholderForField("Choose a Category") },
             trailingIcon = {
                 ExposedDropdownMenuDefaults.TrailingIcon(
                     expanded = expanded
                 )
             },
-            colors = ExposedDropdownMenuDefaults.textFieldColors()
+            colors = TextFieldDefaults.textFieldColors(
+                textColor = Color.White,
+                cursorColor = Color.White,
+                trailingIconColor = Color.White,
+                backgroundColor = MaterialTheme.colors.backgroundGreen
+            ),
+            textStyle = textStyleLogin
         )
         ExposedDropdownMenu(
             expanded = expanded,
@@ -554,16 +571,28 @@ fun Difficulty(difficulty:String, onTextChanged: (String) -> Unit) {
         }
     ) {
         TextField(
+            modifier = Modifier
+                .border(
+                    width = 1.dp,
+                    brush = Brush.horizontalGradient(listOf(Color.White, Color.White)),
+                    shape = RoundedCornerShape(12.dp)
+                ),
             readOnly = true,
             value = selectedOptionText,
             onValueChange = {},
-            label = { Text("Choose a difficulty") },
+            label = { PlaceholderForField("Choose a Difficulty") },
             trailingIcon = {
                 ExposedDropdownMenuDefaults.TrailingIcon(
                     expanded = expanded
                 )
             },
-            colors = ExposedDropdownMenuDefaults.textFieldColors()
+            colors = TextFieldDefaults.textFieldColors(
+                textColor = Color.White,
+                cursorColor = Color.White,
+                trailingIconColor = Color.White,
+                backgroundColor = MaterialTheme.colors.backgroundGreen
+            ),
+            textStyle = textStyleLogin
         )
         ExposedDropdownMenu(
             expanded = expanded,

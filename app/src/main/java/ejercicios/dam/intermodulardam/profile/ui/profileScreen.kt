@@ -1,6 +1,5 @@
 package ejercicios.dam.intermodulardam.profile.ui
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.scrollable
@@ -8,7 +7,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CutCornerShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -30,10 +28,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
-import ejercicios.dam.intermodulardam.comments.ui.CommentViewModel
+import ejercicios.dam.intermodulardam.Routes
 import ejercicios.dam.intermodulardam.main.domain.entity.Publication
 import ejercicios.dam.intermodulardam.main.domain.entity.User
-import ejercicios.dam.intermodulardam.Routes
 import ejercicios.dam.intermodulardam.main.ui.*
 import ejercicios.dam.intermodulardam.ui.theme.backgroundGreen
 import ejercicios.dam.intermodulardam.ui.theme.calibri
