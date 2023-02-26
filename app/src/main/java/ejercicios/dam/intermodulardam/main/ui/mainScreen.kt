@@ -65,8 +65,6 @@ fun MainScreen(navController: NavHostController, mainViewModel: MainViewModel, u
     val users by mainViewModel.usersCreators.observeAsState(mutableListOf())
 
     val scrollState = rememberScrollState()
-    Log.d("USERS", users.toString())
-    Log.d("POSTS", routes.toString())
     LazyColumn(modifier = Modifier
         .fillMaxSize()
         .scrollable(scrollState, Orientation.Vertical)

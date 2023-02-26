@@ -24,12 +24,8 @@ class CommentViewModel @Inject constructor(
     private val GetAllCommentsUseCase: GetAllCommentsUseCase,
     private val createCommentUseCase: CreateCommentUseCase,
     private val deleteCommentUseCase: DeleteCommentUseCase,
-    private val GetPostByIdUseCase : GetPostById,
-    private val GetUserUseCase : GetUserUseCase
 ) : ViewModel() {
 
-    private val _user = MutableLiveData<User>()
-    val user: LiveData<User> = _user
 
     private val _route = MutableLiveData<Publication>()
     val route: LiveData<Publication> = _route
@@ -37,15 +33,6 @@ class CommentViewModel @Inject constructor(
     private val _comments = MutableLiveData<List<Comment>>()
     val comments: LiveData<List<Comment>> = _comments
 
-    fun onInit(id:String) {
-        viewModelScope.launch {
-            _user.value = GetUserUseCase()
-            _route.value = GetPostByIdUseCase(id)
-            if(_route.value!!.id.isNotEmpty()){
-                _comments.value = GetAllCommentsUseCase(_route.value!!.id)
-            }
-        }
-    }
 
     private val _message = MutableLiveData<String>()
     val message:LiveData<String> = _message
@@ -68,16 +55,18 @@ class CommentViewModel @Inject constructor(
             val createdOk = createCommentUseCase(comment)
             if(!createdOk) {
                 Toast.makeText(context, "An error has ocurred creating the comment", Toast.LENGTH_LONG).show()
+            } else {
+                _comments.value = GetAllCommentsUseCase(postID)
             }
         }
     }
 
-    fun onDeleteComment(context:Context, id:String) {
+    fun onDeleteComment(context:Context, id:String, postID: String) {
         viewModelScope.launch {
             val result = deleteCommentUseCase.invoke(id)
             if(result) {
                 Toast.makeText(context, "Comentario Borrado con Éxito", Toast.LENGTH_LONG).show()
-                _comments.value = GetAllCommentsUseCase(_route.value!!.id)
+                _comments.value = GetAllCommentsUseCase(postID)
             } else {
                 Toast.makeText(context, "Ha habido un problema al borrar el comentario", Toast.LENGTH_LONG).show()
             }

@@ -54,24 +54,7 @@ class MainViewModel @Inject constructor(
                 val user = GetUserCreator(_routes.value!![i].user)
                 _usersCreators.value = (_usersCreators.value?.plus(user)?: listOf(user)) as MutableList<User>
             }
-            Log.d("SFDGSDFGSDFGSFDG", _isLoading.value.toString())
             _isLoading.value = false
         }
    }
-
-    private suspend fun getCurrentUser(){
-
-        getAllPost()
-    }
-
-    suspend fun getAllPost() {
-
-
-        getAllCreators()
-    }
-
-    suspend fun getAllCreators(){
-
-        Log.d("TSGSDFGSDFGSDFG", "${_usersCreators.value}")
-    }
 }

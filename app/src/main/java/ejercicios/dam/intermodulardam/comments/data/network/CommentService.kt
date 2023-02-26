@@ -22,10 +22,10 @@ class CommentService @Inject constructor(
             }
         }
     }
-    suspend fun createComment(comentario: CommentDTO):Boolean {
+    suspend fun createComment(comment: CommentDTO):Boolean {
         return withContext(Dispatchers.IO) {
-            val response = client.createComment(userService.getToken("authorization"), comentario)
-            response.body()?.data!!.isEmpty()
+            val response = client.createComment(userService.getToken("authorization"), comment)
+            response.body()?.data!!.isNotEmpty()
         }
     }
 
