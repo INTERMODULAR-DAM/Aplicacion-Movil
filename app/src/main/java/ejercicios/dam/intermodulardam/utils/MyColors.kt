@@ -13,7 +13,7 @@ val Colors.DisabledMainGreen : Color
     get() = Color(0xFF115511)
 
 val Colors.backgroundGreen : Color
-    get() = Color(0xFF004200);
+    get() = Color(0xFF004200)
 
 val Colors.greenCard : Color
     get() = Color(0xFF6EA760)
