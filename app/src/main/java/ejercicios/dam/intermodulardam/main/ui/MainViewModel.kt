@@ -10,6 +10,7 @@ import ejercicios.dam.intermodulardam.login.data.network.dto.UserDTO
 import ejercicios.dam.intermodulardam.main.domain.*
 import ejercicios.dam.intermodulardam.main.domain.entity.Publication
 import ejercicios.dam.intermodulardam.main.domain.entity.User
+import ejercicios.dam.intermodulardam.profile.data.ProfileRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -21,7 +22,8 @@ class MainViewModel @Inject constructor(
     private val GetUser : GetUserUseCase,
     private val GetAllPosts : GetAllPosts,
     private val GetAllPublicPosts : GetAllPublicPosts,
-    private val GetUserCreator : GetUserByIdUseCase
+    private val GetUserCreator : GetUserByIdUseCase,
+    private val repository: ProfileRepository,
 ) : ViewModel() {
 
     private val _currentUser = MutableLiveData<User>()
@@ -48,7 +50,7 @@ class MainViewModel @Inject constructor(
             if(_currentUser.value!!.admin){
                 _routes.value = GetAllPosts()
             }else {
-                _routes.value = GetAllPublicPosts()
+                _routes.value = GetAllPublicPosts().plus(repository.getOwnPosts())?.distinct()
             }
             for (i in 0 until _routes.value!!.size) {
                 val user = GetUserCreator(_routes.value!![i].user)
