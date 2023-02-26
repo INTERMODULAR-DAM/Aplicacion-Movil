@@ -1,6 +1,8 @@
 package ejercicios.dam.intermodulardam.profile.data.network
 
 import android.util.Log
+import ejercicios.dam.intermodulardam.login.data.database.dao.UserDAO
+import ejercicios.dam.intermodulardam.login.data.database.entity.toDataBase
 import ejercicios.dam.intermodulardam.login.data.datastore.UserPreferenceService
 import ejercicios.dam.intermodulardam.login.data.network.dto.UserDTO
 import ejercicios.dam.intermodulardam.main.domain.entity.Publication
@@ -11,7 +13,8 @@ import javax.inject.Inject
 
 class ProfileService @Inject constructor(
     private val client: ProfileClient,
-    private val userService: UserPreferenceService
+    private val userService: UserPreferenceService,
+    private val userDAO: UserDAO
 ) {
     suspend fun getOwnPosts(): List<Publication> {
         return withContext(Dispatchers.IO) {
@@ -39,7 +42,12 @@ class ProfileService @Inject constructor(
         return withContext(Dispatchers.IO) {
             val response = client.updateUser(userService.getToken("authorization"), userDTO)
             Log.i("RESPONSE", "$response")
-            response.code() == 200
+            if(response.code() == 200) {
+                userDAO.updateUser(userDTO.toDataBase(userDTO.email))
+                true
+            } else {
+                false
+            }
         }
     }
 }

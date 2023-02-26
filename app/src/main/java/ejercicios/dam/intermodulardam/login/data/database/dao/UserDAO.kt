@@ -1,9 +1,6 @@
 package ejercicios.dam.intermodulardam.login.data.database.dao
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import dagger.Provides
 import ejercicios.dam.intermodulardam.login.data.database.entity.UserDTO
 import javax.inject.Singleton
@@ -18,4 +15,7 @@ interface UserDAO{
 
     @Query("DELETE FROM users")
     suspend fun deleteAllUsers()
+
+    @Update(entity = UserDTO::class, onConflict = OnConflictStrategy.ABORT)
+    suspend fun updateUser(user:UserDTO)
 }
