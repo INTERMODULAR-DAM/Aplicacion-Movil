@@ -78,8 +78,8 @@ class PerfilViewModel @Inject constructor(
         email: String,
         phone: String
     ): Boolean {
-        return Patterns.EMAIL_ADDRESS.matcher(email).matches() ||
-                Patterns.PHONE.matcher(phone).matches() ||
+        return Patterns.EMAIL_ADDRESS.matcher(email).matches() && email.isNotEmpty() ||
+                Patterns.PHONE.matcher(phone).matches() && email.isNotEmpty() ||
                 name.isNotBlank() ||
                 ape.isNotBlank() ||
                 nick.isNotBlank()

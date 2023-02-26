@@ -237,6 +237,7 @@ fun CrearRutaScreen(navController: NavHostController, mapaViewModel: MapaViewMod
                 )
             }
         }
+        Spacer(modifier = Modifier.height(10.dp))
         Row(modifier = Modifier
             .fillMaxWidth()
             .weight(1F),
