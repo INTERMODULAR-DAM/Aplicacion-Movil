@@ -43,7 +43,7 @@ class ProfileService @Inject constructor(
             val response = client.updateUser(userService.getToken("authorization"), userDTO)
             Log.i("RESPONSE", "$response")
             if(response.code() == 200) {
-                userDAO.updateUser(userDTO.toDataBase(userDTO.email))
+                userDAO.updateUser(userDTO.toDataBase(userDTO._id))
                 true
             } else {
                 false
