@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class PerfilViewModel @Inject constructor(
+class ProfileViewModel @Inject constructor(
     private val repository: ProfileRepository,
     private val mainRepository: MainRepository,
     private val editProfileUseCase: EditProfileUseCase
@@ -32,11 +32,16 @@ class PerfilViewModel @Inject constructor(
     val posts: LiveData<List<Publication>> = _posts
 
     fun onInit() {
+        _isLoading.value = true
         viewModelScope.launch {
             _user.value = mainRepository.getUser()
             _posts.value = repository.getOwnPosts()
+            _isLoading.value = false
         }
     }
+
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading = _isLoading
 
     private val _isButtonEnabled = MutableLiveData<Boolean>()
     val isButtonEnabled: LiveData<Boolean> = _isButtonEnabled
@@ -78,45 +83,29 @@ class PerfilViewModel @Inject constructor(
         email: String,
         phone: String
     ): Boolean {
-        return Patterns.EMAIL_ADDRESS.matcher(email).matches() && email.isNotEmpty() ||
-                Patterns.PHONE.matcher(phone).matches() && email.isNotEmpty() ||
+        return Patterns.EMAIL_ADDRESS.matcher(email).matches()||
+                Patterns.PHONE.matcher(phone).matches()||
                 name.isNotBlank() ||
                 ape.isNotBlank() ||
                 nick.isNotBlank()
     }
 
     fun onEditProfile(context: Context, navController: NavHostController) {
-        _user.value = changeUserName()
         viewModelScope.launch {
-            val result = editProfileUseCase.invoke(_user.value!!)
+            val result = editProfileUseCase(_user.value!!)
             if (result) {
                 Toast.makeText(
                     context,
-                    "Se ha actualizado el usuario",
+                    "User updated",
                     Toast.LENGTH_SHORT).show()
                 navController.navigate(Routes.Perfil.createRoute(_user.value!!.id))
             } else {
                 Toast.makeText(
                     context,
-                    "Ha habido un problema al actualizar el usuario",
+                    "An error has ocurred updating the user",
                     Toast.LENGTH_SHORT).show()
             }
         }
-    }
-
-    private fun changeUserName(): User {
-        return User(
-            _user.value!!.id,
-            _email.value!!,
-            _nombre.value!!,
-            _apellidos.value!!,
-            _user.value!!.date,
-            _nick.value!!,
-            _user.value!!.admin,
-            _user.value!!.pfp_path,
-            _phone.value!!,
-            _user.value!!.following
-        )
     }
 
 }

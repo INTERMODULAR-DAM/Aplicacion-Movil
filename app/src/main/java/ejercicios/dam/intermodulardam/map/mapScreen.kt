@@ -30,7 +30,7 @@ import ejercicios.dam.intermodulardam.ui.composable.MainDrawer
 import ejercicios.dam.intermodulardam.ui.composable.MainTopBar
 
 @Composable
-fun Mapa(navController:NavHostController, mapaViewModel: MapaViewModel) {
+fun Mapa(navController:NavHostController, mapaViewModel: MapViewModel) {
     val currentUser by mapaViewModel.user.observeAsState(initial = User("","","","", "","",  false, "", "", 0))
 
     mapaViewModel.onInit()
@@ -56,7 +56,7 @@ fun Mapa(navController:NavHostController, mapaViewModel: MapaViewModel) {
 
 @SuppressLint("MissingPermission")
 @Composable
-fun MapaScreen(navController: NavHostController, mapaViewModel: MapaViewModel) {
+fun MapaScreen(navController: NavHostController, mapaViewModel: MapViewModel) {
     val routes by mapaViewModel.routes.observeAsState(initial = listOf())
 
     val context = LocalContext.current as Activity
@@ -104,14 +104,14 @@ fun MapaScreen(navController: NavHostController, mapaViewModel: MapaViewModel) {
                     Marker(
                         state = rememberMarkerState(position = latlngList[0]),
                         title = route.name,
-                        snippet = "Description: ${route.description}"
+                        snippet = "Type: ${route.category}"
 
                     )
                     Polyline(points = latlngList, color = Color.Red)
                     Marker(
                         state = rememberMarkerState(position = latlngList[latlngList.size -1]),
                         title = "End of the route",
-                        snippet = "Duration:  ${route.duration} \n Difficulty: ${route.difficulty}"
+                        snippet = "Duration:  ${route.duration}"
                     )
                 }
             }

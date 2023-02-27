@@ -19,7 +19,7 @@ interface CommentClient {
     @GET("/api/v1/comments/getComments")
     suspend fun getComments(
         @Header("authorization") token:String,
-        @Query("_id") id:String): Response<CommentResponse>
+        @Header("_id") id:String): Response<CommentResponse>
 
     @POST("/api/v1/comments")
     suspend fun createComment(
@@ -29,5 +29,5 @@ interface CommentClient {
     @DELETE("api/v1/comments")
     suspend fun deleteComment(
         @Header("authorization") token:String,
-        @Query("_id") id:String): Response<DeleteCommentResponse>
+        @Header("_id") id:String): Response<DeleteCommentResponse>
 }

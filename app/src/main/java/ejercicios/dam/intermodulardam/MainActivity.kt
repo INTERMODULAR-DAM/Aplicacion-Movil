@@ -13,19 +13,19 @@ import ejercicios.dam.intermodulardam.comments.ui.CommentViewModel
 import ejercicios.dam.intermodulardam.login.ui.LoginViewModel
 import ejercicios.dam.intermodulardam.main.ui.MainViewModel
 import ejercicios.dam.intermodulardam.main.ui.PublicationViewModel
-import ejercicios.dam.intermodulardam.map.MapaViewModel
+import ejercicios.dam.intermodulardam.map.MapViewModel
 import ejercicios.dam.intermodulardam.navigation.CustomNavigator
-import ejercicios.dam.intermodulardam.profile.ui.PerfilViewModel
+import ejercicios.dam.intermodulardam.profile.ui.ProfileViewModel
 import ejercicios.dam.intermodulardam.register.ui.RegisterViewModel
 import ejercicios.dam.intermodulardam.ui.theme.IntermodularDAMTheme
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val loginViewModel: LoginViewModel by viewModels()
-    private val mapViewModel: MapaViewModel by viewModels()
+    private val mapViewModel: MapViewModel by viewModels()
     private val registerViewModel: RegisterViewModel by viewModels()
     private val mainViewModel: MainViewModel by viewModels()
-    private val profileViewModel: PerfilViewModel by viewModels()
+    private val profileViewModel: ProfileViewModel by viewModels()
     private val commentViewModel: CommentViewModel by viewModels()
     private val publicationViewModel : PublicationViewModel by viewModels()
 

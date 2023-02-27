@@ -11,18 +11,17 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -32,24 +31,25 @@ import ejercicios.dam.intermodulardam.Routes
 import ejercicios.dam.intermodulardam.main.domain.entity.Publication
 import ejercicios.dam.intermodulardam.main.domain.entity.User
 import ejercicios.dam.intermodulardam.main.ui.*
+import ejercicios.dam.intermodulardam.main.ui.WhiteWaitingScreen
+import ejercicios.dam.intermodulardam.ui.composable.MainBottomBar
+import ejercicios.dam.intermodulardam.ui.composable.MainDrawer
+import ejercicios.dam.intermodulardam.ui.composable.MainTopBar
 import ejercicios.dam.intermodulardam.ui.theme.backgroundGreen
 import ejercicios.dam.intermodulardam.ui.theme.calibri
 import ejercicios.dam.intermodulardam.ui.theme.lightGreenCard
 import ejercicios.dam.intermodulardam.ui.theme.mediumGreenCard
 import ejercicios.dam.intermodulardam.utils.Constants.IP_ADDRESS
 import ejercicios.dam.intermodulardam.utils.MainBrown
-import ejercicios.dam.intermodulardam.utils.backgroundGreen
 import ejercicios.dam.intermodulardam.utils.standardQuadFromTo
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 
 @Composable
-fun Perfil(navController:NavHostController, id:String, perfilViewModel: PerfilViewModel) {
-    val currentUser by perfilViewModel.user.observeAsState(initial = User("","","","", "","",  false, "", "", 0))
-    val routes by perfilViewModel.posts.observeAsState(initial = listOf())
-
-    perfilViewModel.onInit()
+fun Perfil(navController:NavHostController, id:String, profileViewModel: ProfileViewModel) {
+    val currentUser by profileViewModel.user.observeAsState(initial = User("","","","", "","",  false, "", "", 0))
+    LaunchedEffect(key1 = true){
+        profileViewModel.onInit()
+    }
 
     if(id.isEmpty()) {
         navController.navigate("main")
@@ -61,36 +61,57 @@ fun Perfil(navController:NavHostController, id:String, perfilViewModel: PerfilVi
                 .padding(0.dp)
                 .fillMaxSize(),
             scaffoldState = scaffoldState,
-            topBar = { PerfilTopBar(coroutineScope, scaffoldState) },
-            content = { PerfilScreen(navController, perfilViewModel, currentUser, routes) },
-            bottomBar = { PerfilBottomBar(navController = navController) },
-            drawerContent = { PerfilDrawer(navController = navController, currentUser, coroutineScope, scaffoldState) },
+            topBar = { MainTopBar(coroutineScope, scaffoldState) },
+            content = { ProfileScreen(navController, profileViewModel, currentUser) },
+            bottomBar = { MainBottomBar(navController = navController) },
+            drawerContent = { MainDrawer(navController = navController, currentUser, coroutineScope, scaffoldState) },
             drawerGesturesEnabled = false
         )
     }
 }
 
 @Composable
-fun PerfilScreen(navController: NavHostController, perfilViewModel: PerfilViewModel, user: User, routes: List<Publication>) {
+fun ProfileScreen(navController: NavHostController, profileViewModel: ProfileViewModel, user: User) {
     val scrollState = rememberScrollState()
-    
-    Column(modifier = Modifier
+    val routes by profileViewModel.posts.observeAsState(initial = listOf())
+    val isLoading by profileViewModel.isLoading.observeAsState(false)
+
+    BoxWithConstraints(modifier = Modifier
         .fillMaxSize()
-        .padding(top = 10.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-        PerfilImage(user)
-        Spacer(modifier = Modifier.height(10.dp))
-        UserInfo(user, navController)
-        Spacer(modifier = Modifier.height(10.dp))
-        Row(Modifier.fillMaxWidth().padding(start = 5.dp), horizontalArrangement = Arrangement.Start) {Text(text = "Posts: ")}
-        Spacer(modifier = Modifier.height(5.dp))
-        Row {
-            LazyColumn(modifier = Modifier
-                .scrollable(scrollState, Orientation.Vertical)
-                .padding(bottom = 60.dp)) {
-                items(routes.size) { index ->
-                    val postCreator =
-                        ProfileCards(navController, user, routes[index])
-                    Spacer(modifier = Modifier.height(5.dp))
+        .background(backgroundGreen)
+        ) {
+        BackgroundCard(constraints = constraints)
+        Column( horizontalAlignment = Alignment.CenterHorizontally) {
+            ProfileImage(user, Modifier.align(Alignment.CenterHorizontally))
+            Spacer(modifier = Modifier.height(10.dp))
+            UserInfo(user, navController)
+            Divider(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 10.dp), color = Color.White)
+            Text(
+                text = "Publications",
+                fontFamily = calibri,
+                fontWeight = FontWeight.Bold,
+                color = Color.White,
+                fontSize = 26.sp,
+            )
+            Divider(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 10.dp), color = Color.White)
+            if(isLoading){
+                WhiteWaitingScreen()
+            }else{
+                Row(modifier = Modifier) {
+                    LazyColumn(modifier = Modifier
+                        .scrollable(scrollState, Orientation.Vertical)
+                        .padding(bottom = 60.dp)) {
+                        items(routes.size) { index ->
+                            ProfileCards(navController, user, routes[index])
+                            Spacer(modifier = Modifier.height(5.dp))
+                        }
+                    }
                 }
             }
         }
@@ -98,110 +119,26 @@ fun PerfilScreen(navController: NavHostController, perfilViewModel: PerfilViewMo
 }
 
 @Composable
-fun PerfilTopBar(coroutineScope: CoroutineScope, scaffoldState: ScaffoldState) {
-    TopAppBar(modifier = Modifier
-        .fillMaxWidth()
-        .padding(0.dp),
-        backgroundColor = (MaterialTheme.colors.backgroundGreen)) {
-        Row(modifier= Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
-            IconButton(onClick = { coroutineScope.launch { scaffoldState.drawerState.open() } }, modifier = Modifier.weight(1F)) {
-                Icon(imageVector = Icons.Filled.Menu , contentDescription = "Left-hand menu", tint = Color.White)
-            }
-            Text(modifier = Modifier.weight(7F), text = "Wikitrail", color = Color.White, fontWeight = FontWeight.W800)
-        }
-    }
-}
-
-
-@Composable
-fun PerfilBottomBar(navController: NavHostController) {
-    BottomAppBar(modifier = Modifier
-        .fillMaxWidth()
-        .padding(0.dp),
-        backgroundColor = MaterialTheme.colors.backgroundGreen)
-    {
-        Row(modifier = Modifier.fillMaxSize(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceEvenly) {
-            IconButton(onClick = { navController.navigate(Routes.Main.route) }) {
-                Icon(imageVector = Icons.Filled.House, contentDescription = "Página Principal", tint = Color.White)
-            }
-            IconButton(onClick = { navController.navigate(Routes.CrearRuta.route) }) {
-                Icon(imageVector = Icons.Filled.Add, contentDescription = "Crear Ruta", tint = Color.White)
-            }
-            IconButton(onClick = { navController.navigate(Routes.Mapa.route) }) {
-                Icon(imageVector = Icons.Filled.Map, contentDescription = "Mapa", tint = Color.White)
-            }
-        }
-    }
-}
-
-@Composable
-fun PerfilDrawer(navController: NavHostController, user:User, coroutineScope: CoroutineScope, scaffoldState: ScaffoldState) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = MaterialTheme.colors.backgroundGreen),
-    ) {
-        Row(modifier = Modifier.padding(start = 8.dp, top = 32.dp), verticalAlignment = Alignment.Bottom) {
-            Box(
-                modifier = Modifier
-                    .size(63.dp)
-                    .clip(CircleShape),
-                contentAlignment = Alignment.Center,
-            ) {
-                Image(
-                    modifier = Modifier
-                        .size(63.dp)
-                        .scale(1F),
-                    painter = rememberAsyncImagePainter(
-                        "http://$IP_ADDRESS/api/v1/imgs/users/"+ user.pfp_path
-                    ),
-                    contentDescription = "Foto de Perfil",
-                    contentScale = ContentScale.Crop)
-            }
-            Box(modifier = Modifier.padding(start = 8.dp)) {
-                Text(text = user.name, color = Color.White, style = TextStyle(fontFamily = calibri, fontSize = 24.sp))
-            }
-
-            Box(modifier = Modifier) {
-                IconButton(
-                    modifier = Modifier
-                        .absoluteOffset(130.dp, (-32).dp),
-                    onClick = { coroutineScope.launch { scaffoldState.drawerState.close() } }) {
-                    Icon(imageVector = Icons.Filled.Menu, contentDescription = "Cerrar Drawer", tint = Color.White)
-                }
-            }
-        }
-        Spacer(modifier = Modifier.height(24.dp))
-        Row(modifier = Modifier.padding(start = 8.dp, top = 32.dp), verticalAlignment = Alignment.Bottom) {
-        }
-    }
-}
-
-@Composable
-fun PerfilImage(user:User) {
-    Row{
-        Image(
-            rememberAsyncImagePainter(model = "http://$IP_ADDRESS/api/v1/imgs/users/${user.pfp_path}"),
-            contentDescription = "User PFP",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .clip(CircleShape)
-                .size(78.dp)
-                .align(Alignment.CenterVertically)
-        )
-    }
+fun ProfileImage(user:User, modifier : Modifier) {
+    Image(
+        rememberAsyncImagePainter(model = "http://$IP_ADDRESS/api/v1/imgs/users/${user.pfp_path}"),
+        contentDescription = "User PFP",
+        contentScale = ContentScale.Crop,
+        modifier = modifier
+            .clip(CircleShape)
+            .size(78.dp)
+    )
 }
 
 @Composable
 fun UserInfo(user:User, navController: NavHostController) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Text(text = user.nick, fontSize = 34.sp, fontFamily = calibri, modifier = Modifier
+    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.background(
+        backgroundGreen) ) {
+        Text(text = user.nick, fontSize = 34.sp, fontFamily = calibri, color = Color.White,modifier = Modifier
             .padding(10.dp)
             .align(Alignment.CenterVertically))
         IconButton(onClick = { navController.navigate(Routes.EditProfile.createRoute(user.id)) }) {
-            Icon(imageVector = Icons.Filled.Edit, contentDescription = "Editar Perfil")
+            Icon(imageVector = Icons.Filled.Edit, contentDescription = "Edit profile", tint= Color.White)
         }
     }
 }

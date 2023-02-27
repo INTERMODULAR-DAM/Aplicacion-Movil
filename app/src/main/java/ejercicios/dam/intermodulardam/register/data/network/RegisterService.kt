@@ -1,6 +1,7 @@
 package ejercicios.dam.intermodulardam.register.data.network
 
 
+import android.util.Log
 import ejercicios.dam.intermodulardam.register.data.dto.UserRegisterDTO
 import kotlinx.coroutines.withContext
 import javax.inject.Inject

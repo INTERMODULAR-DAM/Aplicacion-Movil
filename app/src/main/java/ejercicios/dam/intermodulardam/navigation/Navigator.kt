@@ -1,5 +1,6 @@
 package ejercicios.dam.intermodulardam.navigation
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -7,7 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import ejercicios.dam.intermodulardam.comments.ui.CommentViewModel
-import ejercicios.dam.intermodulardam.createRoutes.ui.CrearRuta
+import ejercicios.dam.intermodulardam.main.ui.CreateRoute
 import ejercicios.dam.intermodulardam.login.ui.Login
 import ejercicios.dam.intermodulardam.login.ui.LoginViewModel
 import ejercicios.dam.intermodulardam.register.ui.RegisterViewModel
@@ -15,22 +16,22 @@ import ejercicios.dam.intermodulardam.register.ui.RegisterScreen
 import ejercicios.dam.intermodulardam.main.ui.Main
 import ejercicios.dam.intermodulardam.main.ui.MainViewModel
 import ejercicios.dam.intermodulardam.map.Mapa
-import ejercicios.dam.intermodulardam.map.MapaViewModel
+import ejercicios.dam.intermodulardam.map.MapViewModel
 import ejercicios.dam.intermodulardam.Routes
 import ejercicios.dam.intermodulardam.main.ui.PublicationViewModel
 import ejercicios.dam.intermodulardam.profile.ui.EditProfile
 import ejercicios.dam.intermodulardam.profile.ui.Perfil
-import ejercicios.dam.intermodulardam.profile.ui.PerfilViewModel
-import ejercicios.dam.intermodulardam.publication.PublicationView
+import ejercicios.dam.intermodulardam.profile.ui.ProfileViewModel
+import ejercicios.dam.intermodulardam.main.ui.PublicationView
 import ejercicios.dam.intermodulardam.splashscreen.SplashScreen
 
 @Composable
 fun CustomNavigator(
     loginViewModel: LoginViewModel,
-    mapViewModel: MapaViewModel,
+    mapViewModel: MapViewModel,
     registerViewModel: RegisterViewModel,
     mainViewModel: MainViewModel,
-    profileViewModel: PerfilViewModel,
+    profileViewModel: ProfileViewModel,
     commentViewModel:CommentViewModel,
     publicationViewModel : PublicationViewModel
 ) {
@@ -41,6 +42,7 @@ fun CustomNavigator(
             SplashScreen(navController = navController)
         }
         composable(route = Routes.Login.route) {
+            BackHandler(true) {}
             Login(navController = navController, loginViewModel = loginViewModel)
         }
         composable(route = Routes.Mapa.route) {
@@ -54,7 +56,7 @@ fun CustomNavigator(
             Main(navController = navController, mainViewModel = mainViewModel)
         }
         composable(route = Routes.CrearRuta.route) {
-            CrearRuta(navController = navController, mapViewModel, mainViewModel)
+            CreateRoute(navController = navController, mapViewModel, mainViewModel)
         }
         composable(
             route = Routes.Publicacion.route,
@@ -78,7 +80,7 @@ fun CustomNavigator(
             Perfil(
                 navController = navController,
                 id = navBackStackEntry.arguments?.getString("id") ?: "",
-                perfilViewModel = profileViewModel,
+                profileViewModel = profileViewModel,
             )
         }
         composable(

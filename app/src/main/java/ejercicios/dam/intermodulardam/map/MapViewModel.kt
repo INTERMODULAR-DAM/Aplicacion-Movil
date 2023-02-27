@@ -1,6 +1,7 @@
 package ejercicios.dam.intermodulardam.map
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -17,11 +18,13 @@ import ejercicios.dam.intermodulardam.main.domain.entity.LatitudeLongitude
 import ejercicios.dam.intermodulardam.main.domain.entity.Publication
 import ejercicios.dam.intermodulardam.main.domain.entity.User
 import kotlinx.coroutines.launch
+import java.lang.Math.*
+import java.text.DecimalFormat
 import javax.inject.Inject
 
 
 @HiltViewModel
-class MapaViewModel @Inject constructor(private val createRouteUseCase: CreateRouteUseCase, private val repository: MainRepository) : ViewModel() {
+class MapViewModel @Inject constructor(private val createRouteUseCase: CreateRouteUseCase, private val repository: MainRepository) : ViewModel() {
 
      lateinit var fusedLocationClient: FusedLocationProviderClient
 
@@ -34,6 +37,7 @@ class MapaViewModel @Inject constructor(private val createRouteUseCase: CreateRo
      fun onInit() {
           viewModelScope.launch {
                _user.value = repository.getUser()
+               Log.d("USER", _user.value!!.toString())
                if(_user.value!!.admin) {
                     _routes.value = repository.getAllPosts()
                } else {
@@ -50,6 +54,8 @@ class MapaViewModel @Inject constructor(private val createRouteUseCase: CreateRo
 
      private val _distance = MutableLiveData<String>()
      val distance:LiveData<String> = _distance
+
+     private var distanceKM : Double = 0.0
 
      private val _difficulty = MutableLiveData<String>()
      val difficulty:LiveData<String> = _difficulty
@@ -72,7 +78,6 @@ class MapaViewModel @Inject constructor(private val createRouteUseCase: CreateRo
      fun onRouteChanged(
           name:String,
           category:String,
-          distance:String,
           difficulty:String,
           track:MutableList<LatLng>,
           duration: String,
@@ -81,20 +86,18 @@ class MapaViewModel @Inject constructor(private val createRouteUseCase: CreateRo
      ) {
           _name.value = name
           _category.value = category
-          _distance.value = distance
           _difficulty.value = difficulty
           _track.value = track
           _duration.value = duration
           _description.value = description
           _isPrivate.value = isPrivate
           _isButtonEnabled.value =
-               enableCreateButton(name, category, distance, difficulty, track, duration, description, isPrivate)
+               enableCreateButton(name, category, difficulty, track, duration, description, isPrivate)
      }
 
      private fun enableCreateButton(
           name:String,
           category: String,
-          distance: String,
           difficulty: String,
           track: MutableList<LatLng>,
           duration: String,
@@ -103,9 +106,8 @@ class MapaViewModel @Inject constructor(private val createRouteUseCase: CreateRo
      ):Boolean {
           return name.isNotEmpty() &&
                   category.isNotEmpty() &&
-                  distance.isNotEmpty() &&
                   difficulty.isNotEmpty() &&
-                  track.isNotEmpty() &&
+                  track.size > 1 &&
                   duration.isNotEmpty() &&
                   description.isNotEmpty() &&
                   (isPrivate.or(!isPrivate))
@@ -118,6 +120,13 @@ class MapaViewModel @Inject constructor(private val createRouteUseCase: CreateRo
                     latlngList.add(LatitudeLongitude(LatLng.latitude, LatLng.longitude))
                }
 
+               for(i in 0 until _track.value!!.size){
+                   if(i + 1 >= _track.value!!.size){
+                        break
+                   }
+                    getDistanceKm(_track.value!![i], _track.value!![i+1])
+               }
+
                val publication = CreatePublication(
                     name.value!!,
                     category.value!!,
@@ -127,10 +136,11 @@ class MapaViewModel @Inject constructor(private val createRouteUseCase: CreateRo
                     duration.value!!,
                     description.value!!,
                     isPrivate.value!!,
-                    id
+                    _user.value!!.id
                )
                val response = createRouteUseCase(publication)
                if (response) {
+                    cleanFields()
                     navController.navigate("main")
                } else {
                     Toast.makeText(
@@ -140,6 +150,38 @@ class MapaViewModel @Inject constructor(private val createRouteUseCase: CreateRo
                     ).show()
                }
           }
+     }
+
+     private fun cleanFields() {
+          _name.value = ""
+          _track.value = mutableListOf()
+          _distance.value = ""
+          _category.value = ""
+          _description.value = ""
+          _difficulty.value = ""
+          _duration.value = ""
+     }
+
+     fun getDistanceKm(coordenada1: LatLng, coordenada2: LatLng){
+
+          val decimalFormat = DecimalFormat("#.00")
+          val earthRadius = 6372.8
+          val distanceLatitude = toRadians(coordenada1.latitude - coordenada2.latitude)
+          val distanceLength = toRadians(coordenada1.longitude - coordenada2.longitude)
+          val latitude1 = toRadians(coordenada1.latitude)
+          val latitude2 = toRadians(coordenada2.latitude)
+
+          val valorTotal = 2 * earthRadius * asin(
+               sqrt(
+                    pow(sin(distanceLatitude / 2), 2.0) +
+                            pow(sin(distanceLength / 2), 2.0) *
+                            cos(latitude1) *
+                            cos(latitude2)
+               )
+          )
+
+          distanceKM = distanceKM.plus(valorTotal)
+          _distance.value = decimalFormat.format(distanceKM).toString() + "km"
      }
 
 }

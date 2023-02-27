@@ -74,7 +74,7 @@ class RegisterViewModel @Inject constructor(private val registroUseCase: Registe
             if (result) {
                 navController.navigate("main")
             } else {
-                Toast.makeText(context, "Ha habido un error con el registro", Toast.LENGTH_SHORT)
+                Toast.makeText(context, "Some fields are in use, please change it", Toast.LENGTH_SHORT)
                     .show()
             }
             _isLoading.value = false

@@ -40,11 +40,11 @@ class MainViewModel @Inject constructor(
 
     init {
         _usersCreators.value = mutableListOf()
-        //isLoading.value = true
     }
 
    fun onInit(){
        _isLoading.value = true
+       _usersCreators.value = mutableListOf()
         viewModelScope.launch{
             _currentUser.value = GetUser()
             if(_currentUser.value!!.admin){

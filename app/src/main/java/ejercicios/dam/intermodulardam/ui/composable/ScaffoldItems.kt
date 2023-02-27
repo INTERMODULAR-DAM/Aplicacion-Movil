@@ -2,8 +2,11 @@ package ejercicios.dam.intermodulardam.ui.composable
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -18,6 +21,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -26,6 +30,7 @@ import ejercicios.dam.intermodulardam.Routes
 import ejercicios.dam.intermodulardam.main.domain.entity.User
 import ejercicios.dam.intermodulardam.ui.theme.calibri
 import ejercicios.dam.intermodulardam.utils.Constants
+import ejercicios.dam.intermodulardam.utils.MainBrown
 import ejercicios.dam.intermodulardam.utils.backgroundGreen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -63,7 +68,7 @@ fun MainTopBar(coroutineScope: CoroutineScope, scaffoldState: ScaffoldState) {
             IconButton(onClick = { coroutineScope.launch { scaffoldState.drawerState.open() } }, modifier = Modifier.weight(1F)) {
                 Icon(imageVector = Icons.Filled.Menu , contentDescription = "Left-hand menu", tint = Color.White)
             }
-            Text(modifier = Modifier.weight(7F), text = "Wikitrail", color = Color.White, fontWeight = FontWeight.W800)
+            Text(modifier = Modifier.weight(8F), text = "Wikitrail", color = Color.White, fontWeight = FontWeight.W800,)
         }
     }
 }
@@ -73,60 +78,71 @@ fun MainDrawer(navController: NavHostController, user: User, coroutineScope: Cor
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = MaterialTheme.colors.backgroundGreen),
+            .background(color = MaterialTheme.colors.backgroundGreen)
     ) {
-        Row(modifier = Modifier
-            .padding(start = 8.dp, top = 32.dp)
-            .fillMaxWidth(), verticalAlignment = Alignment.Bottom) {
-            Box(
-                modifier = Modifier
-                    .size(63.dp)
-                    .clip(CircleShape),
-                contentAlignment = Alignment.Center,
-            ) {
-                Image(
-                    modifier = Modifier
-                        .size(63.dp)
-                        .scale(1F),
-                    painter = rememberAsyncImagePainter(
-                        "http://${Constants.IP_ADDRESS}/api/v1/imgs/users/"+ user.pfp_path
-                    ),
-                    contentDescription = "Profile photo",
-                    contentScale = ContentScale.Crop)
-            }
-            Box(modifier = Modifier.padding(start = 8.dp)) {
-                Text(text = user.name, color = Color.White, style = TextStyle(fontFamily = calibri, fontSize = 24.sp))
-            }
 
-            Box(modifier = Modifier) {
-                IconButton(
-                    modifier = Modifier
-                        .absoluteOffset(130.dp, (-32).dp),
-                    onClick = { coroutineScope.launch { scaffoldState.drawerState.close() } }) {
-                    Icon(imageVector = Icons.Filled.Menu, contentDescription = "Cerrar Drawer", tint = Color.White)
-                }
-            }
-        }
-        Spacer(modifier = Modifier.height(6.dp))
-        Row(modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 16.dp, top = 32.dp)) {
-            Text(text = "Followers:", color = Color.White, style = TextStyle(fontFamily = calibri, fontSize = 16.sp))
-        }
-        Spacer(modifier = Modifier.height(24.dp))
         Row(modifier = Modifier
             .padding(start = 8.dp, top = 32.dp)
-            .fillMaxWidth(), verticalAlignment = Alignment.Bottom) {
-            Box() {
-                Icon(imageVector = Icons.Filled.Person, contentDescription = "Ir a perfil", tint = Color.White)
+            .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically) {
+            Image(
+                modifier = Modifier
+                    .size(65.dp)
+                    .scale(1F)
+                    .clip(RoundedCornerShape(10.dp)),
+                painter = rememberAsyncImagePainter(
+                    "http://${Constants.IP_ADDRESS}/api/v1/imgs/users/"+ user.pfp_path
+                ),
+                contentDescription = "Profile photo",
+                contentScale = ContentScale.Crop)
+
+            Column(Modifier.width(200.dp)) {
+                Text(text = user.nick, color = Color.White, style = TextStyle(fontFamily = calibri, fontSize = 24.sp), maxLines = 1, overflow = TextOverflow.Ellipsis ,modifier = Modifier.padding(start = 20.dp))
+                Text(text = "Following: ${user.following}", color = Color.White, style = TextStyle(fontFamily = calibri, fontSize = 16.sp), modifier = Modifier
+                    .padding(start = 20.dp))
             }
-            Box(modifier = Modifier.padding(start = 8.dp)) {
-                ClickableText(
-                    text = AnnotatedString("Profile"),
-                    style = TextStyle(fontFamily = calibri, fontSize = 20.sp, color = Color.White),
-                    onClick = {navController.navigate(Routes.Perfil.createRoute(user.id))}
-                )
-            }
+            IconButton(
+               modifier = Modifier
+                    .padding(end = 40.dp),
+                onClick = { coroutineScope.launch { scaffoldState.drawerState.close()} }) {
+                Icon(imageVector = Icons.Filled.Menu, contentDescription = "Close drawer", tint = Color.White)
+                }
         }
+
+        Divider(modifier = Modifier
+            .fillMaxWidth()
+            .padding(10.dp), color = Color.White)
+        Spacer(modifier = Modifier.height(24.dp))
+       Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceBetween) {
+           Row(modifier = Modifier
+               .padding(start = 20.dp)
+               .fillMaxWidth(), verticalAlignment = Alignment.Bottom) {
+
+               Icon(imageVector = Icons.Filled.Person, contentDescription = "Goes to profile view", tint = Color.White, modifier = Modifier.size(30.dp))
+               Text(
+                   text = "Profile",
+                   style = TextStyle(fontFamily = calibri, fontSize = 26.sp, color = Color.White),
+                   modifier = Modifier
+                       .clickable { navController.navigate(Routes.Perfil.createRoute(user.id)) }
+                       .padding(start = 20.dp)
+               )
+           }
+           Row(modifier = Modifier
+               .padding(20.dp)
+               .fillMaxWidth()
+               .align(Alignment.End),
+               verticalAlignment = Alignment.CenterVertically) {
+
+               Icon(imageVector = Icons.Filled.Logout, contentDescription = "Goes to profile view", tint = Color.Red, modifier = Modifier.size(30.dp))
+               Text(
+                   text = "Log out",
+                   style = TextStyle(fontFamily = calibri, fontSize = 26.sp, fontWeight = FontWeight.Bold ,color = Color.White),
+                   modifier = Modifier
+                       .clickable { navController.navigate(Routes.Login.route) }
+                       .padding(start = 20.dp)
+               )
+           }
+       }
+
     }
 }
